@@ -69,13 +69,21 @@ class LCHttpClient {
       ..add('X-LC-Id', appId)
       ..add('X-LC-Key', appKey)
       ..add('Content-Type', MediaType);
+    print('----------- Http Request Start ------------');
+    
+    print(req.uri);
     if (request.data != null) {
-      req.write(jsonEncode(LCEncoder.encodeMap(request.data)));
+      String content = jsonEncode(LCEncoder.encodeMap(request.data));
+      print(content);
+      req.write(content);
     }
+    print('----------- Http Request End --------------');
     var response = await req.close();
     var body = await response.transform(utf8.decoder).join();
     T result = jsonDecode(body);
+    print('----------- Http Response Start -----------');
     print(result);
+    print('----------- Http Response End -------------');
     return result;
   }
 }
