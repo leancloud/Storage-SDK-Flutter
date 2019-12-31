@@ -63,4 +63,10 @@ void main() {
     await world.save();
     await world.delete();
   });
+
+  test('delete all', () async {
+    List<LCObject> list = [new LCObject('World'), new LCObject('World'), new LCObject('World'), new LCObject('World')];
+    await LCObject.saveAll(list);
+    await LCObject.deleteAll(list);
+  });
 }

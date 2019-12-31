@@ -71,10 +71,13 @@ class LCEncoder {
   }
 
   static dynamic encodeRequest(LCHttpRequest request) {
-    return {
+    Map<String, dynamic> map = {
       'path': request.path,
-      'method': request.method,
-      'body': encodeMap(request.data)
+      'method': request.method
     };
+    if (request.data != null) {
+      map['body'] = encodeMap(request.data);
+    }
+    return map;
   }
 }

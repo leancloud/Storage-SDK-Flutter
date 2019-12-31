@@ -203,11 +203,34 @@ class LCObject {
 
   /// 删除
   Future<void> delete() async {
-    assert(objectId != null);
+    if (objectId == null) {
+      return;
+    }
     String path = '/1.1/classes/$className/$objectId';
     String method = LCHttpRequestMethod.delete;
     LCHttpRequest request = new LCHttpRequest(path, method);
     await LeanCloud._client.send(request);
   }
 
+  /// 批量删除
+  static Future<void> deleteAll(List<LCObject> objectList) async {
+    if (objectList == null || objectList.length == 0) {
+      return;
+    }
+    Set<LCObject> objects = objectList.where((item) {
+      return item.objectId != null;
+    }).toSet();
+    List<LCHttpRequest> requests = objects.map((item) {
+      String path = '/1.1/classes/${item.className}/${item.objectId}';
+      String method = LCHttpRequestMethod.delete;
+      return new LCHttpRequest(path, method);
+    }).toList();
+    
+    // 发送请求
+    Map<String, dynamic> data = {
+      'requests': LCEncoder.encodeList(requests)
+    };
+    LCHttpRequest request = new LCHttpRequest('/1.1/batch', LCHttpRequestMethod.post, data: data);
+    await LeanCloud._client.send<List<dynamic>>(request);
+  }
 }
