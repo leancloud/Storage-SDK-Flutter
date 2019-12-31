@@ -181,9 +181,9 @@ class LCObject {
     await saveBatches(batches);
 
     // 保存对象本身
-    var request = getRequest();
-    var response = await LeanCloud._client.send<Map<String, dynamic>>(request);
-    var data = LCObjectData.decode(response);
+    LCHttpRequest request = getRequest();
+    Map<String, dynamic> response = await LeanCloud._client.send<Map<String, dynamic>>(request);
+    LCObjectData data = LCObjectData.decode(response);
     _merge(data);
     return this;
   }
@@ -198,11 +198,16 @@ class LCObject {
 
     Queue<Batch> batches = Batch.batchObjects(objectList, true);
     await saveBatches(batches);
+    return objectList;
   }
 
   /// 删除
-  Future<void> delete() {
-
+  Future<void> delete() async {
+    assert(objectId != null);
+    String path = '/1.1/classes/$className/$objectId';
+    String method = LCHttpRequestMethod.delete;
+    LCHttpRequest request = new LCHttpRequest(path, method);
+    await LeanCloud._client.send(request);
   }
 
 }

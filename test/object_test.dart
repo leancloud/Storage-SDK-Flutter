@@ -57,4 +57,10 @@ void main() {
       assert(item.objectId != null);
     });
   });
+
+  test('delete', () async {
+    LCObject world = new LCObject('World');
+    await world.save();
+    await world.delete();
+  });
 }
