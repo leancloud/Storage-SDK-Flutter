@@ -12,6 +12,10 @@ class LCObjectData {
 
   Map<String, dynamic> customPropertyMap;
 
+  LCObjectData() {
+    customPropertyMap = new Map<String, dynamic>();
+  }
+
   static LCObjectData decode(Map<String, dynamic> data) {
     LCObjectData result = new LCObjectData();
     data.forEach((String key, dynamic value) {

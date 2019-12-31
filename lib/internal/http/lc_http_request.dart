@@ -21,5 +21,5 @@ class LCHttpRequest {
   /// 请求数据
   Map<String, dynamic> data;
 
-  LCHttpRequest(this.path, this.method, this.data);
+  LCHttpRequest(this.path, this.method, { this.data });
 }

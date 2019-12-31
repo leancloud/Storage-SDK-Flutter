@@ -18,6 +18,7 @@ part 'internal/log/logger.dart';
 part 'internal/object/lc_object_data.dart';
 part 'internal/operation/lc_operation.dart';
 part 'internal/operation/lc_set_operation.dart';
+part 'internal/operation/lc_delete_operation.dart';
 
 /// 公开接口
 part 'lc_acl.dart';
