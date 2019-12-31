@@ -12,7 +12,13 @@ class LCSetOperation extends LCOperation {
   }
 
   @override
-  apply(String oldValue) {
+  encode() {
+    // TODO: implement encode
+    return null;
+  }
+
+  @override
+  apply(dynamic oldValue, String key) {
     return value;
   }
 }

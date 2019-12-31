@@ -4,6 +4,7 @@ const String ClassNameKey = 'className';
 const String ObjectIdKey = 'objectId';
 const String CreatedAtKey = 'createdAt';
 const String UpdatedAtKey = 'updatedAtKey';
+
 const String ACLKey = 'ACL';
 
 /// 对象类
@@ -32,6 +33,11 @@ class LCObject {
   /// 访问权限
   LCACL get ACL => this[ACLKey];
 
+  /// TODO 还需要增加「新建对象」的情况
+  bool get isDirty => isNew || _estimatedData.length > 0;
+
+  bool isNew;
+
   LCObject(String className) {
     assert(className != null && className.length > 0);
     _data = new LCObjectData();
@@ -39,12 +45,14 @@ class LCObject {
     _operationMap = new Map<String, LCOperation>();
     
     _data.className = className;
+    isNew = true;
   }
 
   static LCObject createWithoutData(String className, String objectId) {
     LCObject object = new LCObject(className);
     assert(objectId != null && objectId.length > 0);
     object._data.objectId = objectId;
+    object.isNew = false;
     return object;
   }
 
@@ -82,7 +90,7 @@ class LCObject {
     if (op is LCDeleteOperation) {
       _estimatedData.remove(key);
     } else {
-      _estimatedData[key] = op.apply(_estimatedData[key]);
+      _estimatedData[key] = op.apply(_estimatedData[key], key);
     }
   }
 
@@ -118,12 +126,63 @@ class LCObject {
     return this;
   }
 
-  /// 保存
-  Future<LCObject> save() async {
+  static Future<void> saveBatches(Queue<Batch> batches) async {
+    while (batches.length > 0) {
+      Batch batch = batches.removeLast();
+      List<LCObject> dirtyObjects = batch.objects.where((item) {
+        return item.isDirty;
+      }).toList();
+
+      // 生成请求列表
+      List<LCHttpRequest> requestList = new List<LCHttpRequest>();
+      dirtyObjects.forEach((item) {
+        requestList.add(item.getRequest());
+      });
+
+      // 发送请求
+      Map<String, dynamic> data = {
+        'requests': LCEncoder.encodeList(requestList)
+      };
+      LCHttpRequest request = new LCHttpRequest('/1.1/batch', LCHttpRequestMethod.post, data: data);
+      List<dynamic> results = await LeanCloud._client.send<List<dynamic>>(request);
+      List<LCObjectData> objectDataList = new List<LCObjectData>();
+      results.forEach((item) {
+        if (item.containsKey('success')) {
+          objectDataList.add(LCObjectData.decode(item['success']));
+        } else {
+          // TODO 保存错误
+
+        }
+      });
+
+      // 刷新数据
+      assert(dirtyObjects.length == objectDataList.length);
+      for (int i = 0; i < dirtyObjects.length; i++) {
+        LCObject object = dirtyObjects[i];
+        LCObjectData objectData = objectDataList[i];
+        object._merge(objectData);
+      }
+    }
+  }
+
+  LCHttpRequest getRequest() {
     var path = objectId == null ? '/1.1/classes/$className' : '/1.1/classes/$className/$objectId';
     var method = objectId == null ? LCHttpRequestMethod.post : LCHttpRequestMethod.put;
-    var request = new LCHttpRequest(path, method, data: _estimatedData);
-    var response = await LeanCloud._client.send(request);
+    return new LCHttpRequest(path, method, data: _estimatedData);
+  }
+
+  /// 保存
+  Future<LCObject> save() async {
+    // 判断是否有循环引用
+    assert(!Batch.hasCircleReference(this, new HashSet<LCObject>()));
+
+    // 保存对象依赖
+    Queue<Batch> batches = Batch.batchObjects({ this }, false);
+    await saveBatches(batches);
+
+    // 保存对象本身
+    var request = getRequest();
+    var response = await LeanCloud._client.send<Map<String, dynamic>>(request);
     var data = LCObjectData.decode(response);
     _merge(data);
     return this;
@@ -138,4 +197,5 @@ class LCObject {
   Future<void> delete() {
 
   }
+
 }

@@ -43,7 +43,7 @@ class LCHttpClient {
     return result;
   }
 
-  Future<Map<String, dynamic>> send(LCHttpRequest request) async {
+  Future<T> send<T>(LCHttpRequest request) async {
     var client = new HttpClient();
     print(authority);
     print(request.path);
@@ -70,11 +70,11 @@ class LCHttpClient {
       ..add('X-LC-Key', appKey)
       ..add('Content-Type', MediaType);
     if (request.data != null) {
-      req.write(jsonEncode(request.data));
+      req.write(jsonEncode(LCEncoder.encodeMap(request.data)));
     }
     var response = await req.close();
     var body = await response.transform(utf8.decoder).join();
-    Map<String, dynamic> result = jsonDecode(body);
+    T result = jsonDecode(body);
     print(result);
     return result;
   }

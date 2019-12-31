@@ -8,7 +8,12 @@ class LCDeleteOperation extends LCOperation {
   }
 
   @override
-  apply(String oldValue) {
+  encode() {
+    return { '__op': 'Delete' };
+  }
+
+  @override
+  apply(dynamic oldValue, String key) {
     return null;
   }
 }

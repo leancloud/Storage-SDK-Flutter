@@ -5,6 +5,8 @@ abstract class LCOperation {
   /// 与前一个操作做合并
   LCOperation mergeWithPrevious(LCOperation previousOp);
 
+  dynamic encode();
+
   // 计算值
-  dynamic apply(String oldValue);
+  dynamic apply(dynamic oldValue, String key);
 }

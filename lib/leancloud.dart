@@ -1,11 +1,14 @@
 library leancloud_storage;
 
+import 'dart:collection';
 import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 
+
 /// 编解码
 part 'internal/encode/lc_decoder.dart';
+part 'internal/encode/lc_encoder.dart';
 
 /// http
 part 'internal/http/lc_http_client.dart';
@@ -16,6 +19,8 @@ part 'internal/log/logger.dart';
 
 /// Object 相关操作
 part 'internal/object/lc_object_data.dart';
+part 'internal/object/lc_batch.dart';
+
 part 'internal/operation/lc_operation.dart';
 part 'internal/operation/lc_set_operation.dart';
 part 'internal/operation/lc_delete_operation.dart';

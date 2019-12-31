@@ -1,13 +1,13 @@
 part of leancloud_storage;
 
-enum LCHttpRequestMethod {
-  get,
-  post,
-  put,
-  delete,
-  header,
-  open,
-  patch,
+class LCHttpRequestMethod {
+  static const get = 'GET';
+  static const post = 'POST';
+  static const put = 'PUT';
+  static const delete = 'DELETE';
+  static const header = 'HEADER';
+  static const open = 'OPEN';
+  static const patch = 'PATCH';
 }
 
 /// Http 请求类
@@ -16,7 +16,7 @@ class LCHttpRequest {
   String path;
 
   /// 请求方法
-  LCHttpRequestMethod method;
+  String method;
 
   /// 请求数据
   Map<String, dynamic> data;
