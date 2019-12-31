@@ -49,4 +49,12 @@ void main() {
     assert(nestedObj.createdAt != null);
     assert(nestedObj.updatedAt != null);
   });
+
+  test('save all', () async {
+    List<LCObject> list = [new LCObject('World'), new LCObject('World'), new LCObject('World'), new LCObject('World')];
+    await LCObject.saveAll(list);
+    list.forEach((item) {
+      assert(item.objectId != null);
+    });
+  });
 }

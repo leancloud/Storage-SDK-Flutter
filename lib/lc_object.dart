@@ -173,11 +173,11 @@ class LCObject {
 
   /// 保存
   Future<LCObject> save() async {
-    // 判断是否有循环引用
+    // 断言没有循环依赖
     assert(!Batch.hasCircleReference(this, new HashSet<LCObject>()));
 
     // 保存对象依赖
-    Queue<Batch> batches = Batch.batchObjects({ this }, false);
+    Queue<Batch> batches = Batch.batchObjects([this], false);
     await saveBatches(batches);
 
     // 保存对象本身
@@ -189,8 +189,15 @@ class LCObject {
   }
 
   /// 批量保存
-  static Future<List<LCObject>> saveAll(List<LCObject> objectList) {
+  static Future<List<LCObject>> saveAll(List<LCObject> objectList) async {
+    assert(objectList != null);
+    // 断言没有循环依赖
+    objectList.forEach((item) {
+      assert(!Batch.hasCircleReference(item, new HashSet<LCObject>()));
+    });
 
+    Queue<Batch> batches = Batch.batchObjects(objectList, true);
+    await saveBatches(batches);
   }
 
   /// 删除
