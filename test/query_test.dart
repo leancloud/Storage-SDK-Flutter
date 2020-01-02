@@ -105,15 +105,26 @@ void main() {
   //   assert(results.length == 3);
   // });
 
-  test('or', () async {
+  // test('or', () async {
+  //   initNorthChina();
+  //   LCQuery<LCObject> q1 = new LCQuery<LCObject>('Account');
+  //   q1.whereLessThanOrEqualTo('balance', 100);
+  //   LCQuery<LCObject> q2 = new LCQuery<LCObject>('Account');
+  //   q2.whereGreaterThanOrEqualTo('balance', 500);
+  //   LCQuery<LCObject> query = LCQuery.or([q1, q2]);
+  //   List<LCObject> results = await query.find();
+  //   print(results.length);
+  //   assert(results.length == 2);
+  // });
+
+  test('where object equals', () async {
     initNorthChina();
-    LCQuery<LCObject> q1 = new LCQuery<LCObject>('Account');
-    q1.whereLessThanOrEqualTo('balance', 100);
-    LCQuery<LCObject> q2 = new LCQuery<LCObject>('Account');
-    q2.whereGreaterThanOrEqualTo('balance', 500);
-    LCQuery<LCObject> query = LCQuery.or([q1, q2]);
-    List<LCObject> results = await query.find();
-    print(results.length);
-    assert(results.length == 2);
+    LCQuery<LCObject> worldQuery = new LCQuery('World');
+    LCObject world = await worldQuery.get('5e0d55ae21460d006a1ec931');
+    LCQuery<LCObject> helloQuery = new LCQuery('Hello');
+    helloQuery.whereEqualTo('objectValue', world);
+    LCObject hello = await helloQuery.first();
+    print(hello.objectId);
+    assert(hello.objectId == '5e0d55aedd3c13006a53cd87');
   });
 }
