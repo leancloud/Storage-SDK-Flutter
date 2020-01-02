@@ -5,4 +5,8 @@ void main() {
     assert([1, 1, 2, 3] is List);
     assert({ '1': 'a' } is Map);
   });
+
+  test('transfer', () {
+    print('\$and');
+  });
 }

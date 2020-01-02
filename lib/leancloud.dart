@@ -17,13 +17,21 @@ part 'internal/http/lc_http_request.dart';
 /// 日志
 part 'internal/log/logger.dart';
 
-/// Object 相关操作
+/// Object 辅助
 part 'internal/object/lc_object_data.dart';
 part 'internal/object/lc_batch.dart';
 
+/// 操作
 part 'internal/operation/lc_operation.dart';
 part 'internal/operation/lc_set_operation.dart';
 part 'internal/operation/lc_delete_operation.dart';
+
+/// 查询条件
+part 'internal/query/lc_query_condition.dart';
+part 'internal/query/lc_equal_condition.dart';
+part 'internal/query/lc_operation_condition.dart';
+part 'internal/query/lc_related_condition.dart';
+part 'internal/query/lc_compositional_condition.dart';
 
 /// 公开接口
 part 'lc_acl.dart';

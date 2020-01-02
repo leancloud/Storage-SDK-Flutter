@@ -8,7 +8,7 @@
             "name": "Dart",
             "type": "dart",
             "request": "launch",
-            "program": "./test/object_test.dart"
+            "program": "./test/query_test.dart"
         }
     ]
 }

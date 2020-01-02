@@ -24,6 +24,9 @@ class LCEncoder {
     if (object is LCHttpRequest) {
       return encodeRequest(object);
     }
+    if (object is _QueryCondition) {
+      return object.toMap();
+    }
     return object;
   }
 
