@@ -6,15 +6,16 @@ class LCHttpClient {
   String appId;
   String appKey;
   String authority;
+  String version;
   
-  LCHttpClient(this.appId, this.appKey, this.authority);
+  LCHttpClient(this.appId, this.appKey, this.authority, this.version);
 
   /// 发送 http 请求
   Future<T> send<T>(LCHttpRequest request) async {
     var client = new HttpClient();
     print(authority);
     print(request.path);
-    var uri = new Uri.https(authority, request.path);
+    var uri = new Uri.https(authority, '/$version/${request.path}');
     HttpClientRequest req;
     switch (request.method) {
       case LCHttpRequestMethod.get:
@@ -39,6 +40,11 @@ class LCHttpClient {
     print('=== Http Request Start ===');
     print('URL: ${req.uri}');
     print('Method: ${req.method}');
+    if (request.headers != null) {
+      request.headers.forEach((String key, String value) {
+        req.headers.add(key, value);
+      });
+    }
     print('Headers: ${req.headers}');
     if (request.data != null) {
       String content = jsonEncode(LCEncoder.encodeMap(request.data));

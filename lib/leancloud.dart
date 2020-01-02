@@ -37,6 +37,8 @@ part 'lc_relation.dart';
 part 'lc_role.dart';
 part 'lc_user.dart';
 
+const String HttpVersion = '1.1';
+
 /// SDK 入口
 class LeanCloud {
   static String _appId;
@@ -52,6 +54,6 @@ class LeanCloud {
     _appId = appId;
     _appKey = appKey;
     _appServer = server;
-    _client = new LCHttpClient(appId, appKey, server);
+    _client = new LCHttpClient(appId, appKey, server, HttpVersion);
   }
 }

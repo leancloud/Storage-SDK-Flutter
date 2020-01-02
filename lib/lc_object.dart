@@ -166,7 +166,7 @@ class LCObject {
   }
 
   LCHttpRequest getRequest() {
-    var path = objectId == null ? '/1.1/classes/$className' : '/1.1/classes/$className/$objectId';
+    var path = objectId == null ? 'classes/$className' : 'classes/$className/$objectId';
     var method = objectId == null ? LCHttpRequestMethod.post : LCHttpRequestMethod.put;
     return new LCHttpRequest(path, method, data: _estimatedData);
   }
@@ -206,7 +206,7 @@ class LCObject {
     if (objectId == null) {
       return;
     }
-    String path = '/1.1/classes/$className/$objectId';
+    String path = 'classes/$className/$objectId';
     String method = LCHttpRequestMethod.delete;
     LCHttpRequest request = new LCHttpRequest(path, method);
     await LeanCloud._client.send(request);
@@ -221,7 +221,7 @@ class LCObject {
       return item.objectId != null;
     }).toSet();
     List<LCHttpRequest> requests = objects.map((item) {
-      String path = '/1.1/classes/${item.className}/${item.objectId}';
+      String path = 'classes/${item.className}/${item.objectId}';
       String method = LCHttpRequestMethod.delete;
       return new LCHttpRequest(path, method);
     }).toList();
@@ -230,7 +230,7 @@ class LCObject {
     Map<String, dynamic> data = {
       'requests': LCEncoder.encodeList(requests)
     };
-    LCHttpRequest request = new LCHttpRequest('/1.1/batch', LCHttpRequestMethod.post, data: data);
+    LCHttpRequest request = new LCHttpRequest('batch', LCHttpRequestMethod.post, data: data);
     await LeanCloud._client.send<List<dynamic>>(request);
   }
 }
