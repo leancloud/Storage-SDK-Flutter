@@ -8,7 +8,7 @@
             "name": "Dart",
             "type": "dart",
             "request": "launch",
-            "program": "./test/subclass_test.dart"
+            "program": "./test/file_test.dart"
         }
     ]
 }

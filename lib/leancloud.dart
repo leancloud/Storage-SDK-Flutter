@@ -4,6 +4,8 @@ import 'dart:collection';
 import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
+import 'dart:math';
+import 'package:dio/dio.dart';
 
 /// 编解码
 part 'internal/encode/lc_decoder.dart';
@@ -32,6 +34,13 @@ part 'internal/query/lc_equal_condition.dart';
 part 'internal/query/lc_operation_condition.dart';
 part 'internal/query/lc_related_condition.dart';
 part 'internal/query/lc_compositional_condition.dart';
+
+/// 文件
+part 'internal/file/lc_aws_uploader.dart';
+part 'internal/file/lc_qiniu_uploader.dart';
+
+/// 工具
+part 'internal/utils/lc_uuid.dart';
 
 /// 公开接口
 part 'lc_acl.dart';

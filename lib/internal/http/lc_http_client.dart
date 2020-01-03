@@ -12,10 +12,10 @@ class LCHttpClient {
 
   /// 发送 http 请求
   Future<T> send<T>(LCHttpRequest request) async {
-    var client = new HttpClient();
+    HttpClient client = new HttpClient();
     print(authority);
     print(request.path);
-    var uri = new Uri.https(authority, '/$version/${request.path}', request.queryParams);
+    Uri uri = new Uri.https(authority, '/$version/${request.path}', request.queryParams);
     HttpClientRequest req;
     switch (request.method) {
       case LCHttpRequestMethod.get:
@@ -53,7 +53,7 @@ class LCHttpClient {
     }
     print('=== Http Request End =====');
     HttpClientResponse response = await req.close();
-    var body = await response.transform(utf8.decoder).join();
+    String body = await response.transform(utf8.decoder).join();
     T result = jsonDecode(body);
     print('=== Http Response Start ===');
     print('Status Code: ${response.statusCode}');
