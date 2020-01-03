@@ -43,9 +43,9 @@ class LCDecoder {
   /// 解码对象
   static LCObject decodeNestedObject(dynamic data) {
     String className = data['className'];
-    LCObject object = new LCObject(className);
-    // TODO 填充数据
-
+    LCObject object = LCObject.createByName(className);
+    LCObjectData objectData = LCObjectData.decode(data);
+    object._merge(objectData);
     return object;
   }
 

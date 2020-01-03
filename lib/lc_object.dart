@@ -249,8 +249,16 @@ class LCObject {
   static LCObject create(Type type, { String className }) {
     if (subclassTypeMap.containsKey(type)) {
       SubclassInfo subclassInfo = subclassTypeMap[type];
-      return subclassInfo.constructor(subclassInfo.className);
+      return subclassInfo.constructor();
     }
     return new LCObject(className);
+  }
+
+  static LCObject createByName(String className) {
+    if (subclassNameMap.containsKey(className)) {
+      SubclassInfo subclassInfo = subclassNameMap[className];
+      return subclassInfo.constructor();
+    }
+    return null;
   }
 }

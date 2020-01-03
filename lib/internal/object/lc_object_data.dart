@@ -29,7 +29,7 @@ class LCObjectData {
         result.updatedAt = DateTime.parse(value);
       } else {
         // 自定义属性
-        result.customPropertyMap[key] = value;
+        result.customPropertyMap[key] = LCDecoder.decode(value);
       }
     });
     return result;
