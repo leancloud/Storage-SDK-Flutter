@@ -5,7 +5,6 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 
-
 /// 编解码
 part 'internal/encode/lc_decoder.dart';
 part 'internal/encode/lc_encoder.dart';
@@ -20,6 +19,7 @@ part 'internal/log/logger.dart';
 /// Object 辅助
 part 'internal/object/lc_object_data.dart';
 part 'internal/object/lc_batch.dart';
+part 'internal/object/lc_subclass_info.dart';
 
 /// 操作
 part 'internal/operation/lc_operation.dart';
@@ -63,5 +63,8 @@ class LeanCloud {
     _appKey = appKey;
     _appServer = server;
     _client = new LCHttpClient(appId, appKey, server, HttpVersion);
+    // 注册子类化
+    LCObject.registerSubclass<LCFile>('_File', (className) => new LCFile());
+    LCObject.registerSubclass<LCUser>('_User', (className) => new LCUser());
   }
 }

@@ -138,11 +138,11 @@ class LCQuery<T extends LCObject> {
     Map<String, dynamic> response = await LeanCloud._client.send<Map<String, dynamic>>(request);
     List results = response['results'];
     // TODO 判断是否返回正确
-
+    
     List<T> list = new List();
     results.forEach((item) {
       LCObjectData objectData = LCObjectData.decode(item);
-      LCObject object = new LCObject(className);
+      LCObject object = LCObject.create(T, className: className);
       object._merge(objectData);
       list.add(object);
     });

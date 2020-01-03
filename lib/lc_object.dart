@@ -233,4 +233,24 @@ class LCObject {
     LCHttpRequest request = new LCHttpRequest('batch', LCHttpRequestMethod.post, data: data);
     await LeanCloud._client.send<List<dynamic>>(request);
   }
+
+
+  /// 子类化
+  static Map<Type, SubclassInfo> subclassTypeMap = new Map<Type, SubclassInfo>();
+  static Map<String, SubclassInfo> subclassNameMap = new Map<String, SubclassInfo>();
+
+  /// 注册子类
+  static void registerSubclass<T extends LCObject>(String className, Function constructor) {
+    SubclassInfo subclassInfo = new SubclassInfo(className, T, constructor);
+    subclassTypeMap[T] = subclassInfo;
+    subclassNameMap[className] = subclassInfo;
+  }
+
+  static LCObject create(Type type, { String className }) {
+    if (subclassTypeMap.containsKey(type)) {
+      SubclassInfo subclassInfo = subclassTypeMap[type];
+      return subclassInfo.constructor(subclassInfo.className);
+    }
+    return new LCObject(className);
+  }
 }

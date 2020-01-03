@@ -2,30 +2,49 @@ part of leancloud_storage;
 
 /// 文件类
 class LCFile extends LCObject {
-  /// 文件大小
-  int get size => 0;
+  String get name => this['name'];
 
-  /// 文件链接
-  String get url => "";
+  set name(String value) => this['name'] = value;
 
+  String get mimeType => this['mime_type'];
 
-  LCFile(String name, Uint8List bytes) : super('_File') {
+  set mimeType(String value) => this['mime_type'] = value;
 
-  }
+  String get url => this['url'];
+
+  set url(String value) => this['url'] = value;
+
+  Map<String, dynamic> get metaData => this['metaData'];
+
+  set metaData(Map<String, dynamic> value) => this['metaData'] = value;
+
+  LCFile() : super('_File');
 
   void addMetaData(String key, dynamic value) {
 
   }
 
-  Future<LCFile> save() {
-
+  Future<LCFile> save() async {
+    return this;
   }
 
-  Future<void> delete() {
-
+  @override
+  Future<void> delete() async {
+    if (objectId == null) {
+      return;
+    }
+    String path = 'files/$objectId';
+    String method = LCHttpRequestMethod.delete;
+    LCHttpRequest request = new LCHttpRequest(path, method);
+    await LeanCloud._client.send(request);
   }
 
-  String getThumbnailUrl(bool scaleToFit, int width, int height) {
+  String getThumbnailUrl(int width, int height, { int quality = 100, bool scaleToFit = true, String format = 'png' }) {
+    int mode = scaleToFit ? 2 : 1;
+    return '$url?imageView/$mode/w/$width/h/$height/q/$quality/format/$format';
+  }
+
+  Future<Map<String, dynamic>> getUploadToken() async {
 
   }
 }
