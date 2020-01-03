@@ -18,7 +18,7 @@ class LCFile extends LCObject {
 
   set metaData(Map<String, dynamic> value) => this['metaData'] = value;
 
-  MultipartFile file;
+  Uint8List data;
 
   LCFile() : super('_File') {
     metaData = new Map<String, dynamic>();
@@ -27,14 +27,17 @@ class LCFile extends LCObject {
   static LCFile fromBytes(String name, Uint8List data) {
     LCFile file = new LCFile();
     file.name = name;
-    file.file = MultipartFile.fromBytes(data);
+    file.data = data;
     return file;
   }
 
   static Future<LCFile> fromPath(String name, String path) async {
     LCFile file = new LCFile();
     file.name = name;
-    file.file = await MultipartFile.fromFile(path);
+    String suffix = path.substring(path.lastIndexOf('.') + 1);
+    file.mimeType = MimeTypeMap.getMimeTypeBySuffix(suffix);
+    File f = new File(path);
+    file.data = await f.readAsBytes();
     return file;
   }
 
@@ -59,8 +62,16 @@ class LCFile extends LCObject {
       String uploadUrl = uploadToken['upload_url'];
       String key = uploadToken['key'];
       String token = uploadToken['token'];
-      QiniuUploader uploader = new QiniuUploader(uploadUrl, token, key, file);
-      await uploader.upload();
+      String provider = uploadToken['provider'];
+      if (provider == 's3') {
+        // AWS
+        AWSUploader uploader = new AWSUploader(uploadUrl, mimeType, data);
+        await uploader.upload();
+      } else {
+        // Qiniu
+        QiniuUploader uploader = new QiniuUploader(uploadUrl, token, key, data);
+        await uploader.upload();
+      }
       LCObjectData objectData = LCObjectData.decode(uploadToken);
       super._merge(objectData);
     }
@@ -88,6 +99,7 @@ class LCFile extends LCObject {
       'name': name,
       'key': newUUID(),
       '__type': 'File',
+      'mime_type': mimeType,
       'metaData': metaData
     };
     LCHttpRequest request = new LCHttpRequest('fileTokens', LCHttpRequestMethod.post, data: data);

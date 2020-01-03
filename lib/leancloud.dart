@@ -6,6 +6,7 @@ import 'dart:io';
 import 'dart:typed_data';
 import 'dart:math';
 import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
 
 /// 编解码
 part 'internal/encode/lc_decoder.dart';
@@ -38,6 +39,7 @@ part 'internal/query/lc_compositional_condition.dart';
 /// 文件
 part 'internal/file/lc_aws_uploader.dart';
 part 'internal/file/lc_qiniu_uploader.dart';
+part 'internal/file/lc_mime_type_map.dart';
 
 /// 工具
 part 'internal/utils/lc_uuid.dart';
@@ -73,7 +75,7 @@ class LeanCloud {
     _appServer = server;
     _client = new LCHttpClient(appId, appKey, server, HttpVersion);
     // 注册子类化
-    LCObject.registerSubclass<LCFile>('_File', (className) => new LCFile());
-    LCObject.registerSubclass<LCUser>('_User', (className) => new LCUser());
+    LCObject.registerSubclass<LCFile>('_File', () => new LCFile());
+    LCObject.registerSubclass<LCUser>('_User', () => new LCUser());
   }
 }

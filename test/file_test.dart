@@ -33,13 +33,21 @@ void main() {
   //   assert(file.objectId != null);
   // });
 
-  test('save from url', () async {
-    initNorthChina();
-    LCFile file = LCFile.fromUrl('scene', 'http://img95.699pic.com/photo/50015/9034.jpg_wh300.jpg');
-    file.addMetaData('size', 1024);
-    file.addMetaData('width', 128);
-    file.addMetaData('height', 256);
-    file.mimeType = 'image/jpg';
+  // test('save from url', () async {
+  //   initNorthChina();
+  //   LCFile file = LCFile.fromUrl('scene', 'http://img95.699pic.com/photo/50015/9034.jpg_wh300.jpg');
+  //   file.addMetaData('size', 1024);
+  //   file.addMetaData('width', 128);
+  //   file.addMetaData('height', 256);
+  //   file.mimeType = 'image/jpg';
+  //   await file.save();
+  //   print(file.objectId);
+  //   assert(file.objectId != null);
+  // });
+
+  test('aws', () async {
+    initUS();
+    LCFile file = await LCFile.fromPath('avatar', './avatar.jpg');
     await file.save();
     print(file.objectId);
     assert(file.objectId != null);
