@@ -28,6 +28,13 @@ part 'internal/object/lc_subclass_info.dart';
 part 'internal/operation/lc_operation.dart';
 part 'internal/operation/lc_set_operation.dart';
 part 'internal/operation/lc_delete_operation.dart';
+part 'internal/operation/lc_add_relation_operation.dart';
+part 'internal/operation/lc_remove_relation_operation.dart';
+part 'internal/operation/lc_add_operation.dart';
+part 'internal/operation/lc_remove_operation.dart';
+part 'internal/operation/lc_add_unique_operation.dart';
+part 'internal/operation/lc_increment_operation.dart';
+part 'internal/operation/lc_decrement_operation.dart';
 
 /// 查询条件
 part 'internal/query/lc_query_condition.dart';

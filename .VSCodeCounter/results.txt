@@ -1,0 +1,64 @@
+Date : 2020-01-03 17:54:43
+Directory : /Users/onerainyu/LeanCloud/Storage-SDK-Flutter/lib
+Total : 31 files,  1497 codes, 122 comments, 298 blanks, all 1917 lines
+
+Languages
++----------+------------+------------+------------+------------+------------+
+| language | files      | code       | comment    | blank      | total      |
++----------+------------+------------+------------+------------+------------+
+| Dart     |         31 |      1,497 |        122 |        298 |      1,917 |
++----------+------------+------------+------------+------------+------------+
+
+Directories
++---------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| path                                                                                              | files      | code       | comment    | blank      | total      |
++---------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| .                                                                                                 |         31 |      1,497 |        122 |        298 |      1,917 |
+| internal                                                                                          |         20 |        849 |         32 |        125 |      1,006 |
+| internal/encode                                                                                   |          2 |        124 |         11 |         14 |        149 |
+| internal/file                                                                                     |          3 |        233 |          1 |         13 |        247 |
+| internal/http                                                                                     |          2 |         84 |          6 |         12 |        102 |
+| internal/log                                                                                      |          1 |         27 |          0 |          6 |         33 |
+| internal/object                                                                                   |          3 |        109 |          4 |         13 |        126 |
+| internal/operation                                                                                |          3 |         38 |          6 |         11 |         55 |
+| internal/query                                                                                    |          5 |        217 |          4 |         50 |        271 |
+| internal/utils                                                                                    |          1 |         17 |          0 |          6 |         23 |
++---------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+
+Files
++---------------------------------------------------------------------------------------------------+----------+------------+------------+------------+------------+
+| filename                                                                                          | language | code       | comment    | blank      | total      |
++---------------------------------------------------------------------------------------------------+----------+------------+------------+------------+------------+
+| /Users/onerainyu/LeanCloud/Storage-SDK-Flutter/lib/internal/encode/lc_decoder.dart                | Dart     |         48 |          9 |          6 |         63 |
+| /Users/onerainyu/LeanCloud/Storage-SDK-Flutter/lib/internal/encode/lc_encoder.dart                | Dart     |         76 |          2 |          8 |         86 |
+| /Users/onerainyu/LeanCloud/Storage-SDK-Flutter/lib/internal/file/lc_aws_uploader.dart             | Dart     |         17 |          0 |          5 |         22 |
+| /Users/onerainyu/LeanCloud/Storage-SDK-Flutter/lib/internal/file/lc_mime_type_map.dart            | Dart     |        199 |          0 |          2 |        201 |
+| /Users/onerainyu/LeanCloud/Storage-SDK-Flutter/lib/internal/file/lc_qiniu_uploader.dart           | Dart     |         17 |          1 |          6 |         24 |
+| /Users/onerainyu/LeanCloud/Storage-SDK-Flutter/lib/internal/http/lc_http_client.dart              | Dart     |         59 |          1 |          5 |         65 |
+| /Users/onerainyu/LeanCloud/Storage-SDK-Flutter/lib/internal/http/lc_http_request.dart             | Dart     |         25 |          5 |          7 |         37 |
+| /Users/onerainyu/LeanCloud/Storage-SDK-Flutter/lib/internal/log/logger.dart                       | Dart     |         27 |          0 |          6 |         33 |
+| /Users/onerainyu/LeanCloud/Storage-SDK-Flutter/lib/internal/object/lc_batch.dart                  | Dart     |         74 |          2 |          4 |         80 |
+| /Users/onerainyu/LeanCloud/Storage-SDK-Flutter/lib/internal/object/lc_object_data.dart            | Dart     |         28 |          2 |          7 |         37 |
+| /Users/onerainyu/LeanCloud/Storage-SDK-Flutter/lib/internal/object/lc_subclass_info.dart          | Dart     |          7 |          0 |          2 |          9 |
+| /Users/onerainyu/LeanCloud/Storage-SDK-Flutter/lib/internal/operation/lc_delete_operation.dart    | Dart     |         15 |          1 |          3 |         19 |
+| /Users/onerainyu/LeanCloud/Storage-SDK-Flutter/lib/internal/operation/lc_operation.dart           | Dart     |          6 |          3 |          3 |         12 |
+| /Users/onerainyu/LeanCloud/Storage-SDK-Flutter/lib/internal/operation/lc_set_operation.dart       | Dart     |         17 |          2 |          5 |         24 |
+| /Users/onerainyu/LeanCloud/Storage-SDK-Flutter/lib/internal/query/lc_compositional_condition.dart | Dart     |        149 |          4 |         36 |        189 |
+| /Users/onerainyu/LeanCloud/Storage-SDK-Flutter/lib/internal/query/lc_equal_condition.dart         | Dart     |         19 |          0 |          4 |         23 |
+| /Users/onerainyu/LeanCloud/Storage-SDK-Flutter/lib/internal/query/lc_operation_condition.dart     | Dart     |         22 |          0 |          4 |         26 |
+| /Users/onerainyu/LeanCloud/Storage-SDK-Flutter/lib/internal/query/lc_query_condition.dart         | Dart     |          5 |          0 |          2 |          7 |
+| /Users/onerainyu/LeanCloud/Storage-SDK-Flutter/lib/internal/query/lc_related_condition.dart       | Dart     |         22 |          0 |          4 |         26 |
+| /Users/onerainyu/LeanCloud/Storage-SDK-Flutter/lib/internal/utils/lc_uuid.dart                    | Dart     |         17 |          0 |          6 |         23 |
+| /Users/onerainyu/LeanCloud/Storage-SDK-Flutter/lib/lc_acl.dart                                    | Dart     |          5 |          3 |          4 |         12 |
+| /Users/onerainyu/LeanCloud/Storage-SDK-Flutter/lib/lc_cloud.dart                                  | Dart     |          7 |          2 |          4 |         13 |
+| /Users/onerainyu/LeanCloud/Storage-SDK-Flutter/lib/lc_error.dart                                  | Dart     |          3 |          1 |          2 |          6 |
+| /Users/onerainyu/LeanCloud/Storage-SDK-Flutter/lib/lc_file.dart                                   | Dart     |         89 |          5 |         19 |        113 |
+| /Users/onerainyu/LeanCloud/Storage-SDK-Flutter/lib/lc_geo_point.dart                              | Dart     |         16 |          3 |         10 |         29 |
+| /Users/onerainyu/LeanCloud/Storage-SDK-Flutter/lib/lc_object.dart                                 | Dart     |        190 |         32 |         42 |        264 |
+| /Users/onerainyu/LeanCloud/Storage-SDK-Flutter/lib/lc_query.dart                                  | Dart     |        173 |          2 |         33 |        208 |
+| /Users/onerainyu/LeanCloud/Storage-SDK-Flutter/lib/lc_relation.dart                               | Dart     |          3 |          1 |          2 |          6 |
+| /Users/onerainyu/LeanCloud/Storage-SDK-Flutter/lib/lc_role.dart                                   | Dart     |          4 |          0 |          1 |          5 |
+| /Users/onerainyu/LeanCloud/Storage-SDK-Flutter/lib/lc_user.dart                                   | Dart     |        105 |         29 |         40 |        174 |
+| /Users/onerainyu/LeanCloud/Storage-SDK-Flutter/lib/leancloud.dart                                 | Dart     |         53 |         12 |         16 |         81 |
+| Total                                                                                             |          |      1,497 |        122 |        298 |      1,917 |
++---------------------------------------------------------------------------------------------------+----------+------------+------------+------------+------------+

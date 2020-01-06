@@ -31,7 +31,9 @@ class LCObject {
   DateTime get updatedAt => _data.updatedAt ?? _data.createdAt;
 
   /// 访问权限
-  LCACL get ACL => this[ACLKey];
+  LCACL get acl => this[ACLKey];
+
+  set acl(LCACL value) => this[ACLKey] = value;
 
   /// TODO 还需要增加「新建对象」的情况
   bool get isDirty => isNew || _estimatedData.length > 0;
@@ -62,6 +64,30 @@ class LCObject {
     // TODO 判断是否是保留字段
 
     LCSetOperation op = new LCSetOperation(value);
+    if (_operationMap.containsKey(key)) {
+      LCOperation previousOp = _operationMap[key];
+      _operationMap[key] = op.mergeWithPrevious(previousOp);
+    } else {
+      _operationMap[key] = op;
+    }
+    _applyOperation(key, op);
+  }
+
+  void addRelation(String key, LCObject value) {
+    LCAddRelationOperation op = new LCAddRelationOperation();
+    op.values.add(value);
+    if (_operationMap.containsKey(key)) {
+      LCOperation previousOp = _operationMap[key];
+      _operationMap[key] = op.mergeWithPrevious(previousOp);
+    } else {
+      _operationMap[key] = op;
+    }
+    _applyOperation(key, op);
+  }
+
+  void removeRelation(String key, LCObject value) {
+    LCRemoveRelationOperation op = new LCRemoveRelationOperation();
+    op.values.add(value);
     if (_operationMap.containsKey(key)) {
       LCOperation previousOp = _operationMap[key];
       _operationMap[key] = op.mergeWithPrevious(previousOp);
@@ -136,14 +162,14 @@ class LCObject {
       // 生成请求列表
       List<LCHttpRequest> requestList = new List<LCHttpRequest>();
       dirtyObjects.forEach((item) {
-        requestList.add(item.getRequest());
+        requestList.add(item.getBatchRequest());
       });
 
       // 发送请求
       Map<String, dynamic> data = {
         'requests': LCEncoder.encodeList(requestList)
       };
-      LCHttpRequest request = new LCHttpRequest('/1.1/batch', LCHttpRequestMethod.post, data: data);
+      LCHttpRequest request = new LCHttpRequest('batch', LCHttpRequestMethod.post, data: data);
       List<dynamic> results = await LeanCloud._client.send<List<dynamic>>(request);
       List<LCObjectData> objectDataList = new List<LCObjectData>();
       results.forEach((item) {
@@ -168,7 +194,13 @@ class LCObject {
   LCHttpRequest getRequest() {
     var path = objectId == null ? 'classes/$className' : 'classes/$className/$objectId';
     var method = objectId == null ? LCHttpRequestMethod.post : LCHttpRequestMethod.put;
-    return new LCHttpRequest(path, method, data: _estimatedData);
+    return new LCHttpRequest(path, method, data: LCEncoder.encode(_operationMap));
+  }
+
+  LCHttpRequest getBatchRequest() {
+    var path = objectId == null ? '/1.1/classes/$className' : '/1.1/classes/$className/$objectId';
+    var method = objectId == null ? LCHttpRequestMethod.post : LCHttpRequestMethod.put;
+    return new LCHttpRequest(path, method, data: LCEncoder.encode(_operationMap));
   }
 
   /// 保存
@@ -178,7 +210,9 @@ class LCObject {
 
     // 保存对象依赖
     Queue<Batch> batches = Batch.batchObjects([this], false);
-    await saveBatches(batches);
+    if (batches.length > 0) {
+      await saveBatches(batches);
+    }
 
     // 保存对象本身
     LCHttpRequest request = getRequest();

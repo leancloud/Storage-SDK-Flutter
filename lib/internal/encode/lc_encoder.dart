@@ -27,6 +27,12 @@ class LCEncoder {
     if (object is _QueryCondition) {
       return object.toMap();
     }
+    if (object is LCACL) {
+      return encodeACL(object);
+    }
+    if (object is LCRelation) {
+      return encodeRelation(object);
+    }
     return object;
   }
 
@@ -82,5 +88,23 @@ class LCEncoder {
       map['body'] = encodeMap(request.data);
     }
     return map;
+  }
+
+  static dynamic encodeACL(LCACL acl) {
+    Set<String> readers = acl.readers;
+    Set<String> writers = acl.writers;
+    Set<String> union = readers.union(writers);
+    Map<String, dynamic> result = new Map<String, dynamic>();
+    union.forEach((item) {
+      result[item] = {
+        'read': readers.contains(item),
+        'write': writers.contains(item)
+      };
+    });
+    return result;
+  }
+
+  static dynamic encodeRelation(LCRelation relation) {
+
   }
 }

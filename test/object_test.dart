@@ -50,23 +50,23 @@ void main() {
     assert(nestedObj.updatedAt != null);
   });
 
-  test('save all', () async {
-    List<LCObject> list = [new LCObject('World'), new LCObject('World'), new LCObject('World'), new LCObject('World')];
-    await LCObject.saveAll(list);
-    list.forEach((item) {
-      assert(item.objectId != null);
-    });
-  });
+  // test('save all', () async {
+  //   List<LCObject> list = [new LCObject('World'), new LCObject('World'), new LCObject('World'), new LCObject('World')];
+  //   await LCObject.saveAll(list);
+  //   list.forEach((item) {
+  //     assert(item.objectId != null);
+  //   });
+  // });
 
-  test('delete', () async {
-    LCObject world = new LCObject('World');
-    await world.save();
-    await world.delete();
-  });
+  // test('delete', () async {
+  //   LCObject world = new LCObject('World');
+  //   await world.save();
+  //   await world.delete();
+  // });
 
-  test('delete all', () async {
-    List<LCObject> list = [new LCObject('World'), new LCObject('World'), new LCObject('World'), new LCObject('World')];
-    await LCObject.saveAll(list);
-    await LCObject.deleteAll(list);
-  });
+  // test('delete all', () async {
+  //   List<LCObject> list = [new LCObject('World'), new LCObject('World'), new LCObject('World'), new LCObject('World')];
+  //   await LCObject.saveAll(list);
+  //   await LCObject.deleteAll(list);
+  // });
 }

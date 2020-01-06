@@ -44,12 +44,12 @@ void main() {
   //   assert(current.objectId != null);
   // });
 
-  // test('login by sms code', () async {
-  //   initNorthChina();
-  //   await LCUser.loginBySMSCode('15101006007', '882586');
-  //   LCUser current = LCUser.currentUser;
-  //   assert(current.objectId != null);
-  // });
+  test('login by sms code', () async {
+    initNorthChina();
+    await LCUser.loginBySMSCode('15101006007', '882586');
+    LCUser current = LCUser.currentUser;
+    assert(current.objectId != null);
+  });
 
   // test('request login sms code', () async {
   //   initNorthChina();
