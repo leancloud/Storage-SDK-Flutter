@@ -54,7 +54,7 @@ class LCFile extends LCObject {
     metaData[key] = value;
   }
 
-  Future<LCFile> save() async {
+  Future<LCFile> save({ void Function(int count, int total) onProgress }) async {
     if (url != null) {
       // 外链方式
       await super.save();
@@ -68,11 +68,11 @@ class LCFile extends LCObject {
       if (provider == 's3') {
         // AWS
         AWSUploader uploader = new AWSUploader(uploadUrl, mimeType, data);
-        await uploader.upload();
+        await uploader.upload(onProgress);
       } else {
         // Qiniu
         QiniuUploader uploader = new QiniuUploader(uploadUrl, token, key, data);
-        await uploader.upload();
+        await uploader.upload(onProgress);
       }
       LCObjectData objectData = LCObjectData.decode(uploadToken);
       super._merge(objectData);

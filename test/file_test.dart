@@ -15,13 +15,18 @@ void main() {
   //   print(file.getThumbnailUrl(32, 32));
   // });
 
-  // test('save from path', () async {
-  //   initNorthChina();
-  //   LCFile file = await LCFile.fromPath('avatar', './avatar.jpg');
-  //   await file.save();
-  //   print(file.objectId);
-  //   assert(file.objectId != null);
-  // });
+  test('save from path', () async {
+    initNorthChina();
+    LCFile file = await LCFile.fromPath('avatar', './avatar.jpg');
+    await file.save(onProgress: (int count, int total) {
+      print('$count/$total');
+      if (count == total) {
+        print('done');
+      }
+    });
+    print(file.objectId);
+    assert(file.objectId != null);
+  });
 
   // test('save from memory', () async {
   //   initNorthChina();
@@ -45,11 +50,11 @@ void main() {
   //   assert(file.objectId != null);
   // });
 
-  test('aws', () async {
-    initUS();
-    LCFile file = await LCFile.fromPath('avatar', './avatar.jpg');
-    await file.save();
-    print(file.objectId);
-    assert(file.objectId != null);
-  });
+  // test('aws', () async {
+  //   initUS();
+  //   LCFile file = await LCFile.fromPath('avatar', './avatar.jpg');
+  //   await file.save();
+  //   print(file.objectId);
+  //   assert(file.objectId != null);
+  // });
 }
