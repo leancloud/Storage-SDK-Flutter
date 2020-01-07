@@ -1,24 +1,24 @@
 part of leancloud_storage;
 
 class LCAddRelationOperation extends LCOperation {
-  List<LCObject> values;
+  List<LCObject> valueList;
 
   LCAddRelationOperation() {
-    values = new List<LCObject>();
+    valueList = new List<LCObject>();
   }
 
   @override
   apply(oldValue, String key) {
-    List<LCObject> result = oldValue != null ? List.from(oldValue) : new List<LCObject>();
-    result.addAll(values);
-    return result;
+    LCRelation relation = new LCRelation();
+    relation.targetClass = valueList[0].className;
+    return relation;
   }
 
   @override
   encode() {
     return {
       '__op': 'AddRelation',
-      'objects': LCEncoder.encodeList(values.toList())
+      'objects': LCEncoder.encodeList(valueList)
     };
   }
 
@@ -28,11 +28,16 @@ class LCAddRelationOperation extends LCOperation {
       return previousOp;
     }
     if (previousOp is LCAddRelationOperation) {
-      this.values.addAll(previousOp.values);
+      this.valueList.addAll(previousOp.valueList);
       return this;
     }
     // TODO 不支持的类型
     throw new Error();
+  }
+
+  @override
+  List<LCObject> getNewObjectList() {
+    return valueList;
   }
   
 }

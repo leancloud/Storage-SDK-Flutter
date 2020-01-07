@@ -39,5 +39,10 @@ class LCAddOperation extends LCOperation {
 
     throw new Error();
   }
+
+  @override
+  List<LCObject> getNewObjectList() {
+    return valueList;
+  }
   
 }

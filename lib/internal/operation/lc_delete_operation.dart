@@ -16,4 +16,10 @@ class LCDeleteOperation extends LCOperation {
   apply(dynamic oldValue, String key) {
     return null;
   }
+
+  @override
+  List<LCObject> getNewObjectList() {
+    return null;
+  }
+  
 }

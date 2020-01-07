@@ -81,7 +81,8 @@ class LeanCloud {
     _appServer = server;
     _client = new LCHttpClient(appId, appKey, server, HttpVersion);
     // 注册子类化
-    LCObject.registerSubclass<LCFile>('_File', () => new LCFile());
-    LCObject.registerSubclass<LCUser>('_User', () => new LCUser());
+    LCObject.registerSubclass<LCFile>(LCFile.ClassName, () => new LCFile());
+    LCObject.registerSubclass<LCUser>(LCUser.ClassName, () => new LCUser());
+    LCObject.registerSubclass<LCRole>(LCRole.ClassName, () => new LCRole());
   }
 }

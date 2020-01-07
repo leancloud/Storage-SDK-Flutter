@@ -13,12 +13,16 @@ class LCSetOperation extends LCOperation {
 
   @override
   encode() {
-    // TODO: implement encode
-    return null;
+    return LCEncoder.encode(value);
   }
 
   @override
   apply(dynamic oldValue, String key) {
     return value;
+  }
+
+  @override
+  List<LCObject> getNewObjectList() {
+    return List.from(value);
   }
 }

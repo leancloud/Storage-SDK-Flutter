@@ -1,24 +1,24 @@
 part of leancloud_storage;
 
 class LCRemoveRelationOperation extends LCOperation {
-  Set<LCObject> values;
+  List<LCObject> valueList;
 
   LCRemoveRelationOperation() {
-    values = new Set<LCObject>();
+    valueList = new List<LCObject>();
   }
 
   @override
   apply(oldValue, String key) {
-    Set<LCObject> result = Set.from(oldValue);
-    result.removeAll(values);
-    return result;
+    LCRelation relation = new LCRelation();
+    relation.targetClass = valueList[0].className;
+    return relation;
   }
 
   @override
   encode() {
     return {
       '__op': 'RemoveRelation',
-      'objects': LCEncoder.encodeList(values.toList())
+      'objects': LCEncoder.encodeList(valueList.toList())
     };
   }
 
@@ -28,10 +28,15 @@ class LCRemoveRelationOperation extends LCOperation {
       return previousOp;
     }
     if (previousOp is LCRemoveRelationOperation) {
-      this.values.addAll(previousOp.values);
+      valueList.addAll(previousOp.valueList);
       return this;
     }
     // TODO 不支持的类型
+    return null;
+  }
+
+  @override
+  List<LCObject> getNewObjectList() {
     return null;
   }
   

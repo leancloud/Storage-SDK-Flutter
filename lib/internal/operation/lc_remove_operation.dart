@@ -37,5 +37,10 @@ class LCRemoveOperation extends LCOperation {
 
     return null;
   }
+
+  @override
+  List<LCObject> getNewObjectList() {
+    return null;
+  }
   
 }

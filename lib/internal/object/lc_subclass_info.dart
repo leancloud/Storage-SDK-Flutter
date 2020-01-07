@@ -1,9 +1,9 @@
 part of leancloud_storage;
 
-class SubclassInfo {
+class LCSubclassInfo {
   String className;
   Type classType;
   Function constructor;
 
-  SubclassInfo(this.className, this.classType, this.constructor);
+  LCSubclassInfo(this.className, this.classType, this.constructor);
 }

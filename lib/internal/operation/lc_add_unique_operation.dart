@@ -39,5 +39,10 @@ class LCAddUniqueOperation extends LCOperation {
 
     return null;
   }
+
+  @override
+  List<LCObject> getNewObjectList() {
+    return values.toList();
+  }
   
 }

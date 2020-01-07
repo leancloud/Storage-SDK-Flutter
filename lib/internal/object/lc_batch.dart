@@ -1,11 +1,11 @@
 part of leancloud_storage;
 
 /// 对象保存时的辅助批次类
-class Batch {
+class LCBatch {
   /// 包含的对象
   HashSet<LCObject> objects;
 
-  Batch(Iterable<LCObject> objs) {
+  LCBatch(Iterable<LCObject> objs) {
     objects = new HashSet<LCObject>();
     if (objs != null) {
       objs.forEach((item) {
@@ -41,14 +41,17 @@ class Batch {
     return false;
   }
 
-  static Queue<Batch> batchObjects(Iterable<LCObject> objects, bool containSelf) {
-    Queue<Batch> batches = new Queue<Batch>();
+  static Queue<LCBatch> batchObjects(Iterable<LCObject> objects, bool containSelf) {
+    Queue<LCBatch> batches = new Queue<LCBatch>();
     if (containSelf) {
-      batches.addLast(new Batch(objects));
+      batches.addLast(new LCBatch(objects));
     }
     HashSet<Object> deps = new HashSet<Object>();
     objects.forEach((item) {
-      deps.addAll(item._estimatedData.values);
+      Iterable it = item._operationMap.values.map((op) {
+        return op.getNewObjectList();
+      });
+      deps.addAll(it);
     });
     do {
       HashSet<Object> childSet = new HashSet<Object>();
@@ -59,7 +62,9 @@ class Batch {
         } else if (dep is Map) {
           children = dep.values;
         } else if (dep is LCObject && dep.objectId == null) {
-          children = dep._estimatedData.values;
+          children = dep._operationMap.values.map((op) {
+            return op.getNewObjectList();
+          });
         }
         if (children != null) {
           children.forEach((item) {
@@ -71,7 +76,7 @@ class Batch {
         return (item is LCObject) && (item.objectId == null);
       }).cast<LCObject>().toList();
       if (depObjs != null && depObjs.length > 0) {
-        batches.addLast(new Batch(depObjs));
+        batches.addLast(new LCBatch(depObjs));
       }
       deps = childSet;
     } while (deps != null && deps.length > 0);

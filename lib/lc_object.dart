@@ -83,7 +83,7 @@ class LCObject {
 
   void addRelation(String key, LCObject value) {
     LCAddRelationOperation op = new LCAddRelationOperation();
-    op.values.add(value);
+    op.valueList.add(value);
     if (_operationMap.containsKey(key)) {
       LCOperation previousOp = _operationMap[key];
       _operationMap[key] = op.mergeWithPrevious(previousOp);
@@ -95,7 +95,7 @@ class LCObject {
 
   void removeRelation(String key, LCObject value) {
     LCRemoveRelationOperation op = new LCRemoveRelationOperation();
-    op.values.add(value);
+    op.valueList.add(value);
     if (_operationMap.containsKey(key)) {
       LCOperation previousOp = _operationMap[key];
       _operationMap[key] = op.mergeWithPrevious(previousOp);
@@ -141,6 +141,8 @@ class LCObject {
     });
     // 最后重新生成预估数据，用于后续访问和操作
     _rebuildEstimatedData();
+    // 清空操作
+    _operationMap.clear();
   }
 
   Map<String, dynamic> decode(Map<String, dynamic> data) {
@@ -160,9 +162,9 @@ class LCObject {
     return this;
   }
 
-  static Future<void> saveBatches(Queue<Batch> batches) async {
+  static Future<void> saveBatches(Queue<LCBatch> batches) async {
     while (batches.length > 0) {
-      Batch batch = batches.removeLast();
+      LCBatch batch = batches.removeLast();
       List<LCObject> dirtyObjects = batch.objects.where((item) {
         return item.isDirty;
       }).toList();
@@ -214,10 +216,10 @@ class LCObject {
   /// 保存
   Future<LCObject> save() async {
     // 断言没有循环依赖
-    assert(!Batch.hasCircleReference(this, new HashSet<LCObject>()));
+    assert(!LCBatch.hasCircleReference(this, new HashSet<LCObject>()));
 
     // 保存对象依赖
-    Queue<Batch> batches = Batch.batchObjects([this], false);
+    Queue<LCBatch> batches = LCBatch.batchObjects([this], false);
     if (batches.length > 0) {
       await saveBatches(batches);
     }
@@ -235,10 +237,10 @@ class LCObject {
     assert(objectList != null);
     // 断言没有循环依赖
     objectList.forEach((item) {
-      assert(!Batch.hasCircleReference(item, new HashSet<LCObject>()));
+      assert(!LCBatch.hasCircleReference(item, new HashSet<LCObject>()));
     });
 
-    Queue<Batch> batches = Batch.batchObjects(objectList, true);
+    Queue<LCBatch> batches = LCBatch.batchObjects(objectList, true);
     await saveBatches(batches);
     return objectList;
   }
@@ -278,19 +280,19 @@ class LCObject {
 
 
   /// 子类化
-  static Map<Type, SubclassInfo> subclassTypeMap = new Map<Type, SubclassInfo>();
-  static Map<String, SubclassInfo> subclassNameMap = new Map<String, SubclassInfo>();
+  static Map<Type, LCSubclassInfo> subclassTypeMap = new Map<Type, LCSubclassInfo>();
+  static Map<String, LCSubclassInfo> subclassNameMap = new Map<String, LCSubclassInfo>();
 
   /// 注册子类
   static void registerSubclass<T extends LCObject>(String className, Function constructor) {
-    SubclassInfo subclassInfo = new SubclassInfo(className, T, constructor);
+    LCSubclassInfo subclassInfo = new LCSubclassInfo(className, T, constructor);
     subclassTypeMap[T] = subclassInfo;
     subclassNameMap[className] = subclassInfo;
   }
 
   static LCObject create(Type type, { String className }) {
     if (subclassTypeMap.containsKey(type)) {
-      SubclassInfo subclassInfo = subclassTypeMap[type];
+      LCSubclassInfo subclassInfo = subclassTypeMap[type];
       return subclassInfo.constructor();
     }
     return new LCObject(className);
@@ -298,7 +300,7 @@ class LCObject {
 
   static LCObject createByName(String className) {
     if (subclassNameMap.containsKey(className)) {
-      SubclassInfo subclassInfo = subclassNameMap[className];
+      LCSubclassInfo subclassInfo = subclassNameMap[className];
       return subclassInfo.constructor();
     }
     return null;

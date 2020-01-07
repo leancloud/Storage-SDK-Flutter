@@ -2,6 +2,8 @@ part of leancloud_storage;
 
 /// 文件类
 class LCFile extends LCObject {
+  static const String ClassName = '_File';
+
   String get name => this['name'];
 
   set name(String value) => this['name'] = value;
@@ -20,7 +22,7 @@ class LCFile extends LCObject {
 
   Uint8List data;
 
-  LCFile() : super('_File') {
+  LCFile() : super(ClassName) {
     metaData = new Map<String, dynamic>();
   }
 

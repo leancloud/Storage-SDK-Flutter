@@ -2,6 +2,8 @@ part of leancloud_storage;
 
 /// 用户类
 class LCUser extends LCObject {
+  static const String ClassName = '_User';
+
   /// 用户名
   String get username => this['username'];
 
@@ -38,7 +40,7 @@ class LCUser extends LCObject {
 
   bool get isAuthenticated => false;
 
-  LCUser() : super('_User');
+  LCUser() : super(LCUser.ClassName);
 
   /// 注册
   Future<LCUser> signUp() async {
