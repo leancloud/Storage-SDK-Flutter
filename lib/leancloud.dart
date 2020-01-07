@@ -6,11 +6,10 @@ import 'dart:io';
 import 'dart:typed_data';
 import 'dart:math';
 import 'package:dio/dio.dart';
-import 'package:flutter/material.dart';
 
 /// 编解码
-part 'internal/encode/lc_decoder.dart';
-part 'internal/encode/lc_encoder.dart';
+part 'internal/codec/lc_decoder.dart';
+part 'internal/codec/lc_encoder.dart';
 
 /// http
 part 'internal/http/lc_http_client.dart';
