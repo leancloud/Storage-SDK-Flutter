@@ -19,6 +19,11 @@ class LCRelation<T extends LCObject> {
     if (targetClass == null || targetClass.isEmpty) {
       targetClass = object.className;
     }
-    
+  }
+
+  LCQuery<T> query() {
+    LCQuery<T> query = new LCQuery(targetClass);
+    query.whereRelatedTo(parent, key);
+    return query;
   }
 }

@@ -58,7 +58,15 @@ class LCObject {
     return object;
   }
 
-  operator [](String key) => _estimatedData[key];
+  operator [](String key) {
+    dynamic value = _estimatedData[key];
+    if (value is LCRelation) {
+      // 反序列化后的 Relation 字段并不完善
+      value.key = key;
+      value.parent = this;
+    }
+    return value;
+  }
 
   operator []=(String key, dynamic value) {
     // TODO 判断是否是保留字段

@@ -18,7 +18,7 @@ class LCDecoder {
         } else if (type == 'Pointer') {
           // 引用对象
           return decodeNestedObject(data);
-        } else if (type == 'relation') {
+        } else if (type == 'Relation') {
           return decodeRelation(data);
         } else if (type == 'GeoPoint') {
           return decodePoint(data);
@@ -35,9 +35,9 @@ class LCDecoder {
   }
 
   static LCRelation decodeRelation(dynamic data) {
-    // TODO 
-
-    return new LCRelation();
+    LCRelation relation = new LCRelation();
+    relation.targetClass = data['className'];
+    return relation;
   }
 
   /// 解码对象
