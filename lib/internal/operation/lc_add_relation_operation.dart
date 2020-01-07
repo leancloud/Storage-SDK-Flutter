@@ -31,12 +31,11 @@ class LCAddRelationOperation extends LCOperation {
       this.valueList.addAll(previousOp.valueList);
       return this;
     }
-    // TODO 不支持的类型
     throw new Error();
   }
 
   @override
-  List<LCObject> getNewObjectList() {
+  List getNewObjectList() {
     return valueList;
   }
   

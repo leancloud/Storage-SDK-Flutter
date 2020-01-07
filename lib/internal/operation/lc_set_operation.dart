@@ -22,7 +22,10 @@ class LCSetOperation extends LCOperation {
   }
 
   @override
-  List<LCObject> getNewObjectList() {
-    return List.from(value);
+  List getNewObjectList() {
+    if (value is List) {
+      return List.from(value);
+    }
+    return [value];
   }
 }

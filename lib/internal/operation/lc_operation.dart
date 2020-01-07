@@ -11,5 +11,5 @@ abstract class LCOperation {
   dynamic apply(dynamic oldValue, String key);
 
   // 得到增加的对象
-  List<LCObject> getNewObjectList();
+  List getNewObjectList();
 }

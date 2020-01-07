@@ -33,7 +33,7 @@ class LCDecrementOperation extends LCOperation {
   }
 
   @override
-  List<LCObject> getNewObjectList() {
+  List getNewObjectList() {
     return null;
   }
   

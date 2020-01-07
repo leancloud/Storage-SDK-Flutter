@@ -173,4 +173,8 @@ class LCUser extends LCObject {
     currentUser._merge(objectData);
     return currentUser;
   }
+
+  static LCQuery<LCUser> getQuery() {
+    return new LCQuery<LCUser>(ClassName);
+  }
 }
