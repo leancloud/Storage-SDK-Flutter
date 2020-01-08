@@ -154,11 +154,18 @@ void main() {
   //   await LCUser.currentUser.disassociateWithAuthData('weixin');
   // });
 
-  test('is authenticated', () async {
+  // test('is authenticated', () async {
+  //   initNorthChina();
+  //   await LCUser.login('hello', 'world');
+  //   bool isAuthenticated = await LCUser.currentUser.isAuthenticated();
+  //   print(isAuthenticated);
+  //   assert(isAuthenticated);
+  // });
+
+  test('update password', () async {
     initNorthChina();
     await LCUser.login('hello', 'world');
-    bool isAuthenticated = await LCUser.currentUser.isAuthenticated();
-    print(isAuthenticated);
-    assert(isAuthenticated);
+    await LCUser.currentUser.updatePassword('world', 'newWorld');
+    await LCUser.currentUser.updatePassword('newWorld', 'world');
   });
 }

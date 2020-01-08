@@ -271,6 +271,17 @@ class LCUser extends LCObject {
     await LeanCloud._client.send(request);
   }
 
+  /// 更新密码
+  Future<void> updatePassword(String oldPassword, String newPassword) async {
+    LCHttpRequest request = LCHttpRequest.createPutRequest('users/$objectId/updatePassword', data: {
+      'old_password': oldPassword,
+      'new_password': newPassword
+    });
+    Map<String, dynamic> response = await LeanCloud._client.send<Map<String, dynamic>>(request);
+    LCObjectData objectData = LCObjectData.decode(response);
+    _merge(objectData);
+  }
+
   /// 注销登录
   static void logout() {
     currentUser = null;
