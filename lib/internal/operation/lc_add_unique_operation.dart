@@ -9,8 +9,8 @@ class LCAddUniqueOperation extends LCOperation {
 
   @override
   apply(oldValue, String key) {
-    List result = List.from(oldValue);
-    result.addAll(values);
+    Set result = Set.from(oldValue);
+    result = result.union(values);
     return result;
   }
 
@@ -27,12 +27,8 @@ class LCAddUniqueOperation extends LCOperation {
     if (previousOp is LCSetOperation || previousOp is LCDeleteOperation) {
       return previousOp;
     }
-    if (previousOp is LCAddOperation) {
-      previousOp.valueList.addAll(values);
-      return previousOp;
-    }
     if (previousOp is LCAddUniqueOperation) {
-      values.addAll(previousOp.values);
+      values = values.union(previousOp.values);
       return this;
     }
     // TODO 不支持的类型

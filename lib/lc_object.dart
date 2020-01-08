@@ -244,13 +244,49 @@ class LCObject {
     return this;
   }
 
+  /// 增加数字属性值
   void increment(String key, num amount) {
     LCIncrementOperation op = new LCIncrementOperation(amount);
     _applyOperation(key, op);
   }
 
+  /// 减少数字属性值
   void decrement(String key, num amount) {
     LCDecrementOperation op = new LCDecrementOperation(amount);
+    _applyOperation(key, op);
+  }
+
+  /// 在数组属性中增加一个元素
+  void add(String key, dynamic value) {
+    LCAddOperation op = new LCAddOperation([value]);
+    _applyOperation(key, op);
+  }
+
+  /// 在数组属性中增加一组元素
+  void addAll(String key, Iterable values) {
+    LCAddOperation op = new LCAddOperation(values);
+    _applyOperation(key, op);
+  }
+
+  /// 在数组属性中增加一个唯一元素
+  void addUnique(String key, dynamic value) {
+    LCAddUniqueOperation op = new LCAddUniqueOperation([value]);
+    _applyOperation(key, op);
+  }
+
+  /// 在数组属性中增加一组唯一元素
+  void addAllUnique(String key, Iterable values) {
+    LCAddUniqueOperation op = new LCAddUniqueOperation(values);
+    _applyOperation(key, op);
+  }
+
+  void remove(String key, dynamic value) {
+    LCRemoveOperation op = new LCRemoveOperation([value]);
+    _applyOperation(key, op);
+  }
+
+  void removeAll(String key, Iterable values) {
+    LCRemoveOperation op = new LCRemoveOperation(values);
     _applyOperation(key, op);
   }
 
