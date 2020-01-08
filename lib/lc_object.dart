@@ -71,12 +71,6 @@ class LCObject {
     // TODO 判断是否是保留字段
 
     LCSetOperation op = new LCSetOperation(value);
-    if (_operationMap.containsKey(key)) {
-      LCOperation previousOp = _operationMap[key];
-      _operationMap[key] = op.mergeWithPrevious(previousOp);
-    } else {
-      _operationMap[key] = op;
-    }
     _applyOperation(key, op);
   }
 
@@ -119,6 +113,12 @@ class LCObject {
   }
 
   void _applyOperation(String key, LCOperation op) {
+    if (_operationMap.containsKey(key)) {
+      LCOperation previousOp = _operationMap[key];
+      _operationMap[key] = op.mergeWithPrevious(previousOp);
+    } else {
+      _operationMap[key] = op;
+    }
     // TODO 针对不同的操作做修改
     if (op is LCDeleteOperation) {
       _estimatedData.remove(key);
@@ -242,6 +242,16 @@ class LCObject {
     LCObjectData data = LCObjectData.decode(response);
     _merge(data);
     return this;
+  }
+
+  void increment(String key, num amount) {
+    LCIncrementOperation op = new LCIncrementOperation(amount);
+    _applyOperation(key, op);
+  }
+
+  void decrement(String key, num amount) {
+    LCDecrementOperation op = new LCDecrementOperation(amount);
+    _applyOperation(key, op);
   }
 
   /// 批量保存
