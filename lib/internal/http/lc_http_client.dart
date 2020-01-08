@@ -15,7 +15,9 @@ class LCHttpClient {
     HttpClient client = new HttpClient();
     print(authority);
     print(request.path);
-    Uri uri = new Uri.https(authority, '/$version/${request.path}', request.queryParams);
+    Uri uri = new Uri.https(authority, '/$version/${request.path}', request.queryParams.map((key, value) {
+      return new MapEntry(key.toString(), value.toString());
+    }));
     HttpClientRequest req;
     switch (request.method) {
       case LCHttpRequestMethod.get:

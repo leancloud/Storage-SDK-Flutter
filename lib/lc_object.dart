@@ -35,10 +35,9 @@ class LCObject {
 
   set acl(LCACL value) => this[ACLKey] = value;
 
-  /// TODO 还需要增加「新建对象」的情况
-  bool get isDirty => isNew || _estimatedData.length > 0;
+  bool get isDirty => _isNew || _estimatedData.length > 0;
 
-  bool isNew;
+  bool _isNew;
 
   LCObject(String className) {
     assert(className != null && className.length > 0);
@@ -47,14 +46,14 @@ class LCObject {
     _operationMap = new Map<String, LCOperation>();
     
     _data.className = className;
-    isNew = true;
+    _isNew = true;
   }
 
   static LCObject createWithoutData(String className, String objectId) {
     LCObject object = new LCObject(className);
     assert(objectId != null && objectId.length > 0);
     object._data.objectId = objectId;
-    object.isNew = false;
+    object._isNew = false;
     return object;
   }
 
@@ -143,6 +142,7 @@ class LCObject {
     _rebuildEstimatedData();
     // 清空操作
     _operationMap.clear();
+    _isNew = false;
   }
 
   Map<String, dynamic> decode(Map<String, dynamic> data) {
@@ -158,7 +158,19 @@ class LCObject {
   }
 
   /// 拉取
-  Future<LCObject> fetch() async {
+  Future<LCObject> fetch({ Iterable<String> keys, Iterable<String> includes }) async {
+    Map<String, dynamic> queryParams = {};
+    if (keys != null) {
+      queryParams['keys'] = keys.join(',');
+    }
+    if (includes != null) {
+      queryParams['include'] = includes.join(',');
+    }
+    String path = 'classes/$className/$objectId';
+    LCHttpRequest request = LCHttpRequest.createGetRequest(path, queryParams: queryParams);
+    Map<String, dynamic> response = await LeanCloud._client.send<Map<String, dynamic>>(request);
+    LCObjectData objectData = LCObjectData.decode(response);
+    _merge(objectData);
     return this;
   }
 
@@ -303,6 +315,6 @@ class LCObject {
       LCSubclassInfo subclassInfo = subclassNameMap[className];
       return subclassInfo.constructor();
     }
-    return null;
+    return new LCObject(className);
   }
 }
