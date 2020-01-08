@@ -32,7 +32,23 @@ void main() {
   //   // print(result.objectId);
   // });
 
-  test('role read and write', () async {
+  // test('role read and write', () async {
+  //   initNorthChina();
+  //   LCQuery<LCRole> query = LCRole.getQuery();
+  //   LCRole owner = await query.get('5e1440cbfc36ed006add1b8d');
+  //   LCObject account = new LCObject('Account');
+  //   LCACL acl = new LCACL();
+  //   acl.setRoleReadAccess(owner, true);
+  //   acl.setRoleWriteAccess(owner, true);
+  //   account.acl = acl;
+  //   await account.save();
+  // });
 
+  test('query', () async {
+    initNorthChina();
+    await LCUser.login('game', 'play');
+    LCQuery<LCObject> query = new LCQuery<LCObject>('Account');
+    LCObject account = await query.get('5e144525dd3c13006a8f8de2');
+    print(account.objectId);
   });
 }

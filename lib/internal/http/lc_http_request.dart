@@ -34,4 +34,16 @@ class LCHttpRequest {
       headers['X-LC-Session'] = LCUser.currentUser.sessionToken;
     }
   }
+
+  static LCHttpRequest createGetRequest(String path, { Map<String, String> headers, Map<String, dynamic> queryParams }) {
+    return new LCHttpRequest(path, LCHttpRequestMethod.get, headers: headers, queryParams: queryParams);
+  }
+
+  static LCHttpRequest createPostRequest(String path, { Map<String, String> headers, Map<String, dynamic> data }) {
+    return new LCHttpRequest(path, LCHttpRequestMethod.post, headers: headers, data: data);
+  }
+
+  static LCHttpRequest createPutRequest(String path, { Map<String, String> headers, Map<String, dynamic> data }) {
+    return new LCHttpRequest(path, LCHttpRequestMethod.put, headers: headers, data: data);
+  }
 }

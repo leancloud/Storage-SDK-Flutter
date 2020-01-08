@@ -69,10 +69,12 @@ class LCFile extends LCObject {
         // AWS
         AWSUploader uploader = new AWSUploader(uploadUrl, mimeType, data);
         await uploader.upload(onProgress);
-      } else {
+      } else if (provider == 'qiniu') {
         // Qiniu
         QiniuUploader uploader = new QiniuUploader(uploadUrl, token, key, data);
         await uploader.upload(onProgress);
+      } else {
+        throw new Error();
       }
       LCObjectData objectData = LCObjectData.decode(uploadToken);
       super._merge(objectData);
