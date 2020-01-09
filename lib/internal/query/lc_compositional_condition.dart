@@ -91,16 +91,6 @@ class _CompositionalCondition extends _QueryCondition {
     add(new _RelatedCondition(parent, key));
   }
 
-  void whereMatchesKeyInQuery<T extends LCObject>(String key, String keyInQuery, LCQuery<T> query) {
-    // TODO
-
-  }
-
-  void whereDoesNotMatchQuery<T extends LCObject>(String key, String keyInQuery, LCQuery<T> query) {
-    // TODO
-
-  }
-
   void whereStartsWith(String key, String prefix) {
     addCondition(key, '\$regex', '^$prefix');
   }

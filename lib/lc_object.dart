@@ -62,8 +62,15 @@ class LCObject {
   }
 
   operator []=(String key, dynamic value) {
-    // TODO 判断是否是保留字段
-
+    if (isNullOrEmpty(key)) {
+      throw ArgumentError.notNull(key);
+    }
+    if (key.startsWith('_')) {
+      throw new ArgumentError('key should not start with \'_\'');
+    }
+    if (key == 'objectId' || key == 'createdAt' || key == 'updatedAt') {
+      throw new ArgumentError('$key is reserved by LeanCloud');
+    }
     LCSetOperation op = new LCSetOperation(value);
     _applyOperation(key, op);
   }
@@ -161,7 +168,6 @@ class LCObject {
     } else {
       _operationMap[key] = op;
     }
-    // TODO 针对不同的操作做修改
     if (op is LCDeleteOperation) {
       _estimatedData.remove(key);
     } else {
@@ -229,21 +235,16 @@ class LCObject {
         'requests': LCEncoder.encodeList(requestList)
       };
       List results = await LeanCloud._httpClient.post('batch', data: data);
-      List<LCObjectData> objectDataList = new List<LCObjectData>();
-      results.forEach((item) {
-        if (item.containsKey('success')) {
-          objectDataList.add(LCObjectData.decode(item['success']));
-        } else {
-          // TODO 保存错误
-
+      // 反序列化为 Object 数据
+      List<LCObjectData> resultList = results.map((item) {
+        if (item.containsKey('error')) {
+          throw new Error();
         }
-      });
-
-      // 刷新数据
-      assert(dirtyObjects.length == objectDataList.length);
+        return LCObjectData.decode(item['success']);
+      }).toList();
       for (int i = 0; i < dirtyObjects.length; i++) {
         LCObject object = dirtyObjects[i];
-        LCObjectData objectData = objectDataList[i];
+        LCObjectData objectData = resultList[i];
         object._merge(objectData);
       }
     }

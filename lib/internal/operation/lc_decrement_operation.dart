@@ -27,9 +27,7 @@ class LCDecrementOperation extends LCOperation {
       value += previousOp.value;
       return this;
     }
-    // TODO 不支持的类型
-
-    return null;
+    throw new ArgumentError('Operation is invalid after previous operation.');
   }
 
   @override

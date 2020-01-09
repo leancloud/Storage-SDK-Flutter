@@ -69,19 +69,19 @@ const String HttpVersion = '1.1';
 
 /// SDK 入口
 class LeanCloud {
-  static String _appId;
+  // static String _appId;
 
-  static String _appKey;
+  // static String _appKey;
 
-  static String _appServer;
+  // static String _appServer;
 
   static LCHttpClient _httpClient;
 
   /// 初始化
   static void initialize(String appId, String appKey, String server) {
-    _appId = appId;
-    _appKey = appKey;
-    _appServer = server;
+    // _appId = appId;
+    // _appKey = appKey;
+    // _appServer = server;
     _httpClient = new LCHttpClient(appId, appKey, server, HttpVersion);
     // 注册子类化
     LCObject.registerSubclass<LCFile>(LCFile.ClassName, () => new LCFile());

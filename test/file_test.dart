@@ -28,15 +28,15 @@ void main() {
     assert(file.objectId != null);
   });
 
-  // test('save from memory', () async {
-  //   initNorthChina();
-  //   String text = 'hello, world';
-  //   Uint8List data = utf8.encode(text);
-  //   LCFile file = LCFile.fromBytes('text', data);
-  //   await file.save();
-  //   print(file.objectId);
-  //   assert(file.objectId != null);
-  // });
+  test('save from memory', () async {
+    initNorthChina();
+    String text = 'hello, world';
+    Uint8List data = utf8.encode(text);
+    LCFile file = LCFile.fromBytes('text', data);
+    await file.save();
+    print(file.objectId);
+    assert(file.objectId != null);
+  });
 
   // test('save from url', () async {
   //   initNorthChina();

@@ -1,7 +1,7 @@
 part of leancloud_storage;
 
 /// 错误类
-class LCError {
+class LCError extends Error {
   int code;
 
   String message;

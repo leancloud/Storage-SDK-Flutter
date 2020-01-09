@@ -31,7 +31,7 @@ class LCAddRelationOperation extends LCOperation {
       this.valueList.addAll(previousOp.valueList);
       return this;
     }
-    throw new Error();
+    throw new ArgumentError('Operation is invalid after previous operation.');
   }
 
   @override

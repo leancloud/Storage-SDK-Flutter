@@ -35,7 +35,7 @@ class LCAddOperation extends LCOperation {
       valueList.addAll(previousOp.values);
       return this;
     }
-    throw new Error();
+    throw new ArgumentError('Operation is invalid after previous operation.');
   }
 
   @override
