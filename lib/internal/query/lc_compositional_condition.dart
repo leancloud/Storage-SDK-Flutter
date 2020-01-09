@@ -156,7 +156,7 @@ class _CompositionalCondition extends _QueryCondition {
     };
   }
 
-  Map<String, dynamic> buildParams(String className) {
+  Map<String, dynamic> _buildParams(String className) {
     Map<String, dynamic> result = {
       'className': className
     };
@@ -175,5 +175,12 @@ class _CompositionalCondition extends _QueryCondition {
     result['skip'] = skip;
     result['limit'] = limit;
     return result;
+  }
+
+  String _buildWhere() {
+    if (conditionList != null && conditionList.length > 0) {
+      return jsonEncode(toMap());
+    }
+    return null;
   }
 }

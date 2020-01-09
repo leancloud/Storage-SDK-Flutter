@@ -219,6 +219,10 @@ class LCQuery<T extends LCObject> {
   }
 
   Map<String, dynamic> _buildParams() {
-    return condition.buildParams(className);
+    return condition._buildParams(className);
+  }
+
+  String _buildWhere() {
+    return condition._buildWhere();
   }
 }

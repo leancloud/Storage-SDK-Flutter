@@ -270,7 +270,7 @@ class LCObject {
       queryParams['fetchWhenSave'] = true;
     }
     if (query != null) {
-      queryParams['where'] = query._buildParams();
+      queryParams['where'] = query._buildWhere();
     }
     Map response = objectId == null ? 
       await LeanCloud._httpClient.post(path, data: LCEncoder.encode(_operationMap), queryParams: queryParams) :

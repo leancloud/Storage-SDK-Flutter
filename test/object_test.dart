@@ -88,7 +88,7 @@ void main() {
     LCObject account = await query.get('5e154a5143c257006fbff63f');
     account['balance'] = 300;
     LCQuery<LCObject> q = new LCQuery('Account');
-    q.whereEqualTo('balance', 100);
+    q.whereGreaterThan('balance', 100);
     try {
       await account.save(fetchWhenSave: true, query: q);
     } on LCError catch (e) {
