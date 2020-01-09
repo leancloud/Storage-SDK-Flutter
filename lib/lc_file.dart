@@ -67,7 +67,8 @@ class LCFile extends LCObject {
   }
 
   /// 保存
-  Future<LCFile> save({ void Function(int count, int total) onProgress }) async {
+  @override
+  Future<LCFile> save({ bool fetchWhenSave = false, LCQuery<LCObject> query, void Function(int count, int total) onProgress }) async {
     if (url != null) {
       // 外链方式
       await super.save();

@@ -251,7 +251,7 @@ class LCObject {
   }
 
   /// 保存
-  Future<LCObject> save() async {
+  Future<LCObject> save({ bool fetchWhenSave = false, LCQuery<LCObject> query }) async {
     // 检测循环依赖
     if (LCBatch.hasCircleReference(this, new HashSet<LCObject>())) {
       throw new ArgumentError('Found a circle dependency when save.');
@@ -265,9 +265,16 @@ class LCObject {
 
     // 保存对象本身
     String path = objectId == null ? 'classes/$className' : 'classes/$className/$objectId';
+    Map<String, dynamic> queryParams = {};
+    if (fetchWhenSave) {
+      queryParams['fetchWhenSave'] = true;
+    }
+    if (query != null) {
+      queryParams['where'] = query._buildParams();
+    }
     Map response = objectId == null ? 
-      await LeanCloud._httpClient.post(path, data: LCEncoder.encode(_operationMap)) :
-      await LeanCloud._httpClient.put(path, data: LCEncoder.encode(_operationMap));
+      await LeanCloud._httpClient.post(path, data: LCEncoder.encode(_operationMap), queryParams: queryParams) :
+      await LeanCloud._httpClient.put(path, data: LCEncoder.encode(_operationMap), queryParams: queryParams);
     LCObjectData data = LCObjectData.decode(response);
     _merge(data);
     return this;

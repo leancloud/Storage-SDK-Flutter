@@ -18,30 +18,42 @@ class LCHttpClient {
 
   Future get(String path, { Map<String, dynamic> headers, Map<String, dynamic> queryParams }) async {
     Options options = _toOptions(headers);
-    Response response = await _dio.get(path, options: options, queryParameters: queryParams);
-    _filterError(response);
-    return response.data;
+    try {
+      Response response = await _dio.get(path, options: options, queryParameters: queryParams);
+      return response.data;
+    } on DioError catch (e) {
+      _handleError(e);
+    }
   }
 
   Future post(String path, { Map<String, dynamic> headers, dynamic data, Map<String, dynamic> queryParams }) async {
     Options options = _toOptions(headers);
-    Response response = await _dio.post(path, options: options, data: data, queryParameters: queryParams);
-    _filterError(response);
-    return response.data;
+    try {
+      Response response = await _dio.post(path, options: options, data: data, queryParameters: queryParams);
+      return response.data;
+    } on DioError catch (e) {
+      _handleError(e);
+    }
   }
 
   Future put(String path, { Map<String, dynamic> headers, dynamic data, Map<String, dynamic> queryParams }) async {
     Options options = _toOptions(headers);
-    Response response = await _dio.put(path, options: options, data: data, queryParameters: queryParams);
-    _filterError(response);
-    return response.data;
+    try {
+      Response response = await _dio.put(path, options: options, data: data, queryParameters: queryParams);
+      return response.data;
+    } on DioError catch (e) {
+      _handleError(e);
+    }
   }
 
   Future delete(String path, { Map<String, dynamic> headers, dynamic data, Map<String, dynamic> queryParams }) async {
     Options options = _toOptions(headers);
-    Response response = await _dio.delete(path, options: options, data: data, queryParameters: queryParams);
-    _filterError(response);
-    return response.data;
+    try {
+      Response response = await _dio.delete(path, options: options, data: data, queryParameters: queryParams);
+      return response.data;
+    } on DioError catch (e) {
+      _handleError(e);
+    }
   }
 
   Options _toOptions(Map<String, dynamic> headers) {    
@@ -56,11 +68,9 @@ class LCHttpClient {
     return new Options(headers: headers);
   }
 
-  void _filterError(Response response) {
+  void _handleError(DioError e) {
+    Response response = e.response;
     int code = response.statusCode ~/ 100;
-    if (code == 2) {
-      return;
-    }
     if (code == 4) {
       int code = response.data['code'];
       String message = response.data['error'];
