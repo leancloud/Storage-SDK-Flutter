@@ -30,6 +30,9 @@ class LCEncoder {
     if (object is LCRelation) {
       return encodeRelation(object);
     }
+    if (object is LCGeoPoint) {
+      return encodeGeoPoint(object);
+    }
     return object;
   }
 
@@ -91,6 +94,17 @@ class LCEncoder {
   }
 
   static dynamic encodeRelation(LCRelation relation) {
+    return {
+      '__type': 'Relation',
+      'className': relation.targetClass
+    };
+  }
 
+  static dynamic encodeGeoPoint(LCGeoPoint point) {
+    return {
+      '__type': 'GeoPoint',
+      'latitude': point.latitude,
+      'longitude': point.longitude
+    };
   }
 }
