@@ -167,8 +167,7 @@ class LCObject {
       queryParams['include'] = includes.join(',');
     }
     String path = 'classes/$className/$objectId';
-    LCHttpRequest request = LCHttpRequest.createGetRequest(path, queryParams: queryParams);
-    Map<String, dynamic> response = await LeanCloud._client.send<Map<String, dynamic>>(request);
+    Map response = await LeanCloud._httpClient.get(path, queryParams: queryParams);
     LCObjectData objectData = LCObjectData.decode(response);
     _merge(objectData);
     return this;
@@ -182,17 +181,24 @@ class LCObject {
       }).toList();
 
       // 生成请求列表
-      List<LCHttpRequest> requestList = new List<LCHttpRequest>();
-      dirtyObjects.forEach((item) {
-        requestList.add(item.getBatchRequest());
-      });
+      List requestList = dirtyObjects.map((item) {
+        String path = item.objectId == null ? 
+          'classes/${item.className}' : 'classes/${item.className}/${item.objectId}';
+        String method = item.objectId == null ?
+          'POST' : 'PUT';
+        Map body = LCEncoder.encode(item._operationMap);
+        return {
+          'path': path,
+          'method': method,
+          'body': body
+        };
+      }).toList();
 
       // 发送请求
       Map<String, dynamic> data = {
         'requests': LCEncoder.encodeList(requestList)
       };
-      LCHttpRequest request = new LCHttpRequest('batch', LCHttpRequestMethod.post, data: data);
-      List<dynamic> results = await LeanCloud._client.send<List<dynamic>>(request);
+      List results = await LeanCloud._httpClient.post('batch', data: data);
       List<LCObjectData> objectDataList = new List<LCObjectData>();
       results.forEach((item) {
         if (item.containsKey('success')) {
@@ -213,18 +219,6 @@ class LCObject {
     }
   }
 
-  LCHttpRequest getRequest() {
-    var path = objectId == null ? 'classes/$className' : 'classes/$className/$objectId';
-    var method = objectId == null ? LCHttpRequestMethod.post : LCHttpRequestMethod.put;
-    return new LCHttpRequest(path, method, data: LCEncoder.encode(_operationMap));
-  }
-
-  LCHttpRequest getBatchRequest() {
-    var path = objectId == null ? '/1.1/classes/$className' : '/1.1/classes/$className/$objectId';
-    var method = objectId == null ? LCHttpRequestMethod.post : LCHttpRequestMethod.put;
-    return new LCHttpRequest(path, method, data: LCEncoder.encode(_operationMap));
-  }
-
   /// 保存
   Future<LCObject> save() async {
     // 断言没有循环依赖
@@ -237,8 +231,10 @@ class LCObject {
     }
 
     // 保存对象本身
-    LCHttpRequest request = getRequest();
-    Map<String, dynamic> response = await LeanCloud._client.send<Map<String, dynamic>>(request);
+    String path = objectId == null ? 'classes/$className' : 'classes/$className/$objectId';
+    Map response = objectId == null ? 
+      await LeanCloud._httpClient.post(path, data: LCEncoder.encode(_operationMap)) :
+      await LeanCloud._httpClient.put(path, data: LCEncoder.encode(_operationMap));
     LCObjectData data = LCObjectData.decode(response);
     _merge(data);
     return this;
@@ -304,36 +300,35 @@ class LCObject {
   }
 
   /// 删除
-  Future<void> delete() async {
+  Future delete() async {
     if (objectId == null) {
       return;
     }
     String path = 'classes/$className/$objectId';
-    String method = LCHttpRequestMethod.delete;
-    LCHttpRequest request = new LCHttpRequest(path, method);
-    await LeanCloud._client.send(request);
+    await LeanCloud._httpClient.delete(path);
   }
 
   /// 批量删除
-  static Future<void> deleteAll(List<LCObject> objectList) async {
+  static Future deleteAll(List<LCObject> objectList) async {
     if (objectList == null || objectList.length == 0) {
       return;
     }
     Set<LCObject> objects = objectList.where((item) {
       return item.objectId != null;
     }).toSet();
-    List<LCHttpRequest> requests = objects.map((item) {
+    List requestList = objects.map((item) {
       String path = 'classes/${item.className}/${item.objectId}';
-      String method = LCHttpRequestMethod.delete;
-      return new LCHttpRequest(path, method);
+      return {
+        'path': path,
+        'method': 'DELETE'
+      };
     }).toList();
     
     // 发送请求
     Map<String, dynamic> data = {
-      'requests': LCEncoder.encodeList(requests)
+      'requests': LCEncoder.encodeList(requestList)
     };
-    LCHttpRequest request = new LCHttpRequest('batch', LCHttpRequestMethod.post, data: data);
-    await LeanCloud._client.send<List<dynamic>>(request);
+    await LeanCloud._httpClient.post('batch', data: data);
   }
 
 

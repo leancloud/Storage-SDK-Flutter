@@ -1,66 +1,58 @@
 part of leancloud_storage;
 
 class LCHttpClient {
-  static const MediaType = 'application/json';
+  static const Version = '1.1';
+  static const MediaType = '';
 
   String appId;
   String appKey;
-  String authority;
+  String server;
   String version;
-  
-  LCHttpClient(this.appId, this.appKey, this.authority, this.version);
 
-  /// 发送 http 请求
-  Future<T> send<T>(LCHttpRequest request) async {
-    HttpClient client = new HttpClient();
-    print(authority);
-    print(request.path);
-    Uri uri = new Uri.https(authority, '/$version/${request.path}', request.queryParams?.map((key, value) {
-      return new MapEntry(key.toString(), value.toString());
-    }));
-    HttpClientRequest req;
-    switch (request.method) {
-      case LCHttpRequestMethod.get:
-        req = await client.getUrl(uri);
-      break;
-      case LCHttpRequestMethod.post:
-        req = await client.postUrl(uri);
-      break;
-      case LCHttpRequestMethod.put:
-        req = await client.putUrl(uri);
-      break;
-      case LCHttpRequestMethod.delete:
-        req = await client.deleteUrl(uri);
-      break;
-      default:
-      break;
-    }
-    req.headers
-      ..add('X-LC-Id', appId)
-      ..add('X-LC-Key', appKey)
-      ..add('Content-Type', MediaType);
-    print('=== Http Request Start ===');
-    print('URL: ${req.uri}');
-    print('Method: ${req.method}');
-    if (request.headers != null) {
-      request.headers.forEach((String key, String value) {
-        req.headers.add(key, value);
+  Dio _dio;
+  
+  LCHttpClient(this.appId, this.appKey, this.server, this.version) {
+    // TODO 参数合法性
+
+    BaseOptions options = new BaseOptions(
+      baseUrl: '$server/$Version/', 
+      headers: {
+        'X-LC-Id': appId,
+        'X-LC-Key': appKey,
+        'Content-Type': ContentType.parse(MediaType)
       });
+    _dio = new Dio(options);
+    _dio.interceptors.add(new LogInterceptor(requestBody: true, responseBody: true));
+  }
+
+  Future get(String path, { Map<String, dynamic> headers, Map<String, dynamic> queryParams }) async {
+    Options options = _toOptions(headers);
+    Response response = await _dio.get(path, options: options, queryParameters: queryParams);
+    return response.data;
+  }
+
+  Future post(String path, { Map<String, dynamic> headers, Map<String, dynamic> data, Map<String, dynamic> queryParams }) async {
+    Options options = _toOptions(headers);
+    Response response = await _dio.post(path, options: options, data: data, queryParameters: queryParams);
+    return response.data;
+  }
+
+  Future put(String path, { Map<String, dynamic> headers, Map<String, dynamic> data, Map<String, dynamic> queryParams }) async {
+    Options options = _toOptions(headers);
+    Response response = await _dio.put(path, options: options, data: data, queryParameters: queryParams);
+    return response.data;
+  }
+
+  Future delete(String path, { Map<String, dynamic> headers, Map<String, dynamic> data, Map<String, dynamic> queryParams }) async {
+    Options options = _toOptions(headers);
+    Response response = await _dio.delete(path, options: options, data: data, queryParameters: queryParams);
+    return response.data;
+  }
+
+  Options _toOptions(Map<String, dynamic> headers) {
+    if (headers == null) {
+      return null;
     }
-    print('Headers: ${req.headers}');
-    if (request.data != null) {
-      String content = jsonEncode(LCEncoder.encodeMap(request.data));
-      print(content);
-      req.write(content);
-    }
-    print('=== Http Request End =====');
-    HttpClientResponse response = await req.close();
-    String body = await response.transform(utf8.decoder).join();
-    T result = jsonDecode(body);
-    print('=== Http Response Start ===');
-    print('Status Code: ${response.statusCode}');
-    print('Content: $result');
-    print('=== Http Response End =====');
-    return result;
+    return new Options(headers: headers);
   }
 }

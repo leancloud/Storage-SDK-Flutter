@@ -57,10 +57,7 @@ class LCUser extends LCObject {
     if (objectId != null) {
       throw new Error();
     }
-    LCHttpRequest request = getRequest();
-    Map<String, dynamic> response = await LeanCloud._client.send<Map<String, dynamic>>(request);
-    LCObjectData data = LCObjectData.decode(response);
-    _merge(data);
+    await super.save();
     currentUser = this;
     return this;
   }
@@ -75,17 +72,15 @@ class LCUser extends LCObject {
     if (validateToken != null) {
       data['validate_token'] = validateToken;
     }
-    LCHttpRequest request = new LCHttpRequest('requestLoginSmsCode', LCHttpRequestMethod.post, data: data);
-    await LeanCloud._client.send(request);
+    await LeanCloud._httpClient.post('requestLoginSmsCode', data: data);
   }
 
   /// 以手机号和验证码登录或注册并登录
   static Future<LCUser> signUpOrLoginByMobilePhone(String mobile, String code) async {
-    LCHttpRequest request = LCHttpRequest.createPostRequest('usersByMobilePhone', data: {
+    Map response = await LeanCloud._httpClient.post('usersByMobilePhone', data: {
       'mobilePhoneNumber': mobile,
       'smsCode': code
     });
-    Map<String, dynamic> response = await LeanCloud._client.send<Map<String, dynamic>>(request);
     LCObjectData objectData = LCObjectData.decode(response);
     currentUser = new LCUser();
     currentUser._merge(objectData);
@@ -156,10 +151,9 @@ class LCUser extends LCObject {
       authType: data
     };
     String path = failOnNotExist ? 'users?failOnNotExist=true' : 'users';
-    LCHttpRequest request = LCHttpRequest.createPostRequest(path, data: {
+    Map response = await LeanCloud._httpClient.post(path, data: {
       'authData': authData
     });
-    Map<String, dynamic> response = await LeanCloud._client.send<Map<String, dynamic>>(request);
     LCObjectData objectData = LCObjectData.decode(response);
     currentUser = new LCUser();
     currentUser._merge(objectData);
@@ -210,8 +204,7 @@ class LCUser extends LCObject {
     Map<String, dynamic> data = {
       'email': email
     };
-    LCHttpRequest request = new LCHttpRequest('requestEmailVerify', LCHttpRequestMethod.post, data: data);
-    await LeanCloud._client.send(request);
+    await LeanCloud._httpClient.post('requestEmailVerify', data: data);
   }
 
   /// 请求手机验证码
@@ -219,8 +212,7 @@ class LCUser extends LCObject {
     Map<String, dynamic> data = {
       'mobilePhoneNumber': mobile
     };
-    LCHttpRequest request = new LCHttpRequest('requestMobilePhoneVerify', LCHttpRequestMethod.post, data: data);
-    await LeanCloud._client.send(request);
+    await LeanCloud._httpClient.post('requestMobilePhoneVerify', data: data);
   }
 
   /// 验证手机号
@@ -229,8 +221,7 @@ class LCUser extends LCObject {
     Map<String, dynamic> data = {
       'mobilePhoneNumber': mobile
     };
-    LCHttpRequest request = new LCHttpRequest(path, LCHttpRequestMethod.post, data: data);
-    await LeanCloud._client.send(request);
+    await LeanCloud._httpClient.post(path, data: data);
   }
 
   /// 设置当前用户
@@ -238,8 +229,7 @@ class LCUser extends LCObject {
     Map<String, String> headers = {
       'X-LC-Session': sessionToken
     };
-    LCHttpRequest request = new LCHttpRequest('users/me', LCHttpRequestMethod.get, headers: headers);
-    Map<String, dynamic> response = await LeanCloud._client.send<Map<String, dynamic>>(request);
+    Map response = await LeanCloud._httpClient.get('users/me', headers: headers);
     LCObjectData objectData = LCObjectData.decode(response);
     currentUser = new LCUser();
     currentUser._merge(objectData);
@@ -248,36 +238,32 @@ class LCUser extends LCObject {
 
   /// 请求使用邮箱重置密码
   static Future<void> requestPasswordReset(String email) async {
-    LCHttpRequest request = LCHttpRequest.createPostRequest('requestPasswordReset', data: {
+    await LeanCloud._httpClient.post('requestPasswordReset', data: {
       'email': email
     });
-    await LeanCloud._client.send(request);
   }
 
   /// 请求验证码重置密码
   static Future<void> requestPasswordRestBySmsCode(String mobile) async {
-    LCHttpRequest request = LCHttpRequest.createPostRequest('requestPasswordResetBySmsCode', data:{
+    await LeanCloud._httpClient.post('requestPasswordResetBySmsCode', data:{
       'mobilePhoneNumber': mobile
     });
-    await LeanCloud._client.send(request);
   }
 
   /// 使用验证码重置密码
   static Future<void> resetPasswordBySmsCode(String mobile, String code, String newPassword) async {
-    LCHttpRequest request = LCHttpRequest.createPutRequest('resetPasswordBySmsCode/$code', data: {
+    await LeanCloud._httpClient.put('resetPasswordBySmsCode/$code', data: {
       'mobilePhoneNumber': mobile,
       'password': newPassword
     });
-    await LeanCloud._client.send(request);
   }
 
   /// 更新密码
   Future<void> updatePassword(String oldPassword, String newPassword) async {
-    LCHttpRequest request = LCHttpRequest.createPutRequest('users/$objectId/updatePassword', data: {
+    Map response = await LeanCloud._httpClient.put('users/$objectId/updatePassword', data: {
       'old_password': oldPassword,
       'new_password': newPassword
     });
-    Map<String, dynamic> response = await LeanCloud._client.send<Map<String, dynamic>>(request);
     LCObjectData objectData = LCObjectData.decode(response);
     _merge(objectData);
   }
@@ -291,9 +277,8 @@ class LCUser extends LCObject {
     if (sessionToken == null || objectId == null) {
       return false;
     }
-    LCHttpRequest request = LCHttpRequest.createGetRequest('users/me');
     try {
-      await LeanCloud._client.send(request);
+      await LeanCloud._httpClient.get('users/me');
       return true;
     } catch (Error) {
       return false;
@@ -302,8 +287,7 @@ class LCUser extends LCObject {
 
   /// 私有方法
   static Future<LCUser> _login(Map<String, dynamic> data) async {
-    LCHttpRequest request = new LCHttpRequest('login', LCHttpRequestMethod.post, data: data);
-    Map<String, dynamic> response = await LeanCloud._client.send<Map<String, dynamic>>(request);
+    Map response = await LeanCloud._httpClient.post('login', data: data);
     LCObjectData objectData = LCObjectData.decode(response);
     currentUser = new LCUser();
     currentUser._merge(objectData);

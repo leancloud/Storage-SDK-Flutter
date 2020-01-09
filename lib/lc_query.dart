@@ -116,10 +116,11 @@ class LCQuery<T extends LCObject> {
   }
 
   Future<int> count() async {
-    LCHttpRequest request = _getRequest();
-    request.queryParams['limit'] = '0';
-    request.queryParams['count'] = '1';
-    Map<String, dynamic> result = await LeanCloud._client.send<Map<String, dynamic>>(request);
+    String path = 'classes/$className';
+    Map<String, dynamic> params = _buildParams();
+    params['limit'] = 0;
+    params['count'] = 1;
+    Map result = await LeanCloud._httpClient.get(path);
     return result['count'];
   }
 
@@ -134,8 +135,9 @@ class LCQuery<T extends LCObject> {
   }
 
   Future<List<T>> find() async {
-    LCHttpRequest request = _getRequest();
-    Map<String, dynamic> response = await LeanCloud._client.send<Map<String, dynamic>>(request);
+    String path = 'classes/$className';
+    Map<String, dynamic> params = _buildParams();
+    Map response = await LeanCloud._httpClient.get(path, queryParams: params);
     List results = response['results'];
     // TODO 判断是否返回正确
     
@@ -193,16 +195,5 @@ class LCQuery<T extends LCObject> {
 
   Map<String, dynamic> _buildParams() {
     return condition.buildParams(className);
-  }
-
-  LCHttpRequest _getRequest() {
-    String path = 'classes/$className';
-    String method = LCHttpRequestMethod.get;
-    Map<String, dynamic> params = _buildParams();
-    Map<String, String> queryParams = new Map<String, String>();
-    params.forEach((key, value) {
-      queryParams[key] = value.toString();
-    });
-    return new LCHttpRequest(path, method, queryParams: queryParams);
   }
 }

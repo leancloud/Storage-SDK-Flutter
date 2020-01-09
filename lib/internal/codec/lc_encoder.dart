@@ -21,9 +21,6 @@ class LCEncoder {
     if (object is LCOperation) {
       return encodeOperation(object);
     }
-    if (object is LCHttpRequest) {
-      return encodeRequest(object);
-    }
     if (object is _QueryCondition) {
       return object.toMap();
     }
@@ -77,17 +74,6 @@ class LCEncoder {
 
   static dynamic encodeOperation(LCOperation operation) {
     return operation.encode();
-  }
-
-  static dynamic encodeRequest(LCHttpRequest request) {
-    Map<String, dynamic> map = {
-      'path': request.path,
-      'method': request.method
-    };
-    if (request.data != null) {
-      map['body'] = encodeMap(request.data);
-    }
-    return map;
   }
 
   static dynamic encodeACL(LCACL acl) {

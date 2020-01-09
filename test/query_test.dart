@@ -4,32 +4,32 @@ import 'package:leancloud_storage/leancloud.dart';
 import 'utils.dart';
 
 void main() {
-  // test('base query', () async {
-  //   initNorthChina();
-  //   int limit = 2;
-  //   LCQuery<LCObject> query = new LCQuery<LCObject>('Hello');
-  //   query.limit(limit);
-  //   List<LCObject> list = await query.find();
-  //   print(list.length);
-  //   assert(list.length > 0);
-  //   assert(list.length <= limit);
+  test('base query', () async {
+    initNorthChina();
+    int limit = 2;
+    LCQuery<LCObject> query = new LCQuery<LCObject>('Hello');
+    query.limit(limit);
+    List<LCObject> list = await query.find();
+    print(list.length);
+    assert(list.length > 0);
+    assert(list.length <= limit);
 
-  //   list.forEach((object) {
-  //     assert(object.className != null);
-  //     assert(object.objectId != null);
-  //     assert(object.createdAt != null);
-  //     assert(object.updatedAt != null);
+    list.forEach((object) {
+      assert(object.className != null);
+      assert(object.objectId != null);
+      assert(object.createdAt != null);
+      assert(object.updatedAt != null);
 
-  //     print('-------------------------------------------------');
-  //     print(object.className);
-  //     print(object.objectId);
-  //     print(object.createdAt);
-  //     print(object.updatedAt);
-  //     print(object['intValue']);
-  //     print(object['boolValue']);
-  //     print(object['stringValue']);
-  //   });
-  // });
+      print('-------------------------------------------------');
+      print(object.className);
+      print(object.objectId);
+      print(object.createdAt);
+      print(object.updatedAt);
+      print(object['intValue']);
+      print(object['boolValue']);
+      print(object['stringValue']);
+    });
+  });
 
   // test('greater query', () async {
   //   initNorthChina();
@@ -117,14 +117,14 @@ void main() {
   //   assert(results.length == 2);
   // });
 
-  test('where object equals', () async {
-    initNorthChina();
-    LCQuery<LCObject> worldQuery = new LCQuery('World');
-    LCObject world = await worldQuery.get('5e0d55ae21460d006a1ec931');
-    LCQuery<LCObject> helloQuery = new LCQuery('Hello');
-    helloQuery.whereEqualTo('objectValue', world);
-    LCObject hello = await helloQuery.first();
-    print(hello.objectId);
-    assert(hello.objectId == '5e0d55aedd3c13006a53cd87');
-  });
+  // test('where object equals', () async {
+  //   initNorthChina();
+  //   LCQuery<LCObject> worldQuery = new LCQuery('World');
+  //   LCObject world = await worldQuery.get('5e0d55ae21460d006a1ec931');
+  //   LCQuery<LCObject> helloQuery = new LCQuery('Hello');
+  //   helloQuery.whereEqualTo('objectValue', world);
+  //   LCObject hello = await helloQuery.first();
+  //   print(hello.objectId);
+  //   assert(hello.objectId == '5e0d55aedd3c13006a53cd87');
+  // });
 }

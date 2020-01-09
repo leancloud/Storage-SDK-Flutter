@@ -88,9 +88,7 @@ class LCFile extends LCObject {
       return;
     }
     String path = 'files/$objectId';
-    String method = LCHttpRequestMethod.delete;
-    LCHttpRequest request = new LCHttpRequest(path, method);
-    await LeanCloud._client.send(request);
+    await LeanCloud._httpClient.delete(path);
   }
 
   String getThumbnailUrl(int width, int height, { int quality = 100, bool scaleToFit = true, String format = 'png' }) {
@@ -98,7 +96,7 @@ class LCFile extends LCObject {
     return '$url?imageView/$mode/w/$width/h/$height/q/$quality/format/$format';
   }
 
-  Future<Map<String, dynamic>> getUploadToken() async {
+  Future<Map> getUploadToken() async {
     Map<String, dynamic> data = {
       'name': name,
       'key': newUUID(),
@@ -106,8 +104,7 @@ class LCFile extends LCObject {
       'mime_type': mimeType,
       'metaData': metaData
     };
-    LCHttpRequest request = new LCHttpRequest('fileTokens', LCHttpRequestMethod.post, data: data);
-    return await LeanCloud._client.send(request);
+    return await LeanCloud._httpClient.post('fileTokens', data: data);
   }
 
   String newUUID() {

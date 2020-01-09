@@ -61,13 +61,13 @@ void main() {
   //   await LCUser.loginBySMSCode('15101006007', '925752');l
   // });
 
-  // test('login by session token', () async {
-  //   initNorthChina();
-  //   String sessionToken = 'luo2fpl4qij2050e7enqfz173';
-  //   await LCUser.becomeWithSessionToken(sessionToken);
-  //   LCUser current = LCUser.currentUser;
-  //   assert(current.objectId != null);
-  // });
+  test('login by session token', () async {
+    initNorthChina();
+    String sessionToken = 'luo2fpl4qij2050e7enqfz173';
+    await LCUser.becomeWithSessionToken(sessionToken);
+    LCUser current = LCUser.currentUser;
+    assert(current.objectId != null);
+  });
 
   // test('request mobile verify', () async {
   //   initNorthChina();
@@ -162,10 +162,10 @@ void main() {
   //   assert(isAuthenticated);
   // });
 
-  test('update password', () async {
-    initNorthChina();
-    await LCUser.login('hello', 'world');
-    await LCUser.currentUser.updatePassword('world', 'newWorld');
-    await LCUser.currentUser.updatePassword('newWorld', 'world');
-  });
+  // test('update password', () async {
+  //   initNorthChina();
+  //   await LCUser.login('hello', 'world');
+  //   await LCUser.currentUser.updatePassword('world', 'newWorld');
+  //   await LCUser.currentUser.updatePassword('newWorld', 'world');
+  // });
 }
