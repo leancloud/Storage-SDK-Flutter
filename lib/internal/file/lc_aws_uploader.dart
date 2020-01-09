@@ -9,7 +9,7 @@ class AWSUploader {
 
   AWSUploader(this.uploadUrl, this.mimeType, this.data);
 
-  Future<void> upload(void Function(int count, int total) onProgress) async {
+  Future upload(void Function(int count, int total) onProgress) async {
     Dio dio = new Dio(); 
     Uri uri = Uri.parse(uploadUrl);
     var stream = Stream.fromIterable(data.map((item) => [item]));

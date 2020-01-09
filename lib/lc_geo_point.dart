@@ -1,6 +1,6 @@
 part of leancloud_storage;
 
-/// 坐标类
+/// 地理坐标
 class LCGeoPoint {
   /// 纬度
   double latitude;

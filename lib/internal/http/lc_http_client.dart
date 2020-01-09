@@ -30,19 +30,19 @@ class LCHttpClient {
     return response.data;
   }
 
-  Future post(String path, { Map<String, dynamic> headers, Map<String, dynamic> data, Map<String, dynamic> queryParams }) async {
+  Future post(String path, { Map<String, dynamic> headers, dynamic data, Map<String, dynamic> queryParams }) async {
     Options options = _toOptions(headers);
     Response response = await _dio.post(path, options: options, data: data, queryParameters: queryParams);
     return response.data;
   }
 
-  Future put(String path, { Map<String, dynamic> headers, Map<String, dynamic> data, Map<String, dynamic> queryParams }) async {
+  Future put(String path, { Map<String, dynamic> headers, dynamic data, Map<String, dynamic> queryParams }) async {
     Options options = _toOptions(headers);
     Response response = await _dio.put(path, options: options, data: data, queryParameters: queryParams);
     return response.data;
   }
 
-  Future delete(String path, { Map<String, dynamic> headers, Map<String, dynamic> data, Map<String, dynamic> queryParams }) async {
+  Future delete(String path, { Map<String, dynamic> headers, dynamic data, Map<String, dynamic> queryParams }) async {
     Options options = _toOptions(headers);
     Response response = await _dio.delete(path, options: options, data: data, queryParameters: queryParams);
     return response.data;

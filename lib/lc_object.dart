@@ -1,12 +1,5 @@
 part of leancloud_storage;
 
-const String ClassNameKey = 'className';
-const String ObjectIdKey = 'objectId';
-const String CreatedAtKey = 'createdAt';
-const String UpdatedAtKey = 'updatedAtKey';
-
-const String ACLKey = 'ACL';
-
 /// 对象类
 class LCObject {
   /// 最近一次与服务端同步的数据
@@ -30,10 +23,11 @@ class LCObject {
   /// 更新时间
   DateTime get updatedAt => _data.updatedAt ?? _data.createdAt;
 
-  /// 访问权限
-  LCACL get acl => this[ACLKey];
+  /// 获得访问权限
+  LCACL get acl => this['ACL'];
 
-  set acl(LCACL value) => this[ACLKey] = value;
+  /// 设置访问权限
+  set acl(LCACL value) => this['ACL'] = value;
 
   bool get isDirty => _isNew || _estimatedData.length > 0;
 
@@ -98,6 +92,54 @@ class LCObject {
     _applyOperation(key, op);
   }
 
+  /// 增加数字属性值
+  void increment(String key, num amount) {
+    LCIncrementOperation op = new LCIncrementOperation(amount);
+    _applyOperation(key, op);
+  }
+
+  /// 减少数字属性值
+  void decrement(String key, num amount) {
+    LCDecrementOperation op = new LCDecrementOperation(amount);
+    _applyOperation(key, op);
+  }
+
+  /// 在数组属性中增加一个元素
+  void add(String key, dynamic value) {
+    LCAddOperation op = new LCAddOperation([value]);
+    _applyOperation(key, op);
+  }
+
+  /// 在数组属性中增加一组元素
+  void addAll(String key, Iterable values) {
+    LCAddOperation op = new LCAddOperation(values);
+    _applyOperation(key, op);
+  }
+
+  /// 在数组属性中增加一个唯一元素
+  void addUnique(String key, dynamic value) {
+    LCAddUniqueOperation op = new LCAddUniqueOperation([value]);
+    _applyOperation(key, op);
+  }
+
+  /// 在数组属性中增加一组唯一元素
+  void addAllUnique(String key, Iterable values) {
+    LCAddUniqueOperation op = new LCAddUniqueOperation(values);
+    _applyOperation(key, op);
+  }
+
+  /// 移除某个元素
+  void remove(String key, dynamic value) {
+    LCRemoveOperation op = new LCRemoveOperation([value]);
+    _applyOperation(key, op);
+  }
+
+  /// 移除一组元素
+  void removeAll(String key, Iterable values) {
+    LCRemoveOperation op = new LCRemoveOperation(values);
+    _applyOperation(key, op);
+  }
+
   void _rebuildEstimatedData() {
     _estimatedData = new Map<String, dynamic>();
     _data.customPropertyMap.forEach((String key, dynamic value) {
@@ -145,18 +187,6 @@ class LCObject {
     _isNew = false;
   }
 
-  Map<String, dynamic> decode(Map<String, dynamic> data) {
-    Map<String, dynamic> result = new Map<String, dynamic>();
-    data.forEach((String key, dynamic value) {
-      if (key == 'createdAt' || key == 'updatedAt') {
-        result[key] = DateTime.parse(value);
-      } else {
-        result[key] = value;
-      }
-    });
-    return result;
-  }
-
   /// 拉取
   Future<LCObject> fetch({ Iterable<String> keys, Iterable<String> includes }) async {
     Map<String, dynamic> queryParams = {};
@@ -173,7 +203,7 @@ class LCObject {
     return this;
   }
 
-  static Future<void> saveBatches(Queue<LCBatch> batches) async {
+  static Future _saveBatches(Queue<LCBatch> batches) async {
     while (batches.length > 0) {
       LCBatch batch = batches.removeLast();
       List<LCObject> dirtyObjects = batch.objects.where((item) {
@@ -183,7 +213,7 @@ class LCObject {
       // 生成请求列表
       List requestList = dirtyObjects.map((item) {
         String path = item.objectId == null ? 
-          'classes/${item.className}' : 'classes/${item.className}/${item.objectId}';
+          '/1.1/classes/${item.className}' : '/1.1/classes/${item.className}/${item.objectId}';
         String method = item.objectId == null ?
           'POST' : 'PUT';
         Map body = LCEncoder.encode(item._operationMap);
@@ -221,13 +251,15 @@ class LCObject {
 
   /// 保存
   Future<LCObject> save() async {
-    // 断言没有循环依赖
-    assert(!LCBatch.hasCircleReference(this, new HashSet<LCObject>()));
+    // 检测循环依赖
+    if (LCBatch.hasCircleReference(this, new HashSet<LCObject>())) {
+      throw new ArgumentError('Found a circle dependency when save.');
+    }
 
     // 保存对象依赖
     Queue<LCBatch> batches = LCBatch.batchObjects([this], false);
     if (batches.length > 0) {
-      await saveBatches(batches);
+      await _saveBatches(batches);
     }
 
     // 保存对象本身
@@ -240,52 +272,6 @@ class LCObject {
     return this;
   }
 
-  /// 增加数字属性值
-  void increment(String key, num amount) {
-    LCIncrementOperation op = new LCIncrementOperation(amount);
-    _applyOperation(key, op);
-  }
-
-  /// 减少数字属性值
-  void decrement(String key, num amount) {
-    LCDecrementOperation op = new LCDecrementOperation(amount);
-    _applyOperation(key, op);
-  }
-
-  /// 在数组属性中增加一个元素
-  void add(String key, dynamic value) {
-    LCAddOperation op = new LCAddOperation([value]);
-    _applyOperation(key, op);
-  }
-
-  /// 在数组属性中增加一组元素
-  void addAll(String key, Iterable values) {
-    LCAddOperation op = new LCAddOperation(values);
-    _applyOperation(key, op);
-  }
-
-  /// 在数组属性中增加一个唯一元素
-  void addUnique(String key, dynamic value) {
-    LCAddUniqueOperation op = new LCAddUniqueOperation([value]);
-    _applyOperation(key, op);
-  }
-
-  /// 在数组属性中增加一组唯一元素
-  void addAllUnique(String key, Iterable values) {
-    LCAddUniqueOperation op = new LCAddUniqueOperation(values);
-    _applyOperation(key, op);
-  }
-
-  void remove(String key, dynamic value) {
-    LCRemoveOperation op = new LCRemoveOperation([value]);
-    _applyOperation(key, op);
-  }
-
-  void removeAll(String key, Iterable values) {
-    LCRemoveOperation op = new LCRemoveOperation(values);
-    _applyOperation(key, op);
-  }
-
   /// 批量保存
   static Future<List<LCObject>> saveAll(List<LCObject> objectList) async {
     assert(objectList != null);
@@ -295,7 +281,7 @@ class LCObject {
     });
 
     Queue<LCBatch> batches = LCBatch.batchObjects(objectList, true);
-    await saveBatches(batches);
+    await _saveBatches(batches);
     return objectList;
   }
 
@@ -343,7 +329,7 @@ class LCObject {
     subclassNameMap[className] = subclassInfo;
   }
 
-  static LCObject create(Type type, { String className }) {
+  static LCObject _create(Type type, { String className }) {
     if (subclassTypeMap.containsKey(type)) {
       LCSubclassInfo subclassInfo = subclassTypeMap[type];
       return subclassInfo.constructor();
@@ -351,7 +337,7 @@ class LCObject {
     return new LCObject(className);
   }
 
-  static LCObject createByName(String className) {
+  static LCObject _createByName(String className) {
     if (subclassNameMap.containsKey(className)) {
       LCSubclassInfo subclassInfo = subclassNameMap[className];
       return subclassInfo.constructor();

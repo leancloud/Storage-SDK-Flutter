@@ -50,6 +50,7 @@ part 'internal/file/lc_mime_type_map.dart';
 
 /// 工具
 part 'internal/utils/lc_uuid.dart';
+part 'internal/utils/lc_utils.dart';
 
 /// 公开接口
 part 'lc_acl.dart';

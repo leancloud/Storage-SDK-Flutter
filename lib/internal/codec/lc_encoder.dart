@@ -10,10 +10,10 @@ class LCEncoder {
       return encodeBytes(object);
     }
     if (object is List) {
-      encodeList(object);
+      return encodeList(object);
     }
     if (object is Map) {
-      encodeMap(object);
+      return encodeMap(object);
     }
     if (object is LCObject) {
       return encodeLCObject(object);
@@ -39,8 +39,7 @@ class LCEncoder {
   static dynamic encodeDateTime(DateTime dateTime) {
     return {
         '__type': 'Date',
-        // TODO 测试时间合法性
-        'iso': dateTime.toIso8601String()
+        'iso': '${dateTime.year}-${dateTime.month}-${dateTime.day}T${dateTime.hour}:${dateTime.minute}:${dateTime.second}.${dateTime.millisecond}Z'
       };
   }
 

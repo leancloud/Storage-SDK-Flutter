@@ -4,20 +4,28 @@ part of leancloud_storage;
 class LCFile extends LCObject {
   static const String ClassName = '_File';
 
+  /// 获取文件名
   String get name => this['name'];
 
+  /// 设置文件名
   set name(String value) => this['name'] = value;
 
+  /// 获取文件类型
   String get mimeType => this['mime_type'];
 
+  /// 设置文件类型
   set mimeType(String value) => this['mime_type'] = value;
 
+  /// 获取 url
   String get url => this['url'];
 
+  /// 设置 url
   set url(String value) => this['url'] = value;
 
+  /// 获取文件元数据
   Map<String, dynamic> get metaData => this['metaData'];
 
+  /// 设置文件元数据
   set metaData(Map<String, dynamic> value) => this['metaData'] = value;
 
   Uint8List data;
@@ -26,6 +34,7 @@ class LCFile extends LCObject {
     metaData = new Map<String, dynamic>();
   }
 
+  /// 根据字节数组创建对象
   static LCFile fromBytes(String name, Uint8List data) {
     LCFile file = new LCFile();
     file.name = name;
@@ -33,6 +42,7 @@ class LCFile extends LCObject {
     return file;
   }
 
+  /// 根据路径创建对象
   static Future<LCFile> fromPath(String name, String path) async {
     LCFile file = new LCFile();
     file.name = name;
@@ -43,6 +53,7 @@ class LCFile extends LCObject {
     return file;
   }
 
+  /// 根据外链 URL 创建对象
   static LCFile fromUrl(String name, String url) {
     LCFile file = new LCFile();
     file.name = name;
@@ -50,17 +61,19 @@ class LCFile extends LCObject {
     return file;
   }
 
+  /// 添加元数据
   void addMetaData(String key, dynamic value) {
     metaData[key] = value;
   }
 
+  /// 保存
   Future<LCFile> save({ void Function(int count, int total) onProgress }) async {
     if (url != null) {
       // 外链方式
       await super.save();
     } else {
       // 上传文件
-      Map<String, dynamic> uploadToken = await getUploadToken();
+      Map<String, dynamic> uploadToken = await _getUploadToken();
       String uploadUrl = uploadToken['upload_url'];
       String key = uploadToken['key'];
       String token = uploadToken['token'];
@@ -82,8 +95,9 @@ class LCFile extends LCObject {
     return this;
   }
 
+  /// 删除
   @override
-  Future<void> delete() async {
+  Future delete() async {
     if (objectId == null) {
       return;
     }
@@ -91,15 +105,16 @@ class LCFile extends LCObject {
     await LeanCloud._httpClient.delete(path);
   }
 
+  /// 获取缩略图 url
   String getThumbnailUrl(int width, int height, { int quality = 100, bool scaleToFit = true, String format = 'png' }) {
     int mode = scaleToFit ? 2 : 1;
     return '$url?imageView/$mode/w/$width/h/$height/q/$quality/format/$format';
   }
 
-  Future<Map> getUploadToken() async {
+  Future<Map> _getUploadToken() async {
     Map<String, dynamic> data = {
       'name': name,
-      'key': newUUID(),
+      'key': _newUUID(),
       '__type': 'File',
       'mime_type': mimeType,
       'metaData': metaData
@@ -107,7 +122,7 @@ class LCFile extends LCObject {
     return await LeanCloud._httpClient.post('fileTokens', data: data);
   }
 
-  String newUUID() {
+  String _newUUID() {
     Uuid uuid = new Uuid();
     return uuid.generateV4();
   }
