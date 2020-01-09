@@ -6,6 +6,8 @@ import 'dart:io';
 import 'dart:typed_data';
 import 'dart:math';
 import 'package:dio/dio.dart';
+import 'package:convert/convert.dart';
+import 'package:crypto/crypto.dart';
 
 /// 编解码
 part 'internal/codec/lc_decoder.dart';

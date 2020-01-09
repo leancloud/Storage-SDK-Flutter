@@ -18,7 +18,6 @@ class LCHttpClient {
       baseUrl: '$server/$Version/', 
       headers: {
         'X-LC-Id': appId,
-        'X-LC-Key': appKey,
         'Content-Type': ContentType.parse(MediaType)
       });
     _dio = new Dio(options);
@@ -49,10 +48,15 @@ class LCHttpClient {
     return response.data;
   }
 
-  Options _toOptions(Map<String, dynamic> headers) {
+  Options _toOptions(Map<String, dynamic> headers) {    
     if (headers == null) {
-      return null;
+      headers = new Map<String, dynamic>();
     }
+    int timestamp = DateTime.now().millisecondsSinceEpoch;
+    Uint8List data = Utf8Encoder().convert('$timestamp$appKey');
+    Digest digest = md5.convert(data);
+    String sign = hex.encode(digest.bytes);
+    headers['X-LC-Sign'] = '$sign,$timestamp';
     return new Options(headers: headers);
   }
 }
