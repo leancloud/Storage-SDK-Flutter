@@ -190,7 +190,7 @@ class LCQuery<T extends LCObject> {
     if (queries != null) {
       queries.forEach((item) {
         if (className != null && className != item.className) {
-          throw new Error();
+          throw('All of the queries in an or query must be on the same class.');
         }
         className = item.className;
         compositionQuery.condition.add(item.condition);
@@ -208,7 +208,7 @@ class LCQuery<T extends LCObject> {
     if (queries != null) {
       queries.forEach((item) {
         if (className != null && className != item.className) {
-          throw new Error();
+          throw('All of the queries in an or query must be on the same class.');
         }
         className = item.className;
         compositionQuery.condition.add(item.condition);

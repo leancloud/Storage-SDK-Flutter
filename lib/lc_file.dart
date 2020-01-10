@@ -88,7 +88,7 @@ class LCFile extends LCObject {
         QiniuUploader uploader = new QiniuUploader(uploadUrl, token, key, data);
         await uploader.upload(onProgress);
       } else {
-        throw new Error();
+        throw('$provider not support.');
       }
       LCObjectData objectData = LCObjectData.decode(uploadToken);
       super._merge(objectData);

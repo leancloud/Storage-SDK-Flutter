@@ -238,7 +238,9 @@ class LCObject {
       // 反序列化为 Object 数据
       List<LCObjectData> resultList = results.map((item) {
         if (item.containsKey('error')) {
-          throw new Error();
+          int code = item['code'];
+          String message = item['error'];
+          throw('$code : $message');
         }
         return LCObjectData.decode(item['success']);
       }).toList();
