@@ -75,6 +75,14 @@ class LCObject {
     _applyOperation(key, op);
   }
 
+  void unset(String key) {
+    if (isNullOrEmpty(key)) {
+      throw ArgumentError.notNull('key');
+    }
+    _LCDeleteOperation op = new _LCDeleteOperation();
+    _applyOperation(key, op);
+  }
+
   void addRelation(String key, LCObject value) {
     _LCAddRelationOperation op = new _LCAddRelationOperation();
     op.valueList.add(value);

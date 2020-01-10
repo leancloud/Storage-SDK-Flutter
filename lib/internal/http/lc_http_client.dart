@@ -3,14 +3,14 @@ part of leancloud_storage;
 class _LCHttpClient {
   String appKey;
 
-  LCAppRouter _appRouter;
+  _LCAppRouter _appRouter;
 
   Dio _dio;
 
   static Future<_LCHttpClient> create(String appId, String appKey, String server, String version) async {
     _LCHttpClient httpClient = new _LCHttpClient();
     httpClient.appKey = appKey;
-    httpClient._appRouter = new LCAppRouter(appId, server);
+    httpClient._appRouter = new _LCAppRouter(appId, server);
     String apiServer = await httpClient._appRouter.getApiServer();
     BaseOptions options = new BaseOptions(
       baseUrl: '$apiServer/$version/', 

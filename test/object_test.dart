@@ -82,18 +82,27 @@ void main() {
   //   print(world['content']);
   // });
 
-  test('save with options', () async {
-    await initNorthChina();
-    LCQuery<LCObject> query = new LCQuery('Account');
-    LCObject account = await query.get('5e154a5143c257006fbff63f');
-    account['balance'] = 300;
-    LCQuery<LCObject> q = new LCQuery('Account');
-    q.whereGreaterThan('balance', 100);
-    try {
-      await account.save(fetchWhenSave: true, query: q);
-    } on LCError catch (e) {
-      print('${e.code} : ${e.message}');
-      assert(e.code == 305);
-    }
-  });
+  // test('save with options', () async {
+  //   await initNorthChina();
+  //   LCQuery<LCObject> query = new LCQuery('Account');
+  //   LCObject account = await query.get('5e154a5143c257006fbff63f');
+  //   account['balance'] = 300;
+  //   LCQuery<LCObject> q = new LCQuery('Account');
+  //   q.whereGreaterThan('balance', 100);
+  //   try {
+  //     await account.save(fetchWhenSave: true, query: q);
+  //   } on LCError catch (e) {
+  //     print('${e.code} : ${e.message}');
+  //     assert(e.code == 305);
+  //   }
+  // });
+
+  // test('unset', () async {
+  //   await initNorthChina();
+  //   LCQuery<LCObject> query = new LCQuery('Hello');
+  //   LCObject hello = await query.get('5e18226e7796d9006a016004');
+  //   hello.unset('aaa');
+  //   print(hello['aaa']);
+  //   await hello.save();
+  // });
 }

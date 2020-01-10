@@ -1,11 +1,11 @@
 part of leancloud_storage;
 
-class LCAppRouter {
+class _LCAppRouter {
   String appId;
 
   String server;
 
-  LCAppRouter(this.appId, this.server) {
+  _LCAppRouter(this.appId, this.server) {
     if (!_isInternalApp(appId) && isNullOrEmpty(server)) {
       throw('Please init with your server url.');
     }
@@ -27,12 +27,12 @@ class LCAppRouter {
     // 向 App Router 请求地址
     if (_appServer == null || _appServer.isExpired) {
       // 如果没有拉取或已经过期，则重新拉取并缓存
-      _appServer = await fetch();
+      _appServer = await _fetch();
     }
     return _appServer.apiServer;
   }
 
-  Future<_LCAppServer> fetch() async {
+  Future<_LCAppServer> _fetch() async {
     try {
       BaseOptions options = new BaseOptions(baseUrl: 'https://app-router.com/');
       Dio dio = new Dio(options);
