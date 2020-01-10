@@ -97,12 +97,17 @@ void main() {
   //   }
   // });
 
-  // test('unset', () async {
-  //   await initNorthChina();
-  //   LCQuery<LCObject> query = new LCQuery('Hello');
-  //   LCObject hello = await query.get('5e18226e7796d9006a016004');
-  //   hello.unset('aaa');
-  //   print(hello['aaa']);
-  //   await hello.save();
-  // });
+  test('unset', () async {
+    initNorthChina();
+    LCObject hello = new LCObject('Hello');
+    hello['content'] = 'hello, world';
+    await hello.save();
+    print(hello['content']);
+    assert(hello['content'] == 'hello, world');
+
+    hello.unset('content');
+    await hello.save();
+    print(hello['content']);
+    assert(hello['content'] == null);
+  });
 }

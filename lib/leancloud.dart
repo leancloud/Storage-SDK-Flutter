@@ -77,7 +77,7 @@ class LeanCloud {
   static _LCHttpClient _httpClient;
 
   /// 初始化
-  static Future initialize(String appId, String appKey, { String server }) async {
+  static void initialize(String appId, String appKey, { String server }) {
     if (isNullOrEmpty(appId)) {
       throw new ArgumentError.notNull('appId');
     }
@@ -90,6 +90,6 @@ class LeanCloud {
     LCObject.registerSubclass<LCUser>(LCUser.ClassName, () => new LCUser());
     LCObject.registerSubclass<LCRole>(LCRole.ClassName, () => new LCRole());
 
-    _httpClient = await _LCHttpClient.create(appId, appKey, server, HttpVersion);
+    _httpClient = new _LCHttpClient(appId, appKey, server, HttpVersion);
   }
 }
