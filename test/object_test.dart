@@ -83,7 +83,8 @@ void main() {
   // });
 
   test('save with options', () async {
-    initNorthChina();
+    // await initNorthChina();
+    await initUS();
     LCQuery<LCObject> query = new LCQuery('Account');
     LCObject account = await query.get('5e154a5143c257006fbff63f');
     account['balance'] = 300;

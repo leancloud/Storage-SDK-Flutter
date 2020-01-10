@@ -3,17 +3,24 @@ part of leancloud_storage;
 class LCHttpClient {
   String appKey;
 
+  LCAppRouter _appRouter;
+
   Dio _dio;
-  
-  LCHttpClient(String appId, this.appKey, String server, String version) {
+
+  static Future<LCHttpClient> create(String appId, String appKey, String server, String version) async {
+    LCHttpClient httpClient = new LCHttpClient();
+    httpClient.appKey = appKey;
+    httpClient._appRouter = new LCAppRouter(appId, server);
+    String apiServer = await httpClient._appRouter.getApiServer();
     BaseOptions options = new BaseOptions(
-      baseUrl: '$server/$version/', 
+      baseUrl: '$apiServer/$version/', 
       headers: {
         'X-LC-Id': appId,
         'Content-Type': ContentType.parse('application/json')
       });
-    _dio = new Dio(options);
-    _dio.interceptors.add(new LogInterceptor(requestBody: true, responseBody: true));
+    httpClient._dio = new Dio(options);
+    httpClient._dio.interceptors.add(new LogInterceptor(requestBody: true, responseBody: true));
+    return httpClient;
   }
 
   Future get(String path, { Map<String, dynamic> headers, Map<String, dynamic> queryParams }) async {
