@@ -1,9 +1,9 @@
 part of leancloud_storage;
 
-class LCAddOperation extends LCOperation {
+class _LCAddOperation extends _LCOperation {
   List valueList;
 
-  LCAddOperation(Iterable values) {
+  _LCAddOperation(Iterable values) {
     valueList = List.from(values);
   }
 
@@ -18,20 +18,20 @@ class LCAddOperation extends LCOperation {
   encode() {
     return {
       '__op': 'Add',
-      'objects': LCEncoder.encodeList(valueList)
+      'objects': _LCEncoder.encodeList(valueList)
     };
   }
 
   @override
-  LCOperation mergeWithPrevious(LCOperation previousOp) {
-    if (previousOp is LCSetOperation || previousOp is LCDeleteOperation) {
+  _LCOperation mergeWithPrevious(_LCOperation previousOp) {
+    if (previousOp is _LCSetOperation || previousOp is _LCDeleteOperation) {
       return previousOp;
     }
-    if (previousOp is LCAddOperation) {
+    if (previousOp is _LCAddOperation) {
       valueList.addAll(previousOp.valueList);
       return this;
     }
-    if (previousOp is LCAddUniqueOperation) {
+    if (previousOp is _LCAddUniqueOperation) {
       valueList.addAll(previousOp.values);
       return this;
     }

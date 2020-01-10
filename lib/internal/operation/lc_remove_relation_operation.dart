@@ -1,9 +1,9 @@
 part of leancloud_storage;
 
-class LCRemoveRelationOperation extends LCOperation {
+class _LCRemoveRelationOperation extends _LCOperation {
   List<LCObject> valueList;
 
-  LCRemoveRelationOperation() {
+  _LCRemoveRelationOperation() {
     valueList = new List<LCObject>();
   }
 
@@ -18,16 +18,16 @@ class LCRemoveRelationOperation extends LCOperation {
   encode() {
     return {
       '__op': 'RemoveRelation',
-      'objects': LCEncoder.encodeList(valueList.toList())
+      'objects': _LCEncoder.encodeList(valueList.toList())
     };
   }
 
   @override
-  LCOperation mergeWithPrevious(LCOperation previousOp) {
-    if (previousOp is LCSetOperation || previousOp is LCDeleteOperation) {
+  _LCOperation mergeWithPrevious(_LCOperation previousOp) {
+    if (previousOp is _LCSetOperation || previousOp is _LCDeleteOperation) {
       return previousOp;
     }
-    if (previousOp is LCRemoveRelationOperation) {
+    if (previousOp is _LCRemoveRelationOperation) {
       valueList.addAll(previousOp.valueList);
       return this;
     }

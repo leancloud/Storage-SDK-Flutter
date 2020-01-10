@@ -1,7 +1,7 @@
 part of leancloud_storage;
 
 /// 编码工具类
-class LCEncoder {
+class _LCEncoder {
   static dynamic encode(dynamic object) {
     if (object is DateTime) {
       return encodeDateTime(object);
@@ -18,10 +18,10 @@ class LCEncoder {
     if (object is LCObject) {
       return encodeLCObject(object);
     }
-    if (object is LCOperation) {
+    if (object is _LCOperation) {
       return encodeOperation(object);
     }
-    if (object is _QueryCondition) {
+    if (object is _LCQueryCondition) {
       return object.toMap();
     }
     if (object is LCACL) {
@@ -74,7 +74,7 @@ class LCEncoder {
     };
   }
 
-  static dynamic encodeOperation(LCOperation operation) {
+  static dynamic encodeOperation(_LCOperation operation) {
     return operation.encode();
   }
 

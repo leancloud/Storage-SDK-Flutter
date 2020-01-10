@@ -1,9 +1,9 @@
 part of leancloud_storage;
 
-class LCIncrementOperation extends LCOperation {
+class _LCIncrementOperation extends _LCOperation {
   num value;
 
-  LCIncrementOperation(this.value);
+  _LCIncrementOperation(this.value);
 
   @override
   apply(oldValue, String key) {
@@ -19,11 +19,11 @@ class LCIncrementOperation extends LCOperation {
   }
 
   @override
-  LCOperation mergeWithPrevious(LCOperation previousOp) {
-    if (previousOp is LCSetOperation || previousOp is LCDeleteOperation) {
+  _LCOperation mergeWithPrevious(_LCOperation previousOp) {
+    if (previousOp is _LCSetOperation || previousOp is _LCDeleteOperation) {
       return previousOp;
     }
-    if (previousOp is LCIncrementOperation) {
+    if (previousOp is _LCIncrementOperation) {
       value += previousOp.value;
       return this;
     }

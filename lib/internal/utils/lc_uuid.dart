@@ -1,6 +1,6 @@
 part of leancloud_storage;
 
-class Uuid {
+class _LCUuid {
   final Random _random = Random();
 
   String generateV4() {

@@ -1,11 +1,11 @@
 part of leancloud_storage;
 
 /// 对象保存时的辅助批次类
-class LCBatch {
+class _LCBatch {
   /// 包含的对象
   HashSet<LCObject> objects;
 
-  LCBatch(Iterable<LCObject> objs) {
+  _LCBatch(Iterable<LCObject> objs) {
     objects = new HashSet<LCObject>();
     if (objs != null) {
       objs.forEach((item) {
@@ -41,10 +41,10 @@ class LCBatch {
     return false;
   }
 
-  static Queue<LCBatch> batchObjects(Iterable<LCObject> objects, bool containSelf) {
-    Queue<LCBatch> batches = new Queue<LCBatch>();
+  static Queue<_LCBatch> batchObjects(Iterable<LCObject> objects, bool containSelf) {
+    Queue<_LCBatch> batches = new Queue<_LCBatch>();
     if (containSelf) {
-      batches.addLast(new LCBatch(objects));
+      batches.addLast(new _LCBatch(objects));
     }
     HashSet<Object> deps = new HashSet<Object>();
     objects.forEach((item) {
@@ -76,7 +76,7 @@ class LCBatch {
         return (item is LCObject) && (item.objectId == null);
       }).cast<LCObject>().toList();
       if (depObjs != null && depObjs.length > 0) {
-        batches.addLast(new LCBatch(depObjs));
+        batches.addLast(new _LCBatch(depObjs));
       }
       deps = childSet;
     } while (deps != null && deps.length > 0);

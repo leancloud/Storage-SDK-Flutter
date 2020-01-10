@@ -1,7 +1,7 @@
 part of leancloud_storage;
 
 /// 七牛直传方式
-class QiniuUploader {
+class _LCQiniuUploader {
   String uploadUrl;
 
   String token;
@@ -10,7 +10,7 @@ class QiniuUploader {
 
   Uint8List data;
 
-  QiniuUploader(this.uploadUrl, this.token, this.key, this.data);
+  _LCQiniuUploader(this.uploadUrl, this.token, this.key, this.data);
 
   Future upload(void Function(int count, int total) onProgress) async {
     Dio dio = new Dio();

@@ -1,6 +1,6 @@
 part of leancloud_storage;
 
-class MimeTypeMap {
+class _LCMimeTypeMap {
   static String getMimeTypeBySuffix(String suffix) {
     if (map.containsKey(suffix)) {
       return map[suffix];

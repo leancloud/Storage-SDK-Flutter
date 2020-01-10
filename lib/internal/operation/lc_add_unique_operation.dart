@@ -1,9 +1,9 @@
 part of leancloud_storage;
 
-class LCAddUniqueOperation extends LCOperation {
+class _LCAddUniqueOperation extends _LCOperation {
   Set values;
 
-  LCAddUniqueOperation(Iterable values) {
+  _LCAddUniqueOperation(Iterable values) {
     this.values = Set.from(values);
   }
 
@@ -18,16 +18,16 @@ class LCAddUniqueOperation extends LCOperation {
   encode() {
     return {
       '__op': 'AddUnique',
-      'objects': LCEncoder.encodeList(values.toList())
+      'objects': _LCEncoder.encodeList(values.toList())
     };
   }
 
   @override
-  LCOperation mergeWithPrevious(LCOperation previousOp) {
-    if (previousOp is LCSetOperation || previousOp is LCDeleteOperation) {
+  _LCOperation mergeWithPrevious(_LCOperation previousOp) {
+    if (previousOp is _LCSetOperation || previousOp is _LCDeleteOperation) {
       return previousOp;
     }
-    if (previousOp is LCAddUniqueOperation) {
+    if (previousOp is _LCAddUniqueOperation) {
       values = values.union(previousOp.values);
       return this;
     }

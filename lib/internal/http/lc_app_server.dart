@@ -1,6 +1,6 @@
 part of leancloud_storage;
 
-class LCAppServer {
+class _LCAppServer {
   String apiServer;
 
   String pushServer;
@@ -11,7 +11,7 @@ class LCAppServer {
 
   bool get isExpired => expiredAt.compareTo(DateTime.now()) < 0;
 
-  LCAppServer.fromJson(Map<String, dynamic> json) :
+  _LCAppServer.fromJson(Map<String, dynamic> json) :
     apiServer = _getSchemeUrl(json['api_server']),
     pushServer = _getSchemeUrl(json['push_server']),
     engineServer = _getSchemeUrl(json['engine_server']) {
@@ -25,9 +25,9 @@ class LCAppServer {
     return url.startsWith('https://') ? url : 'https://$url';
   }
 
-  static LCAppServer _getInternalFallbackServer(String appId) {
+  static _LCAppServer _getInternalFallbackServer(String appId) {
     String prefix = appId.substring(0, 8).toLowerCase();
-    return new LCAppServer.fromJson({
+    return new _LCAppServer.fromJson({
       'api_server': 'https://$prefix.api.lncldglobal.com',
       'engine_server': 'https://$prefix.engine.lncldglobal.com',
       'push_server': 'https://$prefix.push.lncldglobal.com',

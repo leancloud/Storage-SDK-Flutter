@@ -18,9 +18,6 @@ part 'internal/http/lc_http_client.dart';
 part 'internal/http/lc_app_router.dart';
 part 'internal/http/lc_app_server.dart';
 
-/// 日志
-part 'internal/log/logger.dart';
-
 /// Object 辅助
 part 'internal/object/lc_object_data.dart';
 part 'internal/object/lc_batch.dart';
@@ -77,7 +74,7 @@ class LeanCloud {
 
   // static String _appServer;
 
-  static LCHttpClient _httpClient;
+  static _LCHttpClient _httpClient;
 
   /// 初始化
   static Future initialize(String appId, String appKey, { String server }) async {
@@ -93,6 +90,6 @@ class LeanCloud {
     LCObject.registerSubclass<LCUser>(LCUser.ClassName, () => new LCUser());
     LCObject.registerSubclass<LCRole>(LCRole.ClassName, () => new LCRole());
 
-    _httpClient = await LCHttpClient.create(appId, appKey, server, HttpVersion);
+    _httpClient = await _LCHttpClient.create(appId, appKey, server, HttpVersion);
   }
 }

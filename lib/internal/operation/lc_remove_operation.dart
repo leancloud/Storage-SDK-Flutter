@@ -1,9 +1,9 @@
 part of leancloud_storage;
 
-class LCRemoveOperation extends LCOperation {
+class _LCRemoveOperation extends _LCOperation {
   List valueList;
 
-  LCRemoveOperation(Iterable values) {
+  _LCRemoveOperation(Iterable values) {
     valueList = List.from(values);
   }
 
@@ -20,16 +20,16 @@ class LCRemoveOperation extends LCOperation {
   encode() {
     return {
       '__op': 'Remove',
-      'objects': LCEncoder.encodeList(valueList)
+      'objects': _LCEncoder.encodeList(valueList)
     };
   }
 
   @override
-  LCOperation mergeWithPrevious(LCOperation previousOp) {
-    if (previousOp is LCSetOperation || previousOp is LCDeleteOperation) {
+  _LCOperation mergeWithPrevious(_LCOperation previousOp) {
+    if (previousOp is _LCSetOperation || previousOp is _LCDeleteOperation) {
       return previousOp;
     }
-    if (previousOp is LCRemoveOperation) {
+    if (previousOp is _LCRemoveOperation) {
       valueList.addAll(previousOp.valueList);
       return this;
     }

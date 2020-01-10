@@ -1,9 +1,9 @@
 part of leancloud_storage;
 
 /// 设置操作
-class LCDeleteOperation extends LCOperation {
+class _LCDeleteOperation extends _LCOperation {
   @override
-  LCOperation mergeWithPrevious(LCOperation previousOp) {
+  _LCOperation mergeWithPrevious(_LCOperation previousOp) {
     return this;
   }
 

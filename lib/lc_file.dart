@@ -47,7 +47,7 @@ class LCFile extends LCObject {
     LCFile file = new LCFile();
     file.name = name;
     String suffix = path.substring(path.lastIndexOf('.') + 1);
-    file.mimeType = MimeTypeMap.getMimeTypeBySuffix(suffix);
+    file.mimeType = _LCMimeTypeMap.getMimeTypeBySuffix(suffix);
     File f = new File(path);
     file.data = await f.readAsBytes();
     return file;
@@ -81,16 +81,16 @@ class LCFile extends LCObject {
       String provider = uploadToken['provider'];
       if (provider == 's3') {
         // AWS
-        AWSUploader uploader = new AWSUploader(uploadUrl, mimeType, data);
+        _LCAWSUploader uploader = new _LCAWSUploader(uploadUrl, mimeType, data);
         await uploader.upload(onProgress);
       } else if (provider == 'qiniu') {
         // Qiniu
-        QiniuUploader uploader = new QiniuUploader(uploadUrl, token, key, data);
+        _LCQiniuUploader uploader = new _LCQiniuUploader(uploadUrl, token, key, data);
         await uploader.upload(onProgress);
       } else {
         throw('$provider not support.');
       }
-      LCObjectData objectData = LCObjectData.decode(uploadToken);
+      _LCObjectData objectData = _LCObjectData.decode(uploadToken);
       super._merge(objectData);
     }
     return this;
@@ -124,7 +124,7 @@ class LCFile extends LCObject {
   }
 
   String _newUUID() {
-    Uuid uuid = new Uuid();
+    _LCUuid uuid = new _LCUuid();
     return uuid.generateV4();
   }
 }

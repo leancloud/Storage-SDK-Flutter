@@ -1,14 +1,14 @@
 part of leancloud_storage;
 
-class _EqualCondition extends _QueryCondition {
+class _LCEqualCondition extends _LCQueryCondition {
   String key;
   dynamic value;
 
-  _EqualCondition(this.key, this.value);
+  _LCEqualCondition(this.key, this.value);
   
   @override
-  bool equals(_QueryCondition other) {
-    if (other is _EqualCondition) {
+  bool equals(_LCQueryCondition other) {
+    if (other is _LCEqualCondition) {
       return key == other.key;
     }
     return false;
@@ -17,7 +17,7 @@ class _EqualCondition extends _QueryCondition {
   @override
   Map<String, dynamic> toMap() {
     return {
-      key: LCEncoder.encode(value)
+      key: _LCEncoder.encode(value)
     };
   }
 }

@@ -12,6 +12,6 @@ class LCCloud {
   static Future rpc(String name, { Map<String, dynamic> params }) async {
     String path = 'call/$name';
     Map response = await LeanCloud._httpClient.post(path, data: params);
-    return LCDecoder.decode(response);
+    return _LCDecoder.decode(response);
   }
 }

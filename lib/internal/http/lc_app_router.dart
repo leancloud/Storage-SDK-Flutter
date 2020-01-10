@@ -11,7 +11,7 @@ class LCAppRouter {
     }
   }
 
-  LCAppServer _appServer;
+  _LCAppServer _appServer;
 
   Future<String> getApiServer() async {
     // 优先返回用户自定义域名
@@ -32,7 +32,7 @@ class LCAppRouter {
     return _appServer.apiServer;
   }
 
-  Future<LCAppServer> fetch() async {
+  Future<_LCAppServer> fetch() async {
     try {
       BaseOptions options = new BaseOptions(baseUrl: 'https://app-router.com/');
       Dio dio = new Dio(options);
@@ -43,9 +43,9 @@ class LCAppRouter {
       };
       Response response = await dio.get(path, queryParameters: queryParams);
       Map data = response.data;
-      return LCAppServer.fromJson(data);
+      return _LCAppServer.fromJson(data);
     } on DioError {
-      return LCAppServer._getInternalFallbackServer(appId);
+      return _LCAppServer._getInternalFallbackServer(appId);
     }
   }
 

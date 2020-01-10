@@ -1,19 +1,19 @@
 part of leancloud_storage;
 
 /// 设置操作
-class LCSetOperation extends LCOperation {
+class _LCSetOperation extends _LCOperation {
   dynamic value;
 
-  LCSetOperation(this.value);
+  _LCSetOperation(this.value);
 
   @override
-  LCOperation mergeWithPrevious(LCOperation previousOp) {
+  _LCOperation mergeWithPrevious(_LCOperation previousOp) {
     return this;
   }
 
   @override
   encode() {
-    return LCEncoder.encode(value);
+    return _LCEncoder.encode(value);
   }
 
   @override

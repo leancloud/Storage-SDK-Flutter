@@ -1,14 +1,14 @@
 part of leancloud_storage;
 
-class _RelatedCondition extends _QueryCondition {
+class _LCRelatedCondition extends _LCQueryCondition {
   LCObject parent;
   String key;
 
-  _RelatedCondition(this.parent, this.key);
+  _LCRelatedCondition(this.parent, this.key);
 
   @override
-  bool equals(_QueryCondition other) {
-    if (other is _RelatedCondition) {
+  bool equals(_LCQueryCondition other) {
+    if (other is _LCRelatedCondition) {
       return key == other.key;
     }
     return false;
@@ -18,7 +18,7 @@ class _RelatedCondition extends _QueryCondition {
   Map<String, dynamic> toMap() {
     return {
       '\$relatedTo': {
-        "object": LCEncoder.encodeLCObject(parent),
+        "object": _LCEncoder.encodeLCObject(parent),
         'key': key
       }
     };

@@ -87,7 +87,7 @@ class LCUser extends LCObject {
       'mobilePhoneNumber': mobile,
       'smsCode': code
     });
-    LCObjectData objectData = LCObjectData.decode(response);
+    _LCObjectData objectData = _LCObjectData.decode(response);
     currentUser = new LCUser();
     currentUser._merge(objectData);
     return currentUser;
@@ -193,7 +193,7 @@ class LCUser extends LCObject {
     Map response = await LeanCloud._httpClient.post(path, data: {
       'authData': authData
     });
-    LCObjectData objectData = LCObjectData.decode(response);
+    _LCObjectData objectData = _LCObjectData.decode(response);
     currentUser = new LCUser();
     currentUser._merge(objectData);
     return currentUser;
@@ -252,7 +252,7 @@ class LCUser extends LCObject {
   /// 匿名登录
   static Future<LCUser> loginAnonymously() {
     Map<String, dynamic> data = {
-      'id': new Uuid().generateV4()
+      'id': new _LCUuid().generateV4()
     };
     return loginWithAuthData(data, 'anonymous');
   }
@@ -303,7 +303,7 @@ class LCUser extends LCObject {
       'X-LC-Session': sessionToken
     };
     Map response = await LeanCloud._httpClient.get('users/me', headers: headers);
-    LCObjectData objectData = LCObjectData.decode(response);
+    _LCObjectData objectData = _LCObjectData.decode(response);
     currentUser = new LCUser();
     currentUser._merge(objectData);
     return currentUser;
@@ -358,7 +358,7 @@ class LCUser extends LCObject {
       'old_password': oldPassword,
       'new_password': newPassword
     });
-    LCObjectData objectData = LCObjectData.decode(response);
+    _LCObjectData objectData = _LCObjectData.decode(response);
     _merge(objectData);
   }
 
@@ -383,7 +383,7 @@ class LCUser extends LCObject {
   /// 私有方法
   static Future<LCUser> _login(Map<String, dynamic> data) async {
     Map response = await LeanCloud._httpClient.post('login', data: data);
-    LCObjectData objectData = LCObjectData.decode(response);
+    _LCObjectData objectData = _LCObjectData.decode(response);
     currentUser = new LCUser();
     currentUser._merge(objectData);
     return currentUser;

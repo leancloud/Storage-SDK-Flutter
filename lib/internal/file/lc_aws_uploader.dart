@@ -1,13 +1,13 @@
 part of leancloud_storage;
 
-class AWSUploader {
+class _LCAWSUploader {
   String uploadUrl;
 
   String mimeType;
 
   Uint8List data;
 
-  AWSUploader(this.uploadUrl, this.mimeType, this.data);
+  _LCAWSUploader(this.uploadUrl, this.mimeType, this.data);
 
   Future upload(void Function(int count, int total) onProgress) async {
     Dio dio = new Dio(); 

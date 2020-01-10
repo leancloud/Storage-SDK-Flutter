@@ -1,12 +1,12 @@
 part of leancloud_storage;
 
-class _CompositionalCondition extends _QueryCondition {
+class _LCCompositionalCondition extends _LCQueryCondition {
   static const String And = '\$and';
   static const String Or = '\$or';
 
   String composition;
 
-  List<_QueryCondition> conditionList;
+  List<_LCQueryCondition> conditionList;
 
   List<String> orderByList;
   Set<String> includes;
@@ -14,18 +14,18 @@ class _CompositionalCondition extends _QueryCondition {
   int skip;
   int limit;
 
-  _CompositionalCondition({ this.composition }) {
+  _LCCompositionalCondition({ this.composition }) {
     if (composition == null) {
       composition = And;
     }
-    conditionList = new List<_QueryCondition>();
+    conditionList = new List<_LCQueryCondition>();
     skip = 0;
     limit = 30;
   }
 
   /// Where
   void whereEqualTo(String key, dynamic value) {
-    add(new _EqualCondition(key, value));
+    add(new _LCEqualCondition(key, value));
   }
 
   void whereNotEqualTo(String key, dynamic value) {
@@ -88,7 +88,7 @@ class _CompositionalCondition extends _QueryCondition {
   }
 
   void whereRelatedTo(LCObject parent, String key) {
-    add(new _RelatedCondition(parent, key));
+    add(new _LCRelatedCondition(parent, key));
   }
 
   void whereStartsWith(String key, String prefix) {
@@ -126,11 +126,11 @@ class _CompositionalCondition extends _QueryCondition {
   }
 
   void addCondition(String key, String op, dynamic value) {
-    _OperationCondition cond = new _OperationCondition(key, op, value);
+    _LCOperationCondition cond = new _LCOperationCondition(key, op, value);
     add(cond);
   }
 
-  void add(_QueryCondition cond) {
+  void add(_LCQueryCondition cond) {
     if (cond == null) {
       return;
     }
@@ -139,7 +139,7 @@ class _CompositionalCondition extends _QueryCondition {
   }
 
   @override
-  bool equals(_QueryCondition other) {
+  bool equals(_LCQueryCondition other) {
     return false;
   }
 
@@ -152,7 +152,7 @@ class _CompositionalCondition extends _QueryCondition {
       return conditionList[0].toMap();
     }
     return {
-      composition: LCEncoder.encodeList(conditionList)
+      composition: _LCEncoder.encodeList(conditionList)
     };
   }
 

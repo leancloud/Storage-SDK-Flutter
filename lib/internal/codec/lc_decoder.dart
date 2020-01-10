@@ -1,7 +1,7 @@
 part of leancloud_storage;
 
 /// 解码工具类
-class LCDecoder {
+class _LCDecoder {
   static dynamic decode(dynamic data) {
     if (data is Map) {
       if (data.containsKey('__type')) {
@@ -44,7 +44,7 @@ class LCDecoder {
   static LCObject decodeNestedObject(dynamic data) {
     String className = data['className'];
     LCObject object = LCObject._createByName(className);
-    LCObjectData objectData = LCObjectData.decode(data);
+    _LCObjectData objectData = _LCObjectData.decode(data);
     object._merge(objectData);
     return object;
   }

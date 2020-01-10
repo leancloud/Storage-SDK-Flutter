@@ -4,10 +4,10 @@ part of leancloud_storage;
 class LCQuery<T extends LCObject> {
   String className;
 
-  _CompositionalCondition condition;
+  _LCCompositionalCondition condition;
 
   LCQuery(this.className) {
-    condition = new _CompositionalCondition();
+    condition = new _LCCompositionalCondition();
   }
 
   /// 等于
@@ -165,7 +165,7 @@ class LCQuery<T extends LCObject> {
     List results = response['results'];
     List<T> list = new List();
     results.forEach((item) {
-      LCObjectData objectData = LCObjectData.decode(item);
+      _LCObjectData objectData = _LCObjectData.decode(item);
       LCObject object = LCObject._create(T, className: className);
       object._merge(objectData);
       list.add(object);
@@ -203,7 +203,7 @@ class LCQuery<T extends LCObject> {
   /// or 查询
   static LCQuery<T> or<T extends LCObject>(Iterable<LCQuery<T>> queries) {
     LCQuery<T> compositionQuery = new LCQuery<T>(null);
-    compositionQuery.condition = new _CompositionalCondition(composition: _CompositionalCondition.Or);
+    compositionQuery.condition = new _LCCompositionalCondition(composition: _LCCompositionalCondition.Or);
     String className;
     if (queries != null) {
       queries.forEach((item) {

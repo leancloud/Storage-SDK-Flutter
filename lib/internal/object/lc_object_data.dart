@@ -1,7 +1,7 @@
 part of leancloud_storage;
 
 /// 对象数据类
-class LCObjectData {
+class _LCObjectData {
   String className;
 
   String objectId;
@@ -12,12 +12,12 @@ class LCObjectData {
 
   Map<String, dynamic> customPropertyMap;
 
-  LCObjectData() {
+  _LCObjectData() {
     customPropertyMap = new Map<String, dynamic>();
   }
 
-  static LCObjectData decode(Map<String, dynamic> data) {
-    LCObjectData result = new LCObjectData();
+  static _LCObjectData decode(Map<String, dynamic> data) {
+    _LCObjectData result = new _LCObjectData();
     data.forEach((String key, dynamic value) {
       if (key == 'className') {
         result.className = value;
@@ -29,7 +29,7 @@ class LCObjectData {
         result.updatedAt = DateTime.parse(value);
       } else {
         // 自定义属性
-        result.customPropertyMap[key] = LCDecoder.decode(value);
+        result.customPropertyMap[key] = _LCDecoder.decode(value);
       }
     });
     return result;
