@@ -13,6 +13,8 @@ class _LCHttpClient {
 
   Dio _dio;
 
+  LogInterceptor _logInterceptor;
+
   _LCHttpClient(this.appId, this.appKey, this.server, this.version) {
     _appRouter = new _LCAppRouter(appId, server);
     BaseOptions options = new BaseOptions(
@@ -21,7 +23,13 @@ class _LCHttpClient {
         'Content-Type': ContentType.parse('application/json')
       });
     _dio = new Dio(options);
-    _dio.interceptors.add(new LogInterceptor(requestBody: true, responseBody: true));
+  }
+
+  void enableLog() {
+    if (_logInterceptor == null) {
+      _logInterceptor = new LogInterceptor(requestBody: true, responseBody: true);
+    }
+    _dio.interceptors.add(_logInterceptor);
   }
 
   Future get(String path, { Map<String, dynamic> headers, Map<String, dynamic> queryParams }) async {
@@ -83,6 +91,9 @@ class _LCHttpClient {
     Digest digest = md5.convert(data);
     String sign = hex.encode(digest.bytes);
     headers['X-LC-Sign'] = '$sign,$timestamp';
+    if (LCUser.currentUser != null) {
+      headers['X-LC-Session'] = LCUser.currentUser.sessionToken;
+    }
     return new Options(headers: headers);
   }
 

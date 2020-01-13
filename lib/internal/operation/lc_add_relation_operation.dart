@@ -3,8 +3,8 @@ part of leancloud_storage;
 class _LCAddRelationOperation extends _LCOperation {
   List<LCObject> valueList;
 
-  _LCAddRelationOperation() {
-    valueList = new List<LCObject>();
+  _LCAddRelationOperation(dynamic value) {
+    valueList = List.from([value]);
   }
 
   @override
@@ -28,7 +28,7 @@ class _LCAddRelationOperation extends _LCOperation {
       return previousOp;
     }
     if (previousOp is _LCAddRelationOperation) {
-      this.valueList.addAll(previousOp.valueList);
+      valueList.addAll(previousOp.valueList);
       return this;
     }
     throw new ArgumentError('Operation is invalid after previous operation.');

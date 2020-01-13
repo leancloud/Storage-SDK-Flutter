@@ -84,73 +84,113 @@ class LCObject {
   }
 
   void addRelation(String key, LCObject value) {
-    _LCAddRelationOperation op = new _LCAddRelationOperation();
-    op.valueList.add(value);
-    if (_operationMap.containsKey(key)) {
-      _LCOperation previousOp = _operationMap[key];
-      _operationMap[key] = op.mergeWithPrevious(previousOp);
-    } else {
-      _operationMap[key] = op;
+    if (isNullOrEmpty(key)) {
+      throw ArgumentError.notNull('key');
     }
+    if (value == null) {
+      throw ArgumentError.notNull('value');
+    }
+    _LCAddRelationOperation op = new _LCAddRelationOperation(value);
     _applyOperation(key, op);
   }
 
   void removeRelation(String key, LCObject value) {
-    _LCRemoveRelationOperation op = new _LCRemoveRelationOperation();
-    op.valueList.add(value);
-    if (_operationMap.containsKey(key)) {
-      _LCOperation previousOp = _operationMap[key];
-      _operationMap[key] = op.mergeWithPrevious(previousOp);
-    } else {
-      _operationMap[key] = op;
+    if (isNullOrEmpty(key)) {
+      throw ArgumentError.notNull('key');
     }
+    if (value == null) {
+      throw ArgumentError.notNull('value');
+    }
+    _LCRemoveRelationOperation op = new _LCRemoveRelationOperation(value);
     _applyOperation(key, op);
   }
 
   /// 增加数字属性值
   void increment(String key, num amount) {
+    if (isNullOrEmpty(key)) {
+      throw ArgumentError.notNull('key');
+    }
     _LCIncrementOperation op = new _LCIncrementOperation(amount);
     _applyOperation(key, op);
   }
 
   /// 减少数字属性值
   void decrement(String key, num amount) {
+    if (isNullOrEmpty(key)) {
+      throw ArgumentError.notNull('key');
+    }
     _LCDecrementOperation op = new _LCDecrementOperation(amount);
     _applyOperation(key, op);
   }
 
   /// 在数组属性中增加一个元素
   void add(String key, dynamic value) {
+    if (isNullOrEmpty(key)) {
+      throw ArgumentError.notNull('key');
+    }
+    if (value == null) {
+      throw ArgumentError.notNull('value');
+    }
     _LCAddOperation op = new _LCAddOperation([value]);
     _applyOperation(key, op);
   }
 
   /// 在数组属性中增加一组元素
   void addAll(String key, Iterable values) {
+    if (isNullOrEmpty(key)) {
+      throw ArgumentError.notNull('key');
+    }
+    if (values == null) {
+      throw ArgumentError.notNull('values');
+    }
     _LCAddOperation op = new _LCAddOperation(values);
     _applyOperation(key, op);
   }
 
   /// 在数组属性中增加一个唯一元素
   void addUnique(String key, dynamic value) {
+    if (isNullOrEmpty(key)) {
+      throw ArgumentError.notNull('key');
+    }
+    if (value == null) {
+      throw ArgumentError.notNull('value');
+    }
     _LCAddUniqueOperation op = new _LCAddUniqueOperation([value]);
     _applyOperation(key, op);
   }
 
   /// 在数组属性中增加一组唯一元素
   void addAllUnique(String key, Iterable values) {
+    if (isNullOrEmpty(key)) {
+      throw ArgumentError.notNull('key');
+    }
+    if (values == null) {
+      throw ArgumentError.notNull('values');
+    }
     _LCAddUniqueOperation op = new _LCAddUniqueOperation(values);
     _applyOperation(key, op);
   }
 
   /// 移除某个元素
   void remove(String key, dynamic value) {
+    if (isNullOrEmpty(key)) {
+      throw ArgumentError.notNull('key');
+    }
+    if (value == null) {
+      throw ArgumentError.notNull('value');
+    }
     _LCRemoveOperation op = new _LCRemoveOperation([value]);
     _applyOperation(key, op);
   }
 
   /// 移除一组元素
   void removeAll(String key, Iterable values) {
+    if (isNullOrEmpty(key)) {
+      throw ArgumentError.notNull('key');
+    }
+    if (values == null) {
+      throw ArgumentError.notNull('values');
+    }
     _LCRemoveOperation op = new _LCRemoveOperation(values);
     _applyOperation(key, op);
   }

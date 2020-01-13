@@ -63,6 +63,7 @@ part 'lc_relation.dart';
 part 'lc_role.dart';
 part 'lc_user.dart';
 part 'lc_user_auth_data_login_option.dart';
+part 'lc_logger.dart';
 
 const String HttpVersion = '1.1';
 

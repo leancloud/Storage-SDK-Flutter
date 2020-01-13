@@ -3,8 +3,8 @@ part of leancloud_storage;
 class _LCRemoveRelationOperation extends _LCOperation {
   List<LCObject> valueList;
 
-  _LCRemoveRelationOperation() {
-    valueList = new List<LCObject>();
+  _LCRemoveRelationOperation(dynamic value) {
+    valueList = List.from([value]);
   }
 
   @override

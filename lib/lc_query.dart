@@ -142,7 +142,7 @@ class LCQuery<T extends LCObject> {
     Map<String, dynamic> params = _buildParams();
     params['limit'] = 0;
     params['count'] = 1;
-    Map result = await LeanCloud._httpClient.get(path);
+    Map result = await LeanCloud._httpClient.get(path, queryParams: params);
     return result['count'];
   }
 
@@ -152,7 +152,10 @@ class LCQuery<T extends LCObject> {
     limit(1);
     List<T> results = await find();
     if (results != null) {
-      return results.first;
+      if (results.length == 0) {
+        return null;
+      }
+      return results[0];
     }
     return null;
   }
