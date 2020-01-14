@@ -1,8 +1,7 @@
 name: leancloud_storage
 description: A new Flutter package project.
 version: 0.0.1
-author:
-homepage:
+homepage: https://www.leancloud.cn/
 
 environment:
   sdk: ">=2.1.0 <3.0.0"
@@ -11,6 +10,8 @@ dependencies:
   flutter:
     sdk: flutter
   dio: ^3.0.8
+  convert: ^2.1.1
+  crypto: ^2.1.4
 
 dev_dependencies:
   flutter_test:
