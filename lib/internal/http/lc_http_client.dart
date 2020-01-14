@@ -103,8 +103,8 @@ class _LCHttpClient {
     if (code == 4) {
       int code = response.data['code'];
       String message = response.data['error'];
-      throw new LCError(code, message);
+      throw new LCException(code, message);
     }
-    throw new LCError(response.statusCode, response.statusMessage);
+    throw new LCException(response.statusCode, response.statusMessage);
   }
 }

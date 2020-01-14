@@ -11,7 +11,7 @@ dependencies:
     sdk: flutter
   dio: ^3.0.8
   convert: ^2.1.1
-  crypto: ^2.1.4
+  crypto:
 
 dev_dependencies:
   flutter_test:

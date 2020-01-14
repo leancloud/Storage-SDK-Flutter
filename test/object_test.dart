@@ -106,7 +106,7 @@ void main() {
     q.whereGreaterThan('balance', 100);
     try {
       await account.save(fetchWhenSave: true, query: q);
-    } on LCError catch (e) {
+    } on LCException catch (e) {
       print('${e.code} : ${e.message}');
       assert(e.code == 305);
     }

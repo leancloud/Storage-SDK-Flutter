@@ -54,7 +54,7 @@ part 'internal/utils/lc_utils.dart';
 /// 公开接口
 part 'lc_acl.dart';
 part 'lc_cloud.dart';
-part 'lc_error.dart';
+part 'lc_exception.dart';
 part 'lc_file.dart';
 part 'lc_geo_point.dart';
 part 'lc_object.dart';
