@@ -76,7 +76,7 @@ class LeanCloud {
   // static String _appServer;
 
   static _LCHttpClient _httpClient;
-
+  
   /// 初始化
   static void initialize(String appId, String appKey, { String server }) {
     if (isNullOrEmpty(appId)) {
