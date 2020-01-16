@@ -58,6 +58,6 @@ class _LCDecoder {
 
   /// 解码时间
   static DateTime decodeDate(dynamic data) {
-    return DateTime.parse(data);
+    return DateTime.parse(data).toLocal();
   }
 }
