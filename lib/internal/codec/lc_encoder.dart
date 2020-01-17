@@ -40,7 +40,7 @@ class _LCEncoder {
     DateTime dt = dateTime.toUtc();
     return {
         '__type': 'Date',
-        'iso': '${dt.year}-${dt.month}-${dt.day}T${dt.hour}:${dt.minute}:${dt.second}.${dt.millisecond}Z'
+        'iso': dt.toIso8601String()
       };
   }
 
