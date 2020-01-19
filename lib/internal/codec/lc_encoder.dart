@@ -37,9 +37,10 @@ class _LCEncoder {
   }
 
   static dynamic encodeDateTime(DateTime dateTime) {
+    DateTime dt = dateTime.toUtc();
     return {
         '__type': 'Date',
-        'iso': '${dateTime.year}-${dateTime.month}-${dateTime.day}T${dateTime.hour}:${dateTime.minute}:${dateTime.second}.${dateTime.millisecond}Z'
+        'iso': toLCDateTimeString(dt)
       };
   }
 

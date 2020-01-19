@@ -10,7 +10,7 @@ void main() {
     object['intValue'] = 123;
     object['boolValue'] = true;
     object['stringValue'] = 'hello, world';
-    object['time'] = DateTime.now().toUtc();
+    object['time'] = DateTime.now();
     object['intList'] = [1, 1, 2, 3, 5, 8];
     object['stringMap'] = {
       'k1': 111,
