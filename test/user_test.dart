@@ -13,6 +13,8 @@ void main() {
       user.password = 'world';
       String email = '${DateTime.now().millisecondsSinceEpoch}@qq.com';
       user.email = email;
+      String mobile = '${(DateTime.now().millisecondsSinceEpoch / 100).round()}';
+      user.mobile = mobile;
       await user.signUp();
 
       print(user.username);
@@ -176,6 +178,17 @@ void main() {
       assert(LCUser.currentUser.sessionToken != null);
       assert(LCUser.currentUser.objectId == userId);
       print(LCUser.currentUser.authData);
+    });
+
+    test('associate auth data with union id', () async {
+      await LCUser.login('hello', 'world');
+      Map<String, dynamic> authData = {
+        'expires_in': 7200,
+        'openid': '${DateTime.now().millisecondsSinceEpoch}',
+        'access_token': '${DateTime.now().millisecondsSinceEpoch}'
+      };
+      String unionId = '${DateTime.now().millisecondsSinceEpoch}';
+      await LCUser.currentUser.associateAuthDataAndUnionId(authData, 'qq', unionId);
     });
   });
 }

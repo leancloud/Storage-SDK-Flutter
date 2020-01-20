@@ -227,5 +227,27 @@ void main() {
         assert(pages.length == 7);
       });
     });
+
+    test('geo', () async {
+      LCObject obj = new LCObject('Todo');
+      LCGeoPoint location = new LCGeoPoint(39.9, 116.4);
+      obj['location'] = location;
+      await obj.save();
+
+      // near
+      LCQuery<LCObject> query = new LCQuery('Todo');
+      LCGeoPoint point = new LCGeoPoint(39.91, 116.41);
+      query.whereNear('location', point);
+      List results = await query.find();
+      assert(results.length > 0);
+
+      // in box
+      query = new LCQuery('Todo');
+      LCGeoPoint southwest = new LCGeoPoint(30, 115);
+      LCGeoPoint northeast = new LCGeoPoint(40, 118);
+      query.whereWithinGeoBox('location', southwest, northeast);
+      results = await query.find();
+      assert(results.length > 0);
+    });
   });
 }
