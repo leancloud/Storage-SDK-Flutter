@@ -19,7 +19,7 @@ class _LCOperationCondition extends _LCQueryCondition {
   Map<String, dynamic> toMap() {
     return {
       key: {
-        op: value
+        op: _LCEncoder.encode(value)
       }
     };
   }

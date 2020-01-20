@@ -51,8 +51,8 @@ class _LCDecoder {
 
   /// 解码坐标
   static LCGeoPoint decodePoint(dynamic data) {
-    double latitude = double.parse(data['latitude']);
-    double longitude = double.parse(data['longitude']);
+    double latitude = data['latitude'];
+    double longitude = data['latitude'];
     return new LCGeoPoint(latitude, longitude);
   }
 
