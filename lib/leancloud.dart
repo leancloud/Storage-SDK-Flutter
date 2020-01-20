@@ -76,16 +76,16 @@ class LeanCloud {
   // static String _appServer;
 
   static _LCHttpClient _httpClient;
-  
+
   /// 初始化
-  static void initialize(String appId, String appKey, { String server }) {
+  static void initialize(String appId, String appKey, {String server}) {
     if (isNullOrEmpty(appId)) {
       throw new ArgumentError.notNull('appId');
     }
     if (isNullOrEmpty(appKey)) {
       throw new ArgumentError.notNull('appKey');
     }
-    
+
     // 注册 LeanCloud 子类化
     LCObject.registerSubclass<LCFile>(LCFile.ClassName, () => new LCFile());
     LCObject.registerSubclass<LCUser>(LCUser.ClassName, () => new LCUser());

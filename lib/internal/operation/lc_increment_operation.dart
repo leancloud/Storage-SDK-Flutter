@@ -12,10 +12,7 @@ class _LCIncrementOperation extends _LCOperation {
 
   @override
   encode() {
-    return {
-      '__op': 'Increment',
-      'amount': value
-    };
+    return {'__op': 'Increment', 'amount': value};
   }
 
   @override
@@ -34,5 +31,4 @@ class _LCIncrementOperation extends _LCOperation {
   List getNewObjectList() {
     return null;
   }
-
 }

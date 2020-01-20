@@ -31,7 +31,7 @@ void main() {
       assert(acl.getUserWriteAccess(LCUser.currentUser) == true);
 
       LCQuery<LCObject> query = new LCQuery('Account');
-      LCObject result = await query.get(account.objectId); 
+      LCObject result = await query.get(account.objectId);
       print(result.objectId);
       assert(result.objectId != null);
 

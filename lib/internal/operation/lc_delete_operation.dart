@@ -9,7 +9,7 @@ class _LCDeleteOperation extends _LCOperation {
 
   @override
   encode() {
-    return { '__op': 'Delete' };
+    return {'__op': 'Delete'};
   }
 
   @override
@@ -21,5 +21,4 @@ class _LCDeleteOperation extends _LCOperation {
   List getNewObjectList() {
     return null;
   }
-  
 }

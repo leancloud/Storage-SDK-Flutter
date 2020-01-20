@@ -41,7 +41,8 @@ class _LCBatch {
     return false;
   }
 
-  static Queue<_LCBatch> batchObjects(Iterable<LCObject> objects, bool containSelf) {
+  static Queue<_LCBatch> batchObjects(
+      Iterable<LCObject> objects, bool containSelf) {
     Queue<_LCBatch> batches = new Queue<_LCBatch>();
     if (containSelf) {
       batches.addLast(new _LCBatch(objects));
@@ -72,9 +73,12 @@ class _LCBatch {
           });
         }
       });
-      List<LCObject> depObjs = deps.where((item) {
-        return (item is LCObject) && (item.objectId == null);
-      }).cast<LCObject>().toList();
+      List<LCObject> depObjs = deps
+          .where((item) {
+            return (item is LCObject) && (item.objectId == null);
+          })
+          .cast<LCObject>()
+          .toList();
       if (depObjs != null && depObjs.length > 0) {
         batches.addLast(new _LCBatch(depObjs));
       }

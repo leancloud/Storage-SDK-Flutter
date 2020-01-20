@@ -39,7 +39,8 @@ void main() {
     });
 
     test('save from url', () async {
-      LCFile file = LCFile.fromUrl('scene', 'http://img95.699pic.com/photo/50015/9034.jpg_wh300.jpg');
+      LCFile file = LCFile.fromUrl(
+          'scene', 'http://img95.699pic.com/photo/50015/9034.jpg_wh300.jpg');
       file.addMetaData('size', 1024);
       file.addMetaData('width', 128);
       file.addMetaData('height', 256);
@@ -49,7 +50,7 @@ void main() {
       assert(file.objectId != null);
     });
   });
-  
+
   group('file in US', () {
     setUp(() => initUS());
 

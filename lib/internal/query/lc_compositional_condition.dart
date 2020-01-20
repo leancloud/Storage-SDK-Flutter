@@ -14,7 +14,7 @@ class _LCCompositionalCondition extends _LCQueryCondition {
   int skip;
   int limit;
 
-  _LCCompositionalCondition({ this.composition }) {
+  _LCCompositionalCondition({this.composition}) {
     if (composition == null) {
       composition = And;
     }
@@ -80,9 +80,10 @@ class _LCCompositionalCondition extends _LCQueryCondition {
     addCondition(key, '\$nearSphere', point);
   }
 
-  void whereWithinGeoBox(String key, LCGeoPoint southwest, LCGeoPoint northeast) {
+  void whereWithinGeoBox(
+      String key, LCGeoPoint southwest, LCGeoPoint northeast) {
     Map<String, dynamic> value = {
-      '\$box': [ southwest, northeast ]
+      '\$box': [southwest, northeast]
     };
     addCondition(key, '\$within', value);
   }
@@ -110,7 +111,7 @@ class _LCCompositionalCondition extends _LCQueryCondition {
   void orderByDecending(String key) {
     orderBy('-$key');
   }
-  
+
   void include(String key) {
     if (includes == null) {
       includes = new Set<String>();
@@ -151,15 +152,11 @@ class _LCCompositionalCondition extends _LCQueryCondition {
     if (conditionList.length == 1) {
       return conditionList[0].toMap();
     }
-    return {
-      composition: _LCEncoder.encodeList(conditionList)
-    };
+    return {composition: _LCEncoder.encodeList(conditionList)};
   }
 
   Map<String, dynamic> _buildParams(String className) {
-    Map<String, dynamic> result = {
-      'className': className
-    };
+    Map<String, dynamic> result = {'className': className};
     if (conditionList != null && conditionList.length > 0) {
       result['where'] = jsonEncode(toMap());
     }

@@ -17,10 +17,7 @@ class _LCRelatedCondition extends _LCQueryCondition {
   @override
   Map<String, dynamic> toMap() {
     return {
-      '\$relatedTo': {
-        "object": _LCEncoder.encodeLCObject(parent),
-        'key': key
-      }
+      '\$relatedTo': {"object": _LCEncoder.encodeLCObject(parent), 'key': key}
     };
   }
 }

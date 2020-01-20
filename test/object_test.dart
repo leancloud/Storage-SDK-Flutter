@@ -14,11 +14,7 @@ void main() {
       object['stringValue'] = 'hello, world';
       object['time'] = DateTime.now();
       object['intList'] = [1, 1, 2, 3, 5, 8];
-      object['stringMap'] = {
-        'k1': 111,
-        'k2': true,
-        'k3': 'haha'
-      };
+      object['stringMap'] = {'k1': 111, 'k2': true, 'k3': 'haha'};
       LCObject nestedObj = new LCObject('World');
       nestedObj['content'] = '7788';
       object['objectValue'] = nestedObj;
@@ -78,7 +74,12 @@ void main() {
     });
 
     test('delete all', () async {
-      List<LCObject> list = [new LCObject('World'), new LCObject('World'), new LCObject('World'), new LCObject('World')];
+      List<LCObject> list = [
+        new LCObject('World'),
+        new LCObject('World'),
+        new LCObject('World'),
+        new LCObject('World')
+      ];
       await LCObject.saveAll(list);
       await LCObject.deleteAll(list);
     });

@@ -16,10 +16,7 @@ class _LCAddOperation extends _LCOperation {
 
   @override
   encode() {
-    return {
-      '__op': 'Add',
-      'objects': _LCEncoder.encodeList(valueList)
-    };
+    return {'__op': 'Add', 'objects': _LCEncoder.encodeList(valueList)};
   }
 
   @override
@@ -42,5 +39,4 @@ class _LCAddOperation extends _LCOperation {
   List getNewObjectList() {
     return valueList;
   }
-  
 }

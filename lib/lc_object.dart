@@ -4,7 +4,7 @@ part of leancloud_storage;
 class LCObject {
   /// 最近一次与服务端同步的数据
   _LCObjectData _data;
-  
+
   /// 预算数据
   Map<String, dynamic> _estimatedData;
 
@@ -36,9 +36,9 @@ class LCObject {
   LCObject(String className) {
     assert(className != null && className.length > 0);
     _data = new _LCObjectData();
-    _estimatedData = new Map<String, dynamic>(); 
+    _estimatedData = new Map<String, dynamic>();
     _operationMap = new Map<String, _LCOperation>();
-    
+
     _data.className = className;
     _isNew = true;
   }
@@ -242,7 +242,8 @@ class LCObject {
   }
 
   /// 拉取
-  Future<LCObject> fetch({ Iterable<String> keys, Iterable<String> includes }) async {
+  Future<LCObject> fetch(
+      {Iterable<String> keys, Iterable<String> includes}) async {
     Map<String, dynamic> queryParams = {};
     if (keys != null) {
       queryParams['keys'] = keys.join(',');
@@ -251,7 +252,8 @@ class LCObject {
       queryParams['include'] = includes.join(',');
     }
     String path = 'classes/$className/$objectId';
-    Map response = await LeanCloud._httpClient.get(path, queryParams: queryParams);
+    Map response =
+        await LeanCloud._httpClient.get(path, queryParams: queryParams);
     _LCObjectData objectData = _LCObjectData.decode(response);
     _merge(objectData);
     return this;
@@ -266,16 +268,12 @@ class LCObject {
 
       // 生成请求列表
       List requestList = dirtyObjects.map((item) {
-        String path = item.objectId == null ? 
-          '/1.1/classes/${item.className}' : '/1.1/classes/${item.className}/${item.objectId}';
-        String method = item.objectId == null ?
-          'POST' : 'PUT';
+        String path = item.objectId == null
+            ? '/1.1/classes/${item.className}'
+            : '/1.1/classes/${item.className}/${item.objectId}';
+        String method = item.objectId == null ? 'POST' : 'PUT';
         Map body = _LCEncoder.encode(item._operationMap);
-        return {
-          'path': path,
-          'method': method,
-          'body': body
-        };
+        return {'path': path, 'method': method, 'body': body};
       }).toList();
 
       // 发送请求
@@ -288,7 +286,7 @@ class LCObject {
         if (item.containsKey('error')) {
           int code = item['code'];
           String message = item['error'];
-          throw('$code : $message');
+          throw ('$code : $message');
         }
         return _LCObjectData.decode(item['success']);
       }).toList();
@@ -301,7 +299,8 @@ class LCObject {
   }
 
   /// 保存
-  Future<LCObject> save({ bool fetchWhenSave = false, LCQuery<LCObject> query }) async {
+  Future<LCObject> save(
+      {bool fetchWhenSave = false, LCQuery<LCObject> query}) async {
     // 检测循环依赖
     if (_LCBatch.hasCircleReference(this, new HashSet<LCObject>())) {
       throw new ArgumentError('Found a circle dependency when save.');
@@ -314,7 +313,9 @@ class LCObject {
     }
 
     // 保存对象本身
-    String path = objectId == null ? 'classes/$className' : 'classes/$className/$objectId';
+    String path = objectId == null
+        ? 'classes/$className'
+        : 'classes/$className/$objectId';
     Map<String, dynamic> queryParams = {};
     if (fetchWhenSave) {
       queryParams['fetchWhenSave'] = true;
@@ -322,9 +323,11 @@ class LCObject {
     if (query != null) {
       queryParams['where'] = query._buildWhere();
     }
-    Map response = objectId == null ? 
-      await LeanCloud._httpClient.post(path, data: _LCEncoder.encode(_operationMap), queryParams: queryParams) :
-      await LeanCloud._httpClient.put(path, data: _LCEncoder.encode(_operationMap), queryParams: queryParams);
+    Map response = objectId == null
+        ? await LeanCloud._httpClient.post(path,
+            data: _LCEncoder.encode(_operationMap), queryParams: queryParams)
+        : await LeanCloud._httpClient.put(path,
+            data: _LCEncoder.encode(_operationMap), queryParams: queryParams);
     _LCObjectData data = _LCObjectData.decode(response);
     _merge(data);
     return this;
@@ -362,12 +365,9 @@ class LCObject {
     }).toSet();
     List requestList = objects.map((item) {
       String path = 'classes/${item.className}/${item.objectId}';
-      return {
-        'path': path,
-        'method': 'DELETE'
-      };
+      return {'path': path, 'method': 'DELETE'};
     }).toList();
-    
+
     // 发送请求
     Map<String, dynamic> data = {
       'requests': _LCEncoder.encodeList(requestList)
@@ -375,19 +375,22 @@ class LCObject {
     await LeanCloud._httpClient.post('batch', data: data);
   }
 
-
   /// 子类化
-  static Map<Type, _LCSubclassInfo> subclassTypeMap = new Map<Type, _LCSubclassInfo>();
-  static Map<String, _LCSubclassInfo> subclassNameMap = new Map<String, _LCSubclassInfo>();
+  static Map<Type, _LCSubclassInfo> subclassTypeMap =
+      new Map<Type, _LCSubclassInfo>();
+  static Map<String, _LCSubclassInfo> subclassNameMap =
+      new Map<String, _LCSubclassInfo>();
 
   /// 注册子类
-  static void registerSubclass<T extends LCObject>(String className, Function constructor) {
-    _LCSubclassInfo subclassInfo = new _LCSubclassInfo(className, T, constructor);
+  static void registerSubclass<T extends LCObject>(
+      String className, Function constructor) {
+    _LCSubclassInfo subclassInfo =
+        new _LCSubclassInfo(className, T, constructor);
     subclassTypeMap[T] = subclassInfo;
     subclassNameMap[className] = subclassInfo;
   }
 
-  static LCObject _create(Type type, { String className }) {
+  static LCObject _create(Type type, {String className}) {
     if (subclassTypeMap.containsKey(type)) {
       _LCSubclassInfo subclassInfo = subclassTypeMap[type];
       return subclassInfo.constructor();

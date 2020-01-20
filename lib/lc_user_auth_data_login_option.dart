@@ -15,5 +15,5 @@ class LCUserAuthDataLoginOption {
     unionIdPlatform = 'weixin';
     asMainAccount = false;
     failOnNotExist = false;
-  } 
+  }
 }

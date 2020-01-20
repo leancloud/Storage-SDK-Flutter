@@ -18,10 +18,7 @@ class _LCRemoveOperation extends _LCOperation {
 
   @override
   encode() {
-    return {
-      '__op': 'Remove',
-      'objects': _LCEncoder.encodeList(valueList)
-    };
+    return {'__op': 'Remove', 'objects': _LCEncoder.encodeList(valueList)};
   }
 
   @override
