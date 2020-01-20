@@ -15,7 +15,8 @@ String toLCDateTimeString(DateTime dateTime) {
   int minute = dateTime.minute;
   int second = dateTime.second;
   int millisecond = dateTime.millisecond;
-  String y = (year >= -9999 && year <= 9999) ? _fourDigits(year) : _sixDigits(year);
+  String y =
+      (year >= -9999 && year <= 9999) ? _fourDigits(year) : _sixDigits(year);
   String m = _twoDigits(month);
   String d = _twoDigits(day);
   String h = _twoDigits(hour);

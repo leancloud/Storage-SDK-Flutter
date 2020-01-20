@@ -12,10 +12,7 @@ class _LCDecrementOperation extends _LCOperation {
 
   @override
   encode() {
-    return {
-      '__op': 'Decrement',
-      'amount': value
-    };
+    return {'__op': 'Decrement', 'amount': value};
   }
 
   @override
@@ -34,5 +31,4 @@ class _LCDecrementOperation extends _LCOperation {
   List getNewObjectList() {
     return null;
   }
-  
 }

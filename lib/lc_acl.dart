@@ -17,7 +17,7 @@ class LCACL {
     acl.setUserWriteAccess(owner, true);
     return acl;
   }
-  
+
   /// Public
   /// 是否公共可读
   bool getPublilcReadAccess() {

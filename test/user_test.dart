@@ -13,7 +13,8 @@ void main() {
       user.password = 'world';
       String email = '${DateTime.now().millisecondsSinceEpoch}@qq.com';
       user.email = email;
-      String mobile = '${(DateTime.now().millisecondsSinceEpoch / 100).round()}';
+      String mobile =
+          '${(DateTime.now().millisecondsSinceEpoch / 100).round()}';
       user.mobile = mobile;
       await user.signUp();
 
@@ -123,7 +124,7 @@ void main() {
       assert(LCUser.currentUser.objectId == userId);
       print(LCUser.currentUser.authData);
     });
-    
+
     test('associate auth data', () async {
       await LCUser.login('hello', 'world');
       Map<String, dynamic> authData = {
@@ -163,7 +164,8 @@ void main() {
       String unionId = '${DateTime.now().millisecondsSinceEpoch}';
       LCUserAuthDataLoginOption option = new LCUserAuthDataLoginOption();
       option.asMainAccount = true;
-      await LCUser.loginWithAuthDataAndUnionId(authData, 'weixin_app', unionId, option: option);
+      await LCUser.loginWithAuthDataAndUnionId(authData, 'weixin_app', unionId,
+          option: option);
       print(LCUser.currentUser.sessionToken);
       assert(LCUser.currentUser.sessionToken != null);
       String userId = LCUser.currentUser.objectId;
@@ -173,7 +175,9 @@ void main() {
       LCUser.logout();
       assert(LCUser.currentUser == null);
 
-      await LCUser.loginWithAuthDataAndUnionId(authData, 'weixin_mini_app', unionId, option: option);
+      await LCUser.loginWithAuthDataAndUnionId(
+          authData, 'weixin_mini_app', unionId,
+          option: option);
       print(LCUser.currentUser.sessionToken);
       assert(LCUser.currentUser.sessionToken != null);
       assert(LCUser.currentUser.objectId == userId);
@@ -188,7 +192,8 @@ void main() {
         'access_token': '${DateTime.now().millisecondsSinceEpoch}'
       };
       String unionId = '${DateTime.now().millisecondsSinceEpoch}';
-      await LCUser.currentUser.associateAuthDataAndUnionId(authData, 'qq', unionId);
+      await LCUser.currentUser
+          .associateAuthDataAndUnionId(authData, 'qq', unionId);
     });
   });
 }

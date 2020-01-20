@@ -16,10 +16,7 @@ class _LCAddRelationOperation extends _LCOperation {
 
   @override
   encode() {
-    return {
-      '__op': 'AddRelation',
-      'objects': _LCEncoder.encodeList(valueList)
-    };
+    return {'__op': 'AddRelation', 'objects': _LCEncoder.encodeList(valueList)};
   }
 
   @override
@@ -38,5 +35,4 @@ class _LCAddRelationOperation extends _LCOperation {
   List getNewObjectList() {
     return valueList;
   }
-  
 }

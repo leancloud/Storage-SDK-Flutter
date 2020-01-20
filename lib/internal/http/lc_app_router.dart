@@ -7,7 +7,7 @@ class _LCAppRouter {
 
   _LCAppRouter(this.appId, this.server) {
     if (!_isInternalApp(appId) && isNullOrEmpty(server)) {
-      throw('Please init with your server url.');
+      throw ('Please init with your server url.');
     }
   }
 
@@ -22,7 +22,7 @@ class _LCAppRouter {
     if (!_isInternalApp(appId)) {
       // 国内节点必须配置自定义域名
       // throw new LCError(code, message)
-      throw('Please init with your server url.');
+      throw ('Please init with your server url.');
     }
     // 向 App Router 请求地址
     if (_appServer == null || _appServer.isExpired) {
@@ -36,11 +36,10 @@ class _LCAppRouter {
     try {
       BaseOptions options = new BaseOptions(baseUrl: 'https://app-router.com/');
       Dio dio = new Dio(options);
-      dio.interceptors.add(new LogInterceptor(requestBody: true, responseBody: true));
+      dio.interceptors
+          .add(new LogInterceptor(requestBody: true, responseBody: true));
       String path = '2/route';
-      Map<String, dynamic> queryParams = {
-        'appId': appId
-      };
+      Map<String, dynamic> queryParams = {'appId': appId};
       Response response = await dio.get(path, queryParameters: queryParams);
       Map data = response.data;
       return _LCAppServer.fromJson(data);

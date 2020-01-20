@@ -38,5 +38,4 @@ class _LCAddUniqueOperation extends _LCOperation {
   List getNewObjectList() {
     return values.toList();
   }
-  
 }

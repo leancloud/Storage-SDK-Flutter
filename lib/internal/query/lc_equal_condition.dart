@@ -5,7 +5,7 @@ class _LCEqualCondition extends _LCQueryCondition {
   dynamic value;
 
   _LCEqualCondition(this.key, this.value);
-  
+
   @override
   bool equals(_LCQueryCondition other) {
     if (other is _LCEqualCondition) {
@@ -16,8 +16,6 @@ class _LCEqualCondition extends _LCQueryCondition {
 
   @override
   Map<String, dynamic> toMap() {
-    return {
-      key: _LCEncoder.encode(value)
-    };
+    return {key: _LCEncoder.encode(value)};
   }
 }

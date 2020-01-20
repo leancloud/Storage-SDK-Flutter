@@ -68,7 +68,10 @@ class LCFile extends LCObject {
 
   /// 保存
   @override
-  Future<LCFile> save({ bool fetchWhenSave = false, LCQuery<LCObject> query, void Function(int count, int total) onProgress }) async {
+  Future<LCFile> save(
+      {bool fetchWhenSave = false,
+      LCQuery<LCObject> query,
+      void Function(int count, int total) onProgress}) async {
     if (url != null) {
       // 外链方式
       await super.save();
@@ -85,10 +88,11 @@ class LCFile extends LCObject {
         await uploader.upload(onProgress);
       } else if (provider == 'qiniu') {
         // Qiniu
-        _LCQiniuUploader uploader = new _LCQiniuUploader(uploadUrl, token, key, data);
+        _LCQiniuUploader uploader =
+            new _LCQiniuUploader(uploadUrl, token, key, data);
         await uploader.upload(onProgress);
       } else {
-        throw('$provider not support.');
+        throw ('$provider not support.');
       }
       _LCObjectData objectData = _LCObjectData.decode(uploadToken);
       super._merge(objectData);
@@ -107,7 +111,8 @@ class LCFile extends LCObject {
   }
 
   /// 获取缩略图 url
-  String getThumbnailUrl(int width, int height, { int quality = 100, bool scaleToFit = true, String format = 'png' }) {
+  String getThumbnailUrl(int width, int height,
+      {int quality = 100, bool scaleToFit = true, String format = 'png'}) {
     int mode = scaleToFit ? 2 : 1;
     return '$url?imageView/$mode/w/$width/h/$height/q/$quality/format/$format';
   }

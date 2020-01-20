@@ -8,9 +8,7 @@ void main() {
     setUp(() => initNorthChina());
 
     test('call', () async {
-      Map response = await LCCloud.run('hello', params: {
-        'name': 'world'
-      });
+      Map response = await LCCloud.run('hello', params: {'name': 'world'});
       print(response['result']);
       assert(response['result'] == 'hello, world');
     });

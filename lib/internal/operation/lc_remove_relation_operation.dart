@@ -38,5 +38,4 @@ class _LCRemoveRelationOperation extends _LCOperation {
   List getNewObjectList() {
     return null;
   }
-  
 }

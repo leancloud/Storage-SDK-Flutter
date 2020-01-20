@@ -11,14 +11,14 @@ class _LCAppServer {
 
   bool get isExpired => expiredAt.compareTo(DateTime.now()) < 0;
 
-  _LCAppServer.fromJson(Map<String, dynamic> json) :
-    apiServer = _getSchemeUrl(json['api_server']),
-    pushServer = _getSchemeUrl(json['push_server']),
-    engineServer = _getSchemeUrl(json['engine_server']) {
-      int ttl = json['ttl'];
-      Duration validDuration = new Duration(seconds: ttl);
-      DateTime fetchedAt = DateTime.now();
-      expiredAt = fetchedAt.add(validDuration);
+  _LCAppServer.fromJson(Map<String, dynamic> json)
+      : apiServer = _getSchemeUrl(json['api_server']),
+        pushServer = _getSchemeUrl(json['push_server']),
+        engineServer = _getSchemeUrl(json['engine_server']) {
+    int ttl = json['ttl'];
+    Duration validDuration = new Duration(seconds: ttl);
+    DateTime fetchedAt = DateTime.now();
+    expiredAt = fetchedAt.add(validDuration);
   }
 
   static String _getSchemeUrl(String url) {

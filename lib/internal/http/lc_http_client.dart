@@ -17,59 +17,73 @@ class _LCHttpClient {
 
   _LCHttpClient(this.appId, this.appKey, this.server, this.version) {
     _appRouter = new _LCAppRouter(appId, server);
-    BaseOptions options = new BaseOptions(
-      headers: {
-        'X-LC-Id': appId,
-        'Content-Type': ContentType.parse('application/json')
-      });
+    BaseOptions options = new BaseOptions(headers: {
+      'X-LC-Id': appId,
+      'Content-Type': ContentType.parse('application/json')
+    });
     _dio = new Dio(options);
   }
 
   void enableLog() {
     if (_logInterceptor == null) {
-      _logInterceptor = new LogInterceptor(requestBody: true, responseBody: true);
+      _logInterceptor =
+          new LogInterceptor(requestBody: true, responseBody: true);
     }
     _dio.interceptors.add(_logInterceptor);
   }
 
-  Future get(String path, { Map<String, dynamic> headers, Map<String, dynamic> queryParams }) async {
+  Future get(String path,
+      {Map<String, dynamic> headers, Map<String, dynamic> queryParams}) async {
     await _refreshServer();
     Options options = _toOptions(headers);
     try {
-      Response response = await _dio.get(path, options: options, queryParameters: queryParams);
+      Response response =
+          await _dio.get(path, options: options, queryParameters: queryParams);
       return response.data;
     } on DioError catch (e) {
       _handleError(e);
     }
   }
 
-  Future post(String path, { Map<String, dynamic> headers, dynamic data, Map<String, dynamic> queryParams }) async {
+  Future post(String path,
+      {Map<String, dynamic> headers,
+      dynamic data,
+      Map<String, dynamic> queryParams}) async {
     await _refreshServer();
     Options options = _toOptions(headers);
     try {
-      Response response = await _dio.post(path, options: options, data: data, queryParameters: queryParams);
+      Response response = await _dio.post(path,
+          options: options, data: data, queryParameters: queryParams);
       return response.data;
     } on DioError catch (e) {
       _handleError(e);
     }
   }
 
-  Future put(String path, { Map<String, dynamic> headers, dynamic data, Map<String, dynamic> queryParams }) async {
+  Future put(String path,
+      {Map<String, dynamic> headers,
+      dynamic data,
+      Map<String, dynamic> queryParams}) async {
     await _refreshServer();
     Options options = _toOptions(headers);
     try {
-      Response response = await _dio.put(path, options: options, data: data, queryParameters: queryParams);
+      Response response = await _dio.put(path,
+          options: options, data: data, queryParameters: queryParams);
       return response.data;
     } on DioError catch (e) {
       _handleError(e);
     }
   }
 
-  Future delete(String path, { Map<String, dynamic> headers, dynamic data, Map<String, dynamic> queryParams }) async {
+  Future delete(String path,
+      {Map<String, dynamic> headers,
+      dynamic data,
+      Map<String, dynamic> queryParams}) async {
     await _refreshServer();
     Options options = _toOptions(headers);
     try {
-      Response response = await _dio.delete(path, options: options, data: data, queryParameters: queryParams);
+      Response response = await _dio.delete(path,
+          options: options, data: data, queryParameters: queryParams);
       return response.data;
     } on DioError catch (e) {
       _handleError(e);
@@ -82,7 +96,7 @@ class _LCHttpClient {
     _dio.options.baseUrl = '$apiServer/$version/';
   }
 
-  Options _toOptions(Map<String, dynamic> headers) {    
+  Options _toOptions(Map<String, dynamic> headers) {
     if (headers == null) {
       headers = new Map<String, dynamic>();
     }

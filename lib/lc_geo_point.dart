@@ -42,8 +42,8 @@ class LCGeoPoint {
     double deltaLong = long1rad - long2rad;
     double sinDeltaLatDiv2 = sin(deltaLat / 2);
     double sinDeltaLongDiv2 = sin(deltaLong / 2);
-    double a = sinDeltaLatDiv2 * sinDeltaLatDiv2 + 
-      cos(lat1rad) * cos(lat2rad) * sinDeltaLongDiv2 * sinDeltaLongDiv2;
+    double a = sinDeltaLatDiv2 * sinDeltaLatDiv2 +
+        cos(lat1rad) * cos(lat2rad) * sinDeltaLongDiv2 * sinDeltaLongDiv2;
     a = min(1.0, a);
     return 2 * sin(sqrt(a));
   }

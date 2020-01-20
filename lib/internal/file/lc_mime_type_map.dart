@@ -36,8 +36,10 @@ class _LCMimeTypeMap {
     "dmg": "application/octet-stream",
     "dms": "application/octet-stream",
     "doc": "application/msword",
-    "docx": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-    "dotx": "application/vnd.openxmlformats-officedocument.wordprocessingml.template",
+    "docx":
+        "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    "dotx":
+        "application/vnd.openxmlformats-officedocument.wordprocessingml.template",
     "docm": "application/vnd.ms-word.document.macroEnabled.12",
     "dotm": "application/vnd.ms-word.template.macroEnabled.12",
     "dtd": "application/xml-dtd",
@@ -116,9 +118,12 @@ class _LCMimeTypeMap {
     "pntg": "image/x-macpaint",
     "ppm": "image/x-portable-pixmap",
     "ppt": "application/vnd.ms-powerpoint",
-    "pptx": "application/vnd.openxmlformats-officedocument.presentationml.presentation",
-    "potx": "application/vnd.openxmlformats-officedocument.presentationml.template",
-    "ppsx": "application/vnd.openxmlformats-officedocument.presentationml.slideshow",
+    "pptx":
+        "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+    "potx":
+        "application/vnd.openxmlformats-officedocument.presentationml.template",
+    "ppsx":
+        "application/vnd.openxmlformats-officedocument.presentationml.slideshow",
     "ppam": "application/vnd.ms-powerpoint.addin.macroEnabled.12",
     "pptm": "application/vnd.ms-powerpoint.presentation.macroEnabled.12",
     "potm": "application/vnd.ms-powerpoint.template.macroEnabled.12",
@@ -187,7 +192,8 @@ class _LCMimeTypeMap {
     "xpm": "image/x-xpixmap",
     "xsl": "application/xml",
     "xlsx": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-    "xltx": "application/vnd.openxmlformats-officedocument.spreadsheetml.template",
+    "xltx":
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.template",
     "xlsm": "application/vnd.ms-excel.sheet.macroEnabled.12",
     "xltm": "application/vnd.ms-excel.template.macroEnabled.12",
     "xlam": "application/vnd.ms-excel.addin.macroEnabled.12",

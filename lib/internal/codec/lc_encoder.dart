@@ -38,17 +38,11 @@ class _LCEncoder {
 
   static dynamic encodeDateTime(DateTime dateTime) {
     DateTime dt = dateTime.toUtc();
-    return {
-        '__type': 'Date',
-        'iso': toLCDateTimeString(dt)
-      };
+    return {'__type': 'Date', 'iso': toLCDateTimeString(dt)};
   }
 
   static dynamic encodeBytes(Uint8List bytes) {
-    return {
-        '__type': 'Bytes',
-        'base64': base64Encode(bytes)
-      };
+    return {'__type': 'Bytes', 'base64': base64Encode(bytes)};
   }
 
   static dynamic encodeList(List list) {
@@ -94,10 +88,7 @@ class _LCEncoder {
   }
 
   static dynamic encodeRelation(LCRelation relation) {
-    return {
-      '__type': 'Relation',
-      'className': relation.targetClass
-    };
+    return {'__type': 'Relation', 'className': relation.targetClass};
   }
 
   static dynamic encodeGeoPoint(LCGeoPoint point) {
