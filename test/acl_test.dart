@@ -10,6 +10,8 @@ void main() {
     test('private read and write', () async {
       LCObject account = new LCObject('Account');
       LCACL acl = new LCACL();
+      acl.setPublicReadAccess(false);
+      acl.setPublicWriteAccess(false);
       account.acl = acl;
       account['balance'] = 1024;
       await account.save();

@@ -151,5 +151,31 @@ void main() {
       await LCUser.currentUser.updatePassword('world', 'newWorld');
       await LCUser.currentUser.updatePassword('newWorld', 'world');
     });
+
+    test('login with auth data and union id', () async {
+      Map<String, dynamic> authData = {
+        'expires_in': 7200,
+        'openid': '${DateTime.now().millisecondsSinceEpoch}',
+        'access_token': '${DateTime.now().millisecondsSinceEpoch}'
+      };
+      String unionId = '${DateTime.now().millisecondsSinceEpoch}';
+      LCUserAuthDataLoginOption option = new LCUserAuthDataLoginOption();
+      option.asMainAccount = true;
+      await LCUser.loginWithAuthDataAndUnionId(authData, 'weixin_app', unionId, option: option);
+      print(LCUser.currentUser.sessionToken);
+      assert(LCUser.currentUser.sessionToken != null);
+      String userId = LCUser.currentUser.objectId;
+      print('userId: $userId');
+      print(LCUser.currentUser.authData);
+
+      LCUser.logout();
+      assert(LCUser.currentUser == null);
+
+      await LCUser.loginWithAuthDataAndUnionId(authData, 'weixin_mini_app', unionId, option: option);
+      print(LCUser.currentUser.sessionToken);
+      assert(LCUser.currentUser.sessionToken != null);
+      assert(LCUser.currentUser.objectId == userId);
+      print(LCUser.currentUser.authData);
+    });
   });
 }
