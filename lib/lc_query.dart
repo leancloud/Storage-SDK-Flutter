@@ -100,6 +100,18 @@ class LCQuery<T extends LCObject> {
     return this;
   }
 
+  /// 前缀
+  LCQuery<T> whereStartsWith(String key, String prefix) {
+    condition.whereStartsWith(key, prefix);
+    return this;
+  }
+
+  /// 后缀
+  LCQuery<T> whereEndsWith(String key, String suffix) {
+    condition.whereEndsWith(key, suffix);
+    return this;
+  }
+
   /// 按 key 升序
   LCQuery<T> orderBy(String key) {
     condition.orderBy(key);
