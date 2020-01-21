@@ -44,10 +44,6 @@ class _LCCompositionalCondition extends _LCQueryCondition {
     addCondition(key, '\$all', values);
   }
 
-  void whereContains(String key, String subString) {
-    addCondition(key, '\$regex', subString);
-  }
-
   void whereExists(String key) {
     addCondition(key, '\$exists', true);
   }
@@ -93,11 +89,15 @@ class _LCCompositionalCondition extends _LCQueryCondition {
   }
 
   void whereStartsWith(String key, String prefix) {
-    addCondition(key, '\$regex', '^$prefix');
+    addCondition(key, '\$regex', '^$prefix.*');
   }
 
   void whereEndsWith(String key, String suffix) {
-    addCondition(key, '\$regex', '$suffix\$');
+    addCondition(key, '\$regex', '.*$suffix\$');
+  }
+
+  void whereContains(String key, String subString) {
+    addCondition(key, '\$regex', '.*$subString.*');
   }
 
   /// 筛选条件

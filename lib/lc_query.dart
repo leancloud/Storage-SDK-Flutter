@@ -34,12 +34,6 @@ class LCQuery<T extends LCObject> {
     return this;
   }
 
-  /// 字符串包含
-  LCQuery<T> whereContains(String key, String subString) {
-    condition.whereContains(key, subString);
-    return this;
-  }
-
   /// 存在
   LCQuery<T> whereExists(String key) {
     condition.whereExists(key);
@@ -110,6 +104,12 @@ class LCQuery<T extends LCObject> {
   /// 后缀
   LCQuery<T> whereEndsWith(String key, String suffix) {
     condition.whereEndsWith(key, suffix);
+    return this;
+  }
+
+  /// 字符串包含
+  LCQuery<T> whereContains(String key, String subString) {
+    condition.whereContains(key, subString);
     return this;
   }
 
