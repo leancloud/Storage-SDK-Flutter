@@ -7,6 +7,8 @@ class _LCHttpClient {
 
   String server;
 
+  String sdkVersion;
+
   String version;
 
   _LCAppRouter _appRouter;
@@ -15,11 +17,13 @@ class _LCHttpClient {
 
   LogInterceptor _logInterceptor;
 
-  _LCHttpClient(this.appId, this.appKey, this.server, this.version) {
+  _LCHttpClient(
+      this.appId, this.appKey, this.server, this.sdkVersion, this.version) {
     _appRouter = new _LCAppRouter(appId, server);
     BaseOptions options = new BaseOptions(headers: {
       'X-LC-Id': appId,
-      'Content-Type': ContentType.parse('application/json')
+      'Content-Type': ContentType.parse('application/json'),
+      'User-Agent': 'LeanCloud-Flutter-SDK/$sdkVersion'
     });
     _dio = new Dio(options);
   }
