@@ -65,7 +65,7 @@ part 'lc_user.dart';
 part 'lc_user_auth_data_login_option.dart';
 part 'lc_logger.dart';
 
-const String SDKVersion = '0.1.0';
+const String SDKVersion = '0.1.1';
 
 const String APIVersion = '1.1';
 
