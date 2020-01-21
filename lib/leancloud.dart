@@ -67,7 +67,7 @@ part 'lc_logger.dart';
 
 const String SDKVersion = '0.1.0';
 
-const String HttpVersion = '1.1';
+const String APIVersion = '1.1';
 
 /// SDK 入口
 class LeanCloud {
@@ -94,6 +94,6 @@ class LeanCloud {
     LCObject.registerSubclass<LCRole>(LCRole.ClassName, () => new LCRole());
 
     _httpClient =
-        new _LCHttpClient(appId, appKey, server, SDKVersion, HttpVersion);
+        new _LCHttpClient(appId, appKey, server, SDKVersion, APIVersion);
   }
 }

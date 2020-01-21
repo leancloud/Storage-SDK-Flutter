@@ -9,7 +9,7 @@ class _LCHttpClient {
 
   String sdkVersion;
 
-  String version;
+  String apiVersion;
 
   _LCAppRouter _appRouter;
 
@@ -18,7 +18,7 @@ class _LCHttpClient {
   LogInterceptor _logInterceptor;
 
   _LCHttpClient(
-      this.appId, this.appKey, this.server, this.sdkVersion, this.version) {
+      this.appId, this.appKey, this.server, this.sdkVersion, this.apiVersion) {
     _appRouter = new _LCAppRouter(appId, server);
     BaseOptions options = new BaseOptions(headers: {
       'X-LC-Id': appId,
@@ -97,7 +97,7 @@ class _LCHttpClient {
   Future _refreshServer() async {
     // 以防 server 过期
     String apiServer = await _appRouter.getApiServer();
-    _dio.options.baseUrl = '$apiServer/$version/';
+    _dio.options.baseUrl = '$apiServer/$apiVersion/';
   }
 
   Options _toOptions(Map<String, dynamic> headers) {
