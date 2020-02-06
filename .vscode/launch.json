@@ -5,16 +5,10 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Test",
+      "name": "Dart",
       "type": "dart",
       "request": "launch",
       "program": "./test/query_test.dart"
-    },
-    {
-      "name": "Example",
-      "type": "dart",
-      "request": "launch",
-      "program": "./example/lib/main.dart"
     }
   ]
 }
