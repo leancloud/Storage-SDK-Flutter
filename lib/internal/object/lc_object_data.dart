@@ -34,4 +34,22 @@ class _LCObjectData {
     });
     return result;
   }
+
+  static Map<String, dynamic> encode(_LCObjectData objectData) {
+    if (objectData == null) {
+      return null;
+    }
+    Map<String, dynamic> data = {
+      'className': objectData.className,
+      'objectId': objectData.objectId,
+      'createdAt': objectData.createdAt.toString(),
+      'updatedAt': objectData.updatedAt.toString()
+    };
+    if (objectData.customPropertyMap != null) {
+      objectData.customPropertyMap.forEach((k, v) {
+        data[k] = _LCEncoder.encode(v);
+      });
+    }
+    return data;
+  }
 }

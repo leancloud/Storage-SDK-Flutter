@@ -1,5 +1,7 @@
 part of leancloud_storage;
 
+const String CurrentUserKey = 'current_user';
+
 /// 用户类
 class LCUser extends LCObject {
   static const String ClassName = '_User';
@@ -45,6 +47,12 @@ class LCUser extends LCObject {
 
   LCUser() : super(LCUser.ClassName);
 
+  static LCUser _fromObjectData(_LCObjectData objectData) {
+    LCUser user = new LCUser();
+    user._merge(objectData);
+    return user;
+  }
+
   /// 注册
   Future<LCUser> signUp() async {
     if (isNullOrEmpty(username)) {
@@ -58,6 +66,7 @@ class LCUser extends LCObject {
     }
     await super.save();
     currentUser = this;
+    await _saveToLocal();
     return this;
   }
 
@@ -86,8 +95,8 @@ class LCUser extends LCObject {
     Map response = await LeanCloud._httpClient.post('usersByMobilePhone',
         data: {'mobilePhoneNumber': mobile, 'smsCode': code});
     _LCObjectData objectData = _LCObjectData.decode(response);
-    currentUser = new LCUser();
-    currentUser._merge(objectData);
+    currentUser = LCUser._fromObjectData(objectData);
+    await _saveToLocal();
     return currentUser;
   }
 
@@ -186,8 +195,8 @@ class LCUser extends LCObject {
     Map response =
         await LeanCloud._httpClient.post(path, data: {'authData': authData});
     _LCObjectData objectData = _LCObjectData.decode(response);
-    currentUser = new LCUser();
-    currentUser._merge(objectData);
+    currentUser = LCUser._fromObjectData(objectData);
+    await _saveToLocal();
     return currentUser;
   }
 
@@ -288,8 +297,8 @@ class LCUser extends LCObject {
     Map response =
         await LeanCloud._httpClient.get('users/me', headers: headers);
     _LCObjectData objectData = _LCObjectData.decode(response);
-    currentUser = new LCUser();
-    currentUser._merge(objectData);
+    currentUser = LCUser._fromObjectData(objectData);
+    await _saveToLocal();
     return currentUser;
   }
 
@@ -343,8 +352,12 @@ class LCUser extends LCObject {
   }
 
   /// 注销登录
-  static void logout() {
+  static Future logout() async {
     currentUser = null;
+    if (isMobilePlatform()) {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      prefs.remove(CurrentUserKey);
+    }
   }
 
   /// 是否是有效登录
@@ -364,13 +377,43 @@ class LCUser extends LCObject {
   static Future<LCUser> _login(Map<String, dynamic> data) async {
     Map response = await LeanCloud._httpClient.post('login', data: data);
     _LCObjectData objectData = _LCObjectData.decode(response);
-    currentUser = new LCUser();
-    currentUser._merge(objectData);
+    currentUser = LCUser._fromObjectData(objectData);
+    await _saveToLocal();
     return currentUser;
+  }
+
+  static Future _saveToLocal() async {
+    if (isMobilePlatform()) {
+      try {
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        String userData = jsonEncode(_LCObjectData.encode(currentUser._data));
+        await prefs.setString(CurrentUserKey, userData);
+      } on Error catch (e) {
+        LCLogger.error(e.toString());
+      }
+    }
   }
 
   /// 得到 LCUser 类型的查询对象
   static LCQuery<LCUser> getQuery() {
     return new LCQuery<LCUser>(ClassName);
+  }
+
+  /// 从本地加载用户数据
+  static Future<LCUser> loadFromLocal() async {
+    if (currentUser != null) {
+      return currentUser;
+    }
+    if (isMobilePlatform()) {
+      try {
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        String userData = prefs.getString(CurrentUserKey);
+        _LCObjectData objectData = _LCObjectData.decode(jsonDecode(userData));
+        currentUser = LCUser._fromObjectData(objectData);
+      } on Error catch (e) {
+        LCLogger.error(e.toString());
+      }
+    }
+    return currentUser;
   }
 }
