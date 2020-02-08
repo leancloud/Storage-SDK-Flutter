@@ -43,7 +43,7 @@ class LCUser extends LCObject {
   set authData(Map value) => this['authData'] = value;
 
   /// 当前用户
-  static LCUser currentUser;
+  static LCUser _currentUser;
 
   LCUser() : super(LCUser.ClassName);
 
@@ -65,7 +65,7 @@ class LCUser extends LCObject {
       throw ArgumentError('Cannot sign up a user that already exists.');
     }
     await super.save();
-    currentUser = this;
+    _currentUser = this;
     await _saveToLocal();
     return this;
   }
@@ -95,9 +95,9 @@ class LCUser extends LCObject {
     Map response = await LeanCloud._httpClient.post('usersByMobilePhone',
         data: {'mobilePhoneNumber': mobile, 'smsCode': code});
     _LCObjectData objectData = _LCObjectData.decode(response);
-    currentUser = LCUser._fromObjectData(objectData);
+    _currentUser = LCUser._fromObjectData(objectData);
     await _saveToLocal();
-    return currentUser;
+    return _currentUser;
   }
 
   /// 以账号和密码登陆
@@ -195,9 +195,9 @@ class LCUser extends LCObject {
     Map response =
         await LeanCloud._httpClient.post(path, data: {'authData': authData});
     _LCObjectData objectData = _LCObjectData.decode(response);
-    currentUser = LCUser._fromObjectData(objectData);
+    _currentUser = LCUser._fromObjectData(objectData);
     await _saveToLocal();
-    return currentUser;
+    return _currentUser;
   }
 
   static void _mergeAuthData(Map<String, dynamic> authData, String unionId,
@@ -297,9 +297,9 @@ class LCUser extends LCObject {
     Map response =
         await LeanCloud._httpClient.get('users/me', headers: headers);
     _LCObjectData objectData = _LCObjectData.decode(response);
-    currentUser = LCUser._fromObjectData(objectData);
+    _currentUser = LCUser._fromObjectData(objectData);
     await _saveToLocal();
-    return currentUser;
+    return _currentUser;
   }
 
   /// 请求使用邮箱重置密码
@@ -353,7 +353,7 @@ class LCUser extends LCObject {
 
   /// 注销登录
   static Future logout() async {
-    currentUser = null;
+    _currentUser = null;
     if (isMobilePlatform()) {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       prefs.remove(CurrentUserKey);
@@ -377,16 +377,16 @@ class LCUser extends LCObject {
   static Future<LCUser> _login(Map<String, dynamic> data) async {
     Map response = await LeanCloud._httpClient.post('login', data: data);
     _LCObjectData objectData = _LCObjectData.decode(response);
-    currentUser = LCUser._fromObjectData(objectData);
+    _currentUser = LCUser._fromObjectData(objectData);
     await _saveToLocal();
-    return currentUser;
+    return _currentUser;
   }
 
   static Future _saveToLocal() async {
     if (isMobilePlatform()) {
       try {
         SharedPreferences prefs = await SharedPreferences.getInstance();
-        String userData = jsonEncode(_LCObjectData.encode(currentUser._data));
+        String userData = jsonEncode(_LCObjectData.encode(_currentUser._data));
         await prefs.setString(CurrentUserKey, userData);
       } on Error catch (e) {
         LCLogger.error(e.toString());
@@ -399,21 +399,21 @@ class LCUser extends LCObject {
     return new LCQuery<LCUser>(ClassName);
   }
 
-  /// 从本地加载用户数据
-  static Future<LCUser> loadFromLocal() async {
-    if (currentUser != null) {
-      return currentUser;
+  /// 获取当前用户
+  static Future<LCUser> getCurrent() async {
+    if (_currentUser != null) {
+      return _currentUser;
     }
     if (isMobilePlatform()) {
       try {
         SharedPreferences prefs = await SharedPreferences.getInstance();
         String userData = prefs.getString(CurrentUserKey);
         _LCObjectData objectData = _LCObjectData.decode(jsonDecode(userData));
-        currentUser = LCUser._fromObjectData(objectData);
+        _currentUser = LCUser._fromObjectData(objectData);
       } on Error catch (e) {
         LCLogger.error(e.toString());
       }
     }
-    return currentUser;
+    return _currentUser;
   }
 }

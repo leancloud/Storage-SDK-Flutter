@@ -30,7 +30,7 @@ void main() {
 
     test('login', () async {
       await LCUser.login('hello', 'world');
-      LCUser current = LCUser.currentUser;
+      LCUser current = await LCUser.getCurrent();
       assert(current.objectId != null);
       assert(!current.emailVerified);
       assert(!current.mobileVerified);
@@ -45,7 +45,7 @@ void main() {
 
     test('login by email', () async {
       await LCUser.loginByEmail('171253484@qq.com', 'world');
-      LCUser current = LCUser.currentUser;
+      LCUser current = await LCUser.getCurrent();
       assert(current.objectId != null);
     });
 
@@ -66,7 +66,7 @@ void main() {
     test('login by session token', () async {
       String sessionToken = 'luo2fpl4qij2050e7enqfz173';
       await LCUser.becomeWithSessionToken(sessionToken);
-      LCUser current = LCUser.currentUser;
+      LCUser current = await LCUser.getCurrent();
       assert(current.objectId != null);
     });
 
@@ -94,7 +94,7 @@ void main() {
     test('relate object', () async {
       await LCUser.loginByMobilePhoneNumber('15101006007', '112358');
       LCObject account = new LCObject('Account');
-      account['user'] = LCUser.currentUser;
+      account['user'] = await LCUser.getCurrent();
       await account.save();
     });
 
@@ -108,51 +108,52 @@ void main() {
         'openid': '${DateTime.now().millisecondsSinceEpoch}',
         'access_token': '${DateTime.now().millisecondsSinceEpoch}'
       };
-      await LCUser.loginWithAuthData(authData, 'weixin');
-      print(LCUser.currentUser.sessionToken);
-      assert(LCUser.currentUser.sessionToken != null);
-      String userId = LCUser.currentUser.objectId;
+      LCUser currentUser = await LCUser.loginWithAuthData(authData, 'weixin');
+      print(currentUser.sessionToken);
+      assert(currentUser.sessionToken != null);
+      String userId = currentUser.objectId;
       print('userId: $userId');
-      print(LCUser.currentUser.authData);
+      print(currentUser.authData);
 
-      LCUser.logout();
-      assert(LCUser.currentUser == null);
+      await LCUser.logout();
+      currentUser = await LCUser.getCurrent();
+      assert(currentUser == null);
 
-      await LCUser.loginWithAuthData(authData, 'weixin');
-      print(LCUser.currentUser.sessionToken);
-      assert(LCUser.currentUser.sessionToken != null);
-      assert(LCUser.currentUser.objectId == userId);
-      print(LCUser.currentUser.authData);
+      currentUser = await LCUser.loginWithAuthData(authData, 'weixin');
+      print(currentUser.sessionToken);
+      assert(currentUser.sessionToken != null);
+      assert(currentUser.objectId == userId);
+      print(currentUser.authData);
     });
 
     test('associate auth data', () async {
-      await LCUser.login('hello', 'world');
+      LCUser currentUser = await LCUser.login('hello', 'world');
       Map<String, dynamic> authData = {
         'expires_in': 7200,
         'openid': '${DateTime.now().millisecondsSinceEpoch}',
         'access_token': '${DateTime.now().millisecondsSinceEpoch}'
       };
-      await LCUser.currentUser.associateAuthData(authData, 'weixin');
-      print(LCUser.currentUser.authData);
-      print(LCUser.currentUser.authData['weixin']);
+      await currentUser.associateAuthData(authData, 'weixin');
+      print(currentUser.authData);
+      print(currentUser.authData['weixin']);
     });
 
     test('disassociate auth data', () async {
-      await LCUser.login('hello', 'world');
-      await LCUser.currentUser.disassociateWithAuthData('weixin');
+      LCUser currentUser = await LCUser.login('hello', 'world');
+      await currentUser.disassociateWithAuthData('weixin');
     });
 
     test('is authenticated', () async {
-      await LCUser.login('hello', 'world');
-      bool isAuthenticated = await LCUser.currentUser.isAuthenticated();
+      LCUser currentUser = await LCUser.login('hello', 'world');
+      bool isAuthenticated = await currentUser.isAuthenticated();
       print(isAuthenticated);
       assert(isAuthenticated);
     });
 
     test('update password', () async {
-      await LCUser.login('hello', 'world');
-      await LCUser.currentUser.updatePassword('world', 'newWorld');
-      await LCUser.currentUser.updatePassword('newWorld', 'world');
+      LCUser currentUser = await LCUser.login('hello', 'world');
+      await currentUser.updatePassword('world', 'newWorld');
+      await currentUser.updatePassword('newWorld', 'world');
     });
 
     test('login with auth data and union id', () async {
@@ -164,36 +165,37 @@ void main() {
       String unionId = '${DateTime.now().millisecondsSinceEpoch}';
       LCUserAuthDataLoginOption option = new LCUserAuthDataLoginOption();
       option.asMainAccount = true;
-      await LCUser.loginWithAuthDataAndUnionId(authData, 'weixin_app', unionId,
+      LCUser currentUser = await LCUser.loginWithAuthDataAndUnionId(
+          authData, 'weixin_app', unionId,
           option: option);
-      print(LCUser.currentUser.sessionToken);
-      assert(LCUser.currentUser.sessionToken != null);
-      String userId = LCUser.currentUser.objectId;
+      print(currentUser.sessionToken);
+      assert(currentUser.sessionToken != null);
+      String userId = currentUser.objectId;
       print('userId: $userId');
-      print(LCUser.currentUser.authData);
+      print(currentUser.authData);
 
-      LCUser.logout();
-      assert(LCUser.currentUser == null);
+      await LCUser.logout();
+      currentUser = await LCUser.getCurrent();
+      assert(currentUser == null);
 
-      await LCUser.loginWithAuthDataAndUnionId(
+      currentUser = await LCUser.loginWithAuthDataAndUnionId(
           authData, 'weixin_mini_app', unionId,
           option: option);
-      print(LCUser.currentUser.sessionToken);
-      assert(LCUser.currentUser.sessionToken != null);
-      assert(LCUser.currentUser.objectId == userId);
-      print(LCUser.currentUser.authData);
+      print(currentUser.sessionToken);
+      assert(currentUser.sessionToken != null);
+      assert(currentUser.objectId == userId);
+      print(currentUser.authData);
     });
 
     test('associate auth data with union id', () async {
-      await LCUser.login('hello', 'world');
+      LCUser currentUser = await LCUser.login('hello', 'world');
       Map<String, dynamic> authData = {
         'expires_in': 7200,
         'openid': '${DateTime.now().millisecondsSinceEpoch}',
         'access_token': '${DateTime.now().millisecondsSinceEpoch}'
       };
       String unionId = '${DateTime.now().millisecondsSinceEpoch}';
-      await LCUser.currentUser
-          .associateAuthDataAndUnionId(authData, 'qq', unionId);
+      await currentUser.associateAuthDataAndUnionId(authData, 'qq', unionId);
     });
   });
 }

@@ -22,13 +22,14 @@ void main() {
     test('user read and write', () async {
       await LCUser.login('hello', 'world');
       LCObject account = new LCObject('Account');
-      LCACL acl = LCACL.createWithOwner(LCUser.currentUser);
+      LCUser currentUser = await LCUser.getCurrent();
+      LCACL acl = LCACL.createWithOwner(currentUser);
       account.acl = acl;
       account['balance'] = 512;
       await account.save();
 
-      assert(acl.getUserReadAccess(LCUser.currentUser) == true);
-      assert(acl.getUserWriteAccess(LCUser.currentUser) == true);
+      assert(acl.getUserReadAccess(currentUser) == true);
+      assert(acl.getUserWriteAccess(currentUser) == true);
 
       LCQuery<LCObject> query = new LCQuery('Account');
       LCObject result = await query.get(account.objectId);
