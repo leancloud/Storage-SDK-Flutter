@@ -1,3 +1,12 @@
+## [0.1.2] - 版本更新
+
+- 支持 iOS/Android 环境下保存登录用户数据
+- 重构获取当前用户接口为异步方法
+
+```dart
+LCUser currentUser = await LCUser.getCurrent();
+```
+
 ## [0.1.1] - 版本更新
 
 - 完善时间，时区相关实现
