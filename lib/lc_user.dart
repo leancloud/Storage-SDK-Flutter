@@ -1,5 +1,7 @@
 part of leancloud_storage;
 
+const String CurrentUserKey = 'current_user';
+
 /// 用户类
 class LCUser extends LCObject {
   static const String ClassName = '_User';
@@ -41,9 +43,15 @@ class LCUser extends LCObject {
   set authData(Map value) => this['authData'] = value;
 
   /// 当前用户
-  static LCUser currentUser;
+  static LCUser _currentUser;
 
   LCUser() : super(LCUser.ClassName);
+
+  static LCUser _fromObjectData(_LCObjectData objectData) {
+    LCUser user = new LCUser();
+    user._merge(objectData);
+    return user;
+  }
 
   /// 注册
   Future<LCUser> signUp() async {
@@ -57,7 +65,8 @@ class LCUser extends LCObject {
       throw ArgumentError('Cannot sign up a user that already exists.');
     }
     await super.save();
-    currentUser = this;
+    _currentUser = this;
+    await _saveToLocal();
     return this;
   }
 
@@ -86,9 +95,9 @@ class LCUser extends LCObject {
     Map response = await LeanCloud._httpClient.post('usersByMobilePhone',
         data: {'mobilePhoneNumber': mobile, 'smsCode': code});
     _LCObjectData objectData = _LCObjectData.decode(response);
-    currentUser = new LCUser();
-    currentUser._merge(objectData);
-    return currentUser;
+    _currentUser = LCUser._fromObjectData(objectData);
+    await _saveToLocal();
+    return _currentUser;
   }
 
   /// 以账号和密码登陆
@@ -186,9 +195,9 @@ class LCUser extends LCObject {
     Map response =
         await LeanCloud._httpClient.post(path, data: {'authData': authData});
     _LCObjectData objectData = _LCObjectData.decode(response);
-    currentUser = new LCUser();
-    currentUser._merge(objectData);
-    return currentUser;
+    _currentUser = LCUser._fromObjectData(objectData);
+    await _saveToLocal();
+    return _currentUser;
   }
 
   static void _mergeAuthData(Map<String, dynamic> authData, String unionId,
@@ -288,9 +297,9 @@ class LCUser extends LCObject {
     Map response =
         await LeanCloud._httpClient.get('users/me', headers: headers);
     _LCObjectData objectData = _LCObjectData.decode(response);
-    currentUser = new LCUser();
-    currentUser._merge(objectData);
-    return currentUser;
+    _currentUser = LCUser._fromObjectData(objectData);
+    await _saveToLocal();
+    return _currentUser;
   }
 
   /// 请求使用邮箱重置密码
@@ -343,8 +352,12 @@ class LCUser extends LCObject {
   }
 
   /// 注销登录
-  static void logout() {
-    currentUser = null;
+  static Future logout() async {
+    _currentUser = null;
+    if (isMobilePlatform()) {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      prefs.remove(CurrentUserKey);
+    }
   }
 
   /// 是否是有效登录
@@ -364,13 +377,43 @@ class LCUser extends LCObject {
   static Future<LCUser> _login(Map<String, dynamic> data) async {
     Map response = await LeanCloud._httpClient.post('login', data: data);
     _LCObjectData objectData = _LCObjectData.decode(response);
-    currentUser = new LCUser();
-    currentUser._merge(objectData);
-    return currentUser;
+    _currentUser = LCUser._fromObjectData(objectData);
+    await _saveToLocal();
+    return _currentUser;
+  }
+
+  static Future _saveToLocal() async {
+    if (isMobilePlatform()) {
+      try {
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        String userData = jsonEncode(_LCObjectData.encode(_currentUser._data));
+        await prefs.setString(CurrentUserKey, userData);
+      } on Error catch (e) {
+        LCLogger.error(e.toString());
+      }
+    }
   }
 
   /// 得到 LCUser 类型的查询对象
   static LCQuery<LCUser> getQuery() {
     return new LCQuery<LCUser>(ClassName);
+  }
+
+  /// 获取当前用户
+  static Future<LCUser> getCurrent() async {
+    if (_currentUser != null) {
+      return _currentUser;
+    }
+    if (isMobilePlatform()) {
+      try {
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        String userData = prefs.getString(CurrentUserKey);
+        _LCObjectData objectData = _LCObjectData.decode(jsonDecode(userData));
+        _currentUser = LCUser._fromObjectData(objectData);
+      } on Error catch (e) {
+        LCLogger.error(e.toString());
+      }
+    }
+    return _currentUser;
   }
 }

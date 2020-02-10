@@ -8,13 +8,13 @@ void main() {
     setUp(() => initNorthChina());
 
     test('new role', () async {
-      await LCUser.login('game', 'play');
+      LCUser currentUser = await LCUser.login('game', 'play');
       LCACL acl = new LCACL();
       acl.setPublicReadAccess(true);
-      acl.setUserWriteAccess(LCUser.currentUser, true);
+      acl.setUserWriteAccess(currentUser, true);
       String name = 'role_${DateTime.now().millisecondsSinceEpoch}';
       LCRole role = LCRole.create(name, acl);
-      role.addRelation('users', LCUser.currentUser);
+      role.addRelation('users', currentUser);
       await role.save();
     });
 

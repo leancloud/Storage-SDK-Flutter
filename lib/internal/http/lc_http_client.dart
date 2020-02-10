@@ -109,8 +109,9 @@ class _LCHttpClient {
     Digest digest = md5.convert(data);
     String sign = hex.encode(digest.bytes);
     headers['X-LC-Sign'] = '$sign,$timestamp';
-    if (LCUser.currentUser != null) {
-      headers['X-LC-Session'] = LCUser.currentUser.sessionToken;
+    LCUser currentUser = LCUser._currentUser;
+    if (currentUser != null) {
+      headers['X-LC-Session'] = currentUser.sessionToken;
     }
     return new Options(headers: headers);
   }

@@ -8,6 +8,7 @@ import 'dart:math';
 import 'package:dio/dio.dart';
 import 'package:convert/convert.dart';
 import 'package:crypto/crypto.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 /// 编解码
 part 'internal/codec/lc_decoder.dart';

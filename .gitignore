@@ -76,3 +76,4 @@ build/
 
 .VSCodeCounter/
 coverage/
+.vscode/
