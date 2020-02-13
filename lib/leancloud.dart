@@ -9,6 +9,7 @@ import 'package:dio/dio.dart';
 import 'package:convert/convert.dart';
 import 'package:crypto/crypto.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:dio_http_cache/dio_http_cache.dart';
 
 /// 编解码
 part 'internal/codec/lc_decoder.dart';
@@ -60,6 +61,7 @@ part 'lc_file.dart';
 part 'lc_geo_point.dart';
 part 'lc_object.dart';
 part 'lc_query.dart';
+part 'lc_query_cache.dart';
 part 'lc_relation.dart';
 part 'lc_role.dart';
 part 'lc_user.dart';
@@ -81,7 +83,8 @@ class LeanCloud {
   static _LCHttpClient _httpClient;
 
   /// 初始化
-  static void initialize(String appId, String appKey, {String server}) {
+  static void initialize(String appId, String appKey,
+      {String server, LCQueryCache queryCache}) {
     if (isNullOrEmpty(appId)) {
       throw new ArgumentError.notNull('appId');
     }
@@ -94,7 +97,11 @@ class LeanCloud {
     LCObject.registerSubclass<LCUser>(LCUser.ClassName, () => new LCUser());
     LCObject.registerSubclass<LCRole>(LCRole.ClassName, () => new LCRole());
 
-    _httpClient =
-        new _LCHttpClient(appId, appKey, server, SDKVersion, APIVersion);
+    _httpClient = new _LCHttpClient(
+        appId, appKey, server, SDKVersion, APIVersion, queryCache);
+  }
+
+  static Future<bool> clearAllCache() {
+    return _httpClient.clearAllCache();
   }
 }

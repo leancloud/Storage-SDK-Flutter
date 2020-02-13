@@ -17,8 +17,10 @@ class _LCHttpClient {
 
   LogInterceptor _logInterceptor;
 
-  _LCHttpClient(
-      this.appId, this.appKey, this.server, this.sdkVersion, this.apiVersion) {
+  DioCacheManager _cacheManager;
+
+  _LCHttpClient(this.appId, this.appKey, this.server, this.sdkVersion,
+      this.apiVersion, LCQueryCache queryCache) {
     _appRouter = new _LCAppRouter(appId, server);
     BaseOptions options = new BaseOptions(headers: {
       'X-LC-Id': appId,
@@ -26,6 +28,10 @@ class _LCHttpClient {
       'User-Agent': 'LeanCloud-Flutter-SDK/$sdkVersion'
     });
     _dio = new Dio(options);
+    if (queryCache != null) {
+      _cacheManager = new DioCacheManager(CacheConfig());
+      _dio.interceptors.add(_cacheManager.interceptor);
+    }
   }
 
   void enableLog() {
@@ -37,9 +43,15 @@ class _LCHttpClient {
   }
 
   Future get(String path,
-      {Map<String, dynamic> headers, Map<String, dynamic> queryParams}) async {
+      {Map<String, dynamic> headers,
+      Map<String, dynamic> queryParams,
+      CachePolicy cachePolicy}) async {
     await _refreshServer();
-    Options options = _toOptions(headers);
+    Options options = buildCacheOptions(Duration(days: 7));
+    if (cachePolicy == CachePolicy.onlyNetwork) {
+      options.extra[DIO_CACHE_KEY_FORCE_REFRESH] = true;
+    }
+    options.headers = _generateHeaders(headers);
     try {
       Response response =
           await _dio.get(path, options: options, queryParameters: queryParams);
@@ -94,15 +106,29 @@ class _LCHttpClient {
     }
   }
 
+  Future<bool> clearAllCache() {
+    if (_cacheManager != null) {
+      return _cacheManager.clearAll();
+    }
+    return Future.value(true);
+  }
+
   Future _refreshServer() async {
     // 以防 server 过期
     String apiServer = await _appRouter.getApiServer();
     _dio.options.baseUrl = '$apiServer/$apiVersion/';
   }
 
-  Options _toOptions(Map<String, dynamic> headers) {
-    if (headers == null) {
-      headers = new Map<String, dynamic>();
+  Options _toOptions(Map<String, dynamic> additionalHeaders) {
+    Map<String, dynamic> headers = _generateHeaders(additionalHeaders);
+    return new Options(headers: headers);
+  }
+
+  Map<String, dynamic> _generateHeaders(
+      Map<String, dynamic> additionalHeaders) {
+    Map<String, dynamic> headers = new Map<String, dynamic>();
+    if (additionalHeaders != null) {
+      headers.addAll(additionalHeaders);
     }
     int timestamp = DateTime.now().millisecondsSinceEpoch;
     Uint8List data = Utf8Encoder().convert('$timestamp$appKey');
@@ -113,10 +139,13 @@ class _LCHttpClient {
     if (currentUser != null) {
       headers['X-LC-Session'] = currentUser.sessionToken;
     }
-    return new Options(headers: headers);
+    return headers;
   }
 
   void _handleError(DioError e) {
+    if (e.type != DioErrorType.RESPONSE) {
+      throw e;
+    }
     Response response = e.response;
     int code = response.statusCode ~/ 100;
     if (code == 4) {

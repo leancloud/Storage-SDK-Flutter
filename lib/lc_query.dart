@@ -174,10 +174,26 @@ class LCQuery<T extends LCObject> {
   }
 
   /// 查找
-  Future<List<T>> find() async {
+  Future<List<T>> find(
+      {CachePolicy cachePolicy = CachePolicy.onlyNetwork}) async {
+    if (cachePolicy == CachePolicy.onlyNetwork) {
+      return _fetch(CachePolicy.onlyNetwork);
+    } else {
+      try {
+        List<T> results = await _fetch(CachePolicy.onlyNetwork);
+        return results;
+      } on DioError catch (e) {
+        LCLogger.error(e.message);
+        return _fetch(CachePolicy.networkElseCache);
+      }
+    }
+  }
+
+  Future<List<T>> _fetch(CachePolicy cachePolicy) async {
     String path = 'classes/$className';
     Map<String, dynamic> params = _buildParams();
-    Map response = await LeanCloud._httpClient.get(path, queryParams: params);
+    Map response = await LeanCloud._httpClient
+        .get(path, queryParams: params, cachePolicy: cachePolicy);
     List results = response['results'];
     List<T> list = new List();
     results.forEach((item) {
