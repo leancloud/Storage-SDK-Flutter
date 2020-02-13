@@ -1,3 +1,15 @@
+## [0.1.3] - 版本更新
+
+- 支持缓存查询（iOS/Android），用法如下：
+
+```dart
+// 初始化
+LeanCloud.initialize( 'xxx', 'yyy',  server: 'https://zzz.com', queryCache: new LCQueryCache());
+
+// 查询
+List<LCObject> list = await query.find(cachePolicy: CachePolicy.networkElseCache);
+```
+
 ## [0.1.2] - 版本更新
 
 - 支持 iOS/Android 环境下保存登录用户数据
