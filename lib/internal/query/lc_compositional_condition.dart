@@ -14,10 +14,7 @@ class _LCCompositionalCondition extends _LCQueryCondition {
   int skip;
   int limit;
 
-  _LCCompositionalCondition({this.composition}) {
-    if (composition == null) {
-      composition = And;
-    }
+  _LCCompositionalCondition({this.composition = And}) {
     conditionList = new List<_LCQueryCondition>();
     skip = 0;
     limit = 30;
@@ -29,51 +26,51 @@ class _LCCompositionalCondition extends _LCQueryCondition {
   }
 
   void whereNotEqualTo(String key, dynamic value) {
-    addCondition(key, '\$ne', value);
+    addOperation(key, '\$ne', value);
   }
 
   void whereContainedIn(String key, Iterable values) {
-    addCondition(key, '\$in', values);
+    addOperation(key, '\$in', values);
   }
 
   void whereNotContainedIn(String key, Iterable values) {
-    addCondition(key, '\$nin', values);
+    addOperation(key, '\$nin', values);
   }
 
   void whereContainsAll(String key, Iterable values) {
-    addCondition(key, '\$all', values);
+    addOperation(key, '\$all', values);
   }
 
   void whereExists(String key) {
-    addCondition(key, '\$exists', true);
+    addOperation(key, '\$exists', true);
   }
 
   void whereDoesNotExist(String key) {
-    addCondition(key, '\$exists', false);
+    addOperation(key, '\$exists', false);
   }
 
   void whereSizeEqualTo(String key, int size) {
-    addCondition(key, '\$size', size);
+    addOperation(key, '\$size', size);
   }
 
   void whereGreaterThan(String key, dynamic value) {
-    addCondition(key, '\$gt', value);
+    addOperation(key, '\$gt', value);
   }
 
   void whereGreaterThanOrEqualTo(String key, dynamic value) {
-    addCondition(key, '\$gte', value);
+    addOperation(key, '\$gte', value);
   }
 
   void whereLessThan(String key, dynamic value) {
-    addCondition(key, '\$lt', value);
+    addOperation(key, '\$lt', value);
   }
 
   void whereLessThanOrEqualTo(String key, dynamic value) {
-    addCondition(key, '\$lte', value);
+    addOperation(key, '\$lte', value);
   }
 
   void whereNear(String key, LCGeoPoint point) {
-    addCondition(key, '\$nearSphere', point);
+    addOperation(key, '\$nearSphere', point);
   }
 
   void whereWithinGeoBox(
@@ -81,7 +78,7 @@ class _LCCompositionalCondition extends _LCQueryCondition {
     Map<String, dynamic> value = {
       '\$box': [southwest, northeast]
     };
-    addCondition(key, '\$within', value);
+    addOperation(key, '\$within', value);
   }
 
   void whereRelatedTo(LCObject parent, String key) {
@@ -89,15 +86,15 @@ class _LCCompositionalCondition extends _LCQueryCondition {
   }
 
   void whereStartsWith(String key, String prefix) {
-    addCondition(key, '\$regex', '^$prefix.*');
+    addOperation(key, '\$regex', '^$prefix.*');
   }
 
   void whereEndsWith(String key, String suffix) {
-    addCondition(key, '\$regex', '.*$suffix\$');
+    addOperation(key, '\$regex', '.*$suffix\$');
   }
 
   void whereContains(String key, String subString) {
-    addCondition(key, '\$regex', '.*$subString.*');
+    addOperation(key, '\$regex', '.*$subString.*');
   }
 
   /// 筛选条件
@@ -126,7 +123,7 @@ class _LCCompositionalCondition extends _LCQueryCondition {
     selectedKeys.add(key);
   }
 
-  void addCondition(String key, String op, dynamic value) {
+  void addOperation(String key, String op, dynamic value) {
     _LCOperationCondition cond = new _LCOperationCondition(key, op, value);
     add(cond);
   }
@@ -145,20 +142,24 @@ class _LCCompositionalCondition extends _LCQueryCondition {
   }
 
   @override
-  Map<String, dynamic> toMap() {
+  Map<String, dynamic> encode() {
     if (conditionList == null || conditionList.length == 0) {
       return null;
     }
     if (conditionList.length == 1) {
-      return conditionList[0].toMap();
+      return conditionList[0].encode();
     }
     return {composition: _LCEncoder.encodeList(conditionList)};
   }
 
   Map<String, dynamic> _buildParams(String className) {
-    Map<String, dynamic> result = {'className': className};
+    Map<String, dynamic> result = {
+      'className': className,
+      'skip': skip,
+      'limit': limit
+    };
     if (conditionList != null && conditionList.length > 0) {
-      result['where'] = jsonEncode(toMap());
+      result['where'] = jsonEncode(encode());
     }
     if (orderByList != null && orderByList.length > 0) {
       result['order'] = orderByList.join(',');
@@ -169,14 +170,12 @@ class _LCCompositionalCondition extends _LCQueryCondition {
     if (selectedKeys != null && selectedKeys.length > 0) {
       result['keys'] = selectedKeys.join(',');
     }
-    result['skip'] = skip;
-    result['limit'] = limit;
     return result;
   }
 
   String _buildWhere() {
     if (conditionList != null && conditionList.length > 0) {
-      return jsonEncode(toMap());
+      return jsonEncode(encode());
     }
     return null;
   }
