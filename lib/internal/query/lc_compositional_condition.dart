@@ -152,12 +152,8 @@ class _LCCompositionalCondition extends _LCQueryCondition {
     return {composition: _LCEncoder.encodeList(conditionList)};
   }
 
-  Map<String, dynamic> _buildParams(String className) {
-    Map<String, dynamic> result = {
-      'className': className,
-      'skip': skip,
-      'limit': limit
-    };
+  Map<String, dynamic> _buildParams() {
+    Map<String, dynamic> result = {'skip': skip, 'limit': limit};
     if (conditionList != null && conditionList.length > 0) {
       result['where'] = jsonEncode(encode());
     }

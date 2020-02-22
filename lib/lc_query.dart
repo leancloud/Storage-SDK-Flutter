@@ -161,6 +161,9 @@ class LCQuery<T extends LCObject> {
 
   /// 获取
   Future<T> get(String objectId) async {
+    if (isNullOrEmpty(objectId)) {
+      throw new ArgumentError.notNull('objectId');
+    }
     whereEqualTo('objectId', objectId);
     limit(1);
     List<T> results = await find();
@@ -209,7 +212,7 @@ class LCQuery<T extends LCObject> {
   Future<T> first() async {
     limit(1);
     List<T> results = await find();
-    if (results != null) {
+    if (results != null && results.length > 0) {
       return results.first;
     }
     return null;
@@ -217,42 +220,44 @@ class LCQuery<T extends LCObject> {
 
   /// and 查询
   static LCQuery<T> and<T extends LCObject>(Iterable<LCQuery<T>> queries) {
+    if (queries == null || queries.length < 1) {
+      throw new ArgumentError.notNull('queries');
+    }
     LCQuery<T> compositionQuery = new LCQuery<T>(null);
     String className;
-    if (queries != null) {
-      queries.forEach((item) {
-        if (className != null && className != item.className) {
-          throw ('All of the queries in an or query must be on the same class.');
-        }
-        className = item.className;
-        compositionQuery.condition.add(item.condition);
-      });
-    }
+    queries.forEach((item) {
+      if (className != null && className != item.className) {
+        throw ('All of the queries in an or query must be on the same class.');
+      }
+      className = item.className;
+      compositionQuery.condition.add(item.condition);
+    });
     compositionQuery.className = className;
     return compositionQuery;
   }
 
   /// or 查询
   static LCQuery<T> or<T extends LCObject>(Iterable<LCQuery<T>> queries) {
+    if (queries == null || queries.length < 1) {
+      throw new ArgumentError.notNull('queries');
+    }
     LCQuery<T> compositionQuery = new LCQuery<T>(null);
     compositionQuery.condition = new _LCCompositionalCondition(
         composition: _LCCompositionalCondition.Or);
     String className;
-    if (queries != null) {
-      queries.forEach((item) {
-        if (className != null && className != item.className) {
-          throw ('All of the queries in an or query must be on the same class.');
-        }
-        className = item.className;
-        compositionQuery.condition.add(item.condition);
-      });
-    }
+    queries.forEach((item) {
+      if (className != null && className != item.className) {
+        throw ('All of the queries in an or query must be on the same class.');
+      }
+      className = item.className;
+      compositionQuery.condition.add(item.condition);
+    });
     compositionQuery.className = className;
     return compositionQuery;
   }
 
   Map<String, dynamic> _buildParams() {
-    return condition._buildParams(className);
+    return condition._buildParams();
   }
 
   String _buildWhere() {
