@@ -15,7 +15,7 @@ class _LCEqualCondition extends _LCQueryCondition {
   }
 
   @override
-  Map<String, dynamic> toMap() {
+  Map<String, dynamic> encode() {
     return {key: _LCEncoder.encode(value)};
   }
 }

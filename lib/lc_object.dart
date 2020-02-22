@@ -364,7 +364,7 @@ class LCObject {
       return item.objectId != null;
     }).toSet();
     List requestList = objects.map((item) {
-      String path = 'classes/${item.className}/${item.objectId}';
+      String path = '/$APIVersion/classes/${item.className}/${item.objectId}';
       return {'path': path, 'method': 'DELETE'};
     }).toList();
 

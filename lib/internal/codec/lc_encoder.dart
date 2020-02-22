@@ -22,7 +22,7 @@ class _LCEncoder {
       return encodeOperation(object);
     }
     if (object is _LCQueryCondition) {
-      return object.toMap();
+      return object.encode();
     }
     if (object is LCACL) {
       return encodeACL(object);
