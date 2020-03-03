@@ -75,6 +75,7 @@ class LCObject {
     _applyOperation(key, op);
   }
 
+  /// 删除字段
   void unset(String key) {
     if (isNullOrEmpty(key)) {
       throw ArgumentError.notNull('key');
@@ -83,6 +84,7 @@ class LCObject {
     _applyOperation(key, op);
   }
 
+  /// 增加关联
   void addRelation(String key, LCObject value) {
     if (isNullOrEmpty(key)) {
       throw ArgumentError.notNull('key');
@@ -94,6 +96,7 @@ class LCObject {
     _applyOperation(key, op);
   }
 
+  /// 删除关联
   void removeRelation(String key, LCObject value) {
     if (isNullOrEmpty(key)) {
       throw ArgumentError.notNull('key');
@@ -335,10 +338,14 @@ class LCObject {
 
   /// 批量保存
   static Future<List<LCObject>> saveAll(List<LCObject> objectList) async {
-    assert(objectList != null);
+    if (objectList == null) {
+      throw new ArgumentError.notNull('objectList');
+    }
     // 断言没有循环依赖
     objectList.forEach((item) {
-      assert(!_LCBatch.hasCircleReference(item, new HashSet<LCObject>()));
+      if (_LCBatch.hasCircleReference(item, new HashSet<LCObject>())) {
+        throw new ArgumentError('Found a circle dependency when save.');
+      }
     });
 
     Queue<_LCBatch> batches = _LCBatch.batchObjects(objectList, true);
