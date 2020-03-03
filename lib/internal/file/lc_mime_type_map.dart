@@ -1,14 +1,20 @@
 part of leancloud_storage;
 
 class _LCMimeTypeMap {
-  static String getMimeTypeBySuffix(String suffix) {
-    if (map.containsKey(suffix)) {
-      return map[suffix];
+  static String getMimeType(String fileName) {
+    try {
+      String ext = path.extension(fileName).substring(1);
+      if (MimeTypesMap.containsKey(ext)) {
+        return MimeTypesMap[ext];
+      }
+      return 'unknown/unknown';
+    } on Error catch (e) {
+      LCLogger.error(e.toString());
+      return 'unknown/unknown';
     }
-    return 'unknown/unknown';
   }
 
-  static const Map<String, String> map = {
+  static const Map<String, String> MimeTypesMap = {
     "ai": "application/postscript",
     "aif": "audio/x-aiff",
     "aifc": "audio/x-aiff",

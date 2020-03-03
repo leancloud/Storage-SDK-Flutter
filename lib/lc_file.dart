@@ -46,8 +46,7 @@ class LCFile extends LCObject {
   static Future<LCFile> fromPath(String name, String path) async {
     LCFile file = new LCFile();
     file.name = name;
-    String suffix = path.substring(path.lastIndexOf('.') + 1);
-    file.mimeType = _LCMimeTypeMap.getMimeTypeBySuffix(suffix);
+    file.mimeType = _LCMimeTypeMap.getMimeType(path);
     File f = new File(path);
     file.data = await f.readAsBytes();
     return file;
@@ -92,7 +91,7 @@ class LCFile extends LCObject {
             new _LCQiniuUploader(uploadUrl, token, key, data);
         await uploader.upload(onProgress);
       } else {
-        throw ('$provider not support.');
+        throw ('$provider is not support.');
       }
       _LCObjectData objectData = _LCObjectData.decode(uploadToken);
       super._merge(objectData);
