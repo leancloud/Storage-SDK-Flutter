@@ -1,6 +1,6 @@
 part of leancloud_storage;
 
-/// 关系类
+/// 关系
 class LCRelation<T extends LCObject> {
   /// 字段名
   String key;

@@ -7,7 +7,7 @@ class LCRole extends LCObject {
   /// 获取角色名字
   String get name => this['name'];
 
-  /// 设置角色名字
+  /// 设置角色名字 [value]
   set name(String value) => this['name'] = value;
 
   /// 获取角色 Relation
@@ -18,6 +18,7 @@ class LCRole extends LCObject {
 
   LCRole() : super(ClassName);
 
+  /// 创建以 [name] 具有 [acl] 的角色
   static LCRole create(String name, LCACL acl) {
     LCRole role = new LCRole();
     role.name = name;

@@ -1,6 +1,6 @@
 part of leancloud_storage;
 
-/// 对象类
+/// 对象
 class LCObject {
   /// 最近一次与服务端同步的数据
   _LCObjectData _data;
@@ -29,10 +29,13 @@ class LCObject {
   /// 设置访问权限
   set acl(LCACL value) => this['ACL'] = value;
 
-  bool get isDirty => _isNew || _estimatedData.length > 0;
+  /// 是否需要保存
+  bool get _isDirty => _isNew || _estimatedData.length > 0;
 
+  /// 是否为新建
   bool _isNew;
 
+  /// 创建 [className] 类型的对象
   LCObject(String className) {
     assert(className != null && className.length > 0);
     _data = new _LCObjectData();
@@ -43,6 +46,7 @@ class LCObject {
     _isNew = true;
   }
 
+  /// 创建 [className] 类型的 [objectId] 对象
   static LCObject createWithoutData(String className, String objectId) {
     LCObject object = new LCObject(className);
     assert(objectId != null && objectId.length > 0);
@@ -51,6 +55,7 @@ class LCObject {
     return object;
   }
 
+  /// 获取 [key] 对应的值
   operator [](String key) {
     dynamic value = _estimatedData[key];
     if (value is LCRelation) {
@@ -61,6 +66,7 @@ class LCObject {
     return value;
   }
 
+  /// 设置 [key] 对应的值 [value]
   operator []=(String key, dynamic value) {
     if (isNullOrEmpty(key)) {
       throw ArgumentError.notNull(key);
@@ -75,7 +81,7 @@ class LCObject {
     _applyOperation(key, op);
   }
 
-  /// 删除字段
+  /// 删除 [key] 字段
   void unset(String key) {
     if (isNullOrEmpty(key)) {
       throw ArgumentError.notNull('key');
@@ -84,7 +90,7 @@ class LCObject {
     _applyOperation(key, op);
   }
 
-  /// 增加关联
+  /// 增加 [key] 对应的关联 [value]
   void addRelation(String key, LCObject value) {
     if (isNullOrEmpty(key)) {
       throw ArgumentError.notNull('key');
@@ -96,7 +102,7 @@ class LCObject {
     _applyOperation(key, op);
   }
 
-  /// 删除关联
+  /// 删除 [key] 对应的关联 [value]
   void removeRelation(String key, LCObject value) {
     if (isNullOrEmpty(key)) {
       throw ArgumentError.notNull('key');
@@ -108,7 +114,7 @@ class LCObject {
     _applyOperation(key, op);
   }
 
-  /// 增加数字属性值
+  /// 增加 [key] 数字属性值 [amount]
   void increment(String key, num amount) {
     if (isNullOrEmpty(key)) {
       throw ArgumentError.notNull('key');
@@ -117,7 +123,7 @@ class LCObject {
     _applyOperation(key, op);
   }
 
-  /// 减少数字属性值
+  /// 减少 [key] 数字属性值 [amount]
   void decrement(String key, num amount) {
     if (isNullOrEmpty(key)) {
       throw ArgumentError.notNull('key');
@@ -126,7 +132,7 @@ class LCObject {
     _applyOperation(key, op);
   }
 
-  /// 在数组属性中增加一个元素
+  /// 在 [key] 数组属性中增加一个元素 [value]
   void add(String key, dynamic value) {
     if (isNullOrEmpty(key)) {
       throw ArgumentError.notNull('key');
@@ -138,7 +144,7 @@ class LCObject {
     _applyOperation(key, op);
   }
 
-  /// 在数组属性中增加一组元素
+  /// 在 [key] 数组属性中增加一组元素 [values]
   void addAll(String key, Iterable values) {
     if (isNullOrEmpty(key)) {
       throw ArgumentError.notNull('key');
@@ -150,7 +156,7 @@ class LCObject {
     _applyOperation(key, op);
   }
 
-  /// 在数组属性中增加一个唯一元素
+  /// 在 [key] 数组属性中增加一个唯一元素 [value]
   void addUnique(String key, dynamic value) {
     if (isNullOrEmpty(key)) {
       throw ArgumentError.notNull('key');
@@ -162,7 +168,7 @@ class LCObject {
     _applyOperation(key, op);
   }
 
-  /// 在数组属性中增加一组唯一元素
+  /// 在 [key] 数组属性中增加一组唯一元素 [values]
   void addAllUnique(String key, Iterable values) {
     if (isNullOrEmpty(key)) {
       throw ArgumentError.notNull('key');
@@ -174,7 +180,7 @@ class LCObject {
     _applyOperation(key, op);
   }
 
-  /// 移除某个元素
+  /// 移除 [key] 数组中的元素 [value]
   void remove(String key, dynamic value) {
     if (isNullOrEmpty(key)) {
       throw ArgumentError.notNull('key');
@@ -186,7 +192,7 @@ class LCObject {
     _applyOperation(key, op);
   }
 
-  /// 移除一组元素
+  /// 移除 [key] 数组中的一组元素 [values]
   void removeAll(String key, Iterable values) {
     if (isNullOrEmpty(key)) {
       throw ArgumentError.notNull('key');
@@ -244,7 +250,7 @@ class LCObject {
     _isNew = false;
   }
 
-  /// 拉取
+  /// 拉取 [keys] 字段值，以及包含 [includes] 字段对象
   Future<LCObject> fetch(
       {Iterable<String> keys, Iterable<String> includes}) async {
     Map<String, dynamic> queryParams = {};
@@ -266,7 +272,7 @@ class LCObject {
     while (batches.length > 0) {
       _LCBatch batch = batches.removeLast();
       List<LCObject> dirtyObjects = batch.objects.where((item) {
-        return item.isDirty;
+        return item._isDirty;
       }).toList();
 
       // 生成请求列表
@@ -301,7 +307,7 @@ class LCObject {
     }
   }
 
-  /// 保存
+  /// 保存，[fetchWhenSave] 是否在保存后拉取，是否根据 [query] 条件更新对象
   Future<LCObject> save(
       {bool fetchWhenSave = false, LCQuery<LCObject> query}) async {
     // 检测循环依赖
@@ -336,7 +342,7 @@ class LCObject {
     return this;
   }
 
-  /// 批量保存
+  /// 批量保存 [objectList]
   static Future<List<LCObject>> saveAll(List<LCObject> objectList) async {
     if (objectList == null) {
       throw new ArgumentError.notNull('objectList');
@@ -362,7 +368,7 @@ class LCObject {
     await LeanCloud._httpClient.delete(path);
   }
 
-  /// 批量删除
+  /// 批量删除 [objectList]
   static Future deleteAll(List<LCObject> objectList) async {
     if (objectList == null || objectList.length == 0) {
       return;
@@ -383,31 +389,31 @@ class LCObject {
   }
 
   /// 子类化
-  static Map<Type, _LCSubclassInfo> subclassTypeMap =
+  static Map<Type, _LCSubclassInfo> _subclassTypeMap =
       new Map<Type, _LCSubclassInfo>();
-  static Map<String, _LCSubclassInfo> subclassNameMap =
+  static Map<String, _LCSubclassInfo> _subclassNameMap =
       new Map<String, _LCSubclassInfo>();
 
-  /// 注册子类
+  /// 注册类名为 [className] 子类，其构造方法为 [constructor]
   static void registerSubclass<T extends LCObject>(
       String className, Function constructor) {
     _LCSubclassInfo subclassInfo =
         new _LCSubclassInfo(className, T, constructor);
-    subclassTypeMap[T] = subclassInfo;
-    subclassNameMap[className] = subclassInfo;
+    _subclassTypeMap[T] = subclassInfo;
+    _subclassNameMap[className] = subclassInfo;
   }
 
   static LCObject _create(Type type, {String className}) {
-    if (subclassTypeMap.containsKey(type)) {
-      _LCSubclassInfo subclassInfo = subclassTypeMap[type];
+    if (_subclassTypeMap.containsKey(type)) {
+      _LCSubclassInfo subclassInfo = _subclassTypeMap[type];
       return subclassInfo.constructor();
     }
     return new LCObject(className);
   }
 
   static LCObject _createByName(String className) {
-    if (subclassNameMap.containsKey(className)) {
-      _LCSubclassInfo subclassInfo = subclassNameMap[className];
+    if (_subclassNameMap.containsKey(className)) {
+      _LCSubclassInfo subclassInfo = _subclassNameMap[className];
       return subclassInfo.constructor();
     }
     return new LCObject(className);
