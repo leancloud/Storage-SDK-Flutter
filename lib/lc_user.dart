@@ -2,44 +2,50 @@ part of leancloud_storage;
 
 const String CurrentUserKey = 'current_user';
 
-/// 用户类
+/// 用户
 class LCUser extends LCObject {
   static const String ClassName = '_User';
 
-  /// 用户名
+  /// 获取用户名
   String get username => this['username'];
 
+  /// 设置用户名为 [value]
   set username(String value) => this['username'] = value;
 
-  /// 密码
+  /// 获取密码
   String get password => this['password'];
 
+  /// 设置密码为 [value]
   set password(String value) => this['password'] = value;
 
-  /// 邮箱
+  /// 获取邮箱
   String get email => this['email'];
 
+  /// 设置邮箱为 [value]
   set email(String value) => this["email"] = value;
 
-  /// 手机号
+  /// 获取手机号
   String get mobile => this['mobilePhoneNumber'];
 
+  /// 设置手机号为 [value]
   set mobile(String value) => this['mobilePhoneNumber'] = value;
 
-  /// Session Token
+  /// 获取 Session Token
   String get sessionToken => this['sessionToken'];
 
+  /// 设置 Session Token 为 [value]
   set sessionToken(String value) => this['sessionToken'] = value;
 
-  /// 是否验证邮箱
+  /// 是否已经验证邮箱
   bool get emailVerified => this['emailVerified'];
 
-  /// 是否验证手机号
+  /// 是否已经验证手机号
   bool get mobileVerified => this['mobilePhoneVerified'];
 
-  /// 第三方授权信息
+  /// 获取第三方授权信息
   Map get authData => this['authData'];
 
+  /// 设置第三方授权信息为 [value]
   set authData(Map value) => this['authData'] = value;
 
   /// 当前用户
@@ -70,7 +76,7 @@ class LCUser extends LCObject {
     return this;
   }
 
-  /// 请求登录注册码
+  /// 手机号 [mobile] 请求登录注册码，图像验证码为 [validateToken]
   static Future requestLogionSMSCode(String mobile,
       {String validateToken}) async {
     if (isNullOrEmpty(mobile)) {
@@ -83,7 +89,7 @@ class LCUser extends LCObject {
     await LeanCloud._httpClient.post('requestLoginSmsCode', data: data);
   }
 
-  /// 以手机号和验证码登录或注册并登录
+  /// 以手机号 [mobile] 和验证码 [code] 登录或注册并登录
   static Future<LCUser> signUpOrLoginByMobilePhone(
       String mobile, String code) async {
     if (isNullOrEmpty(mobile)) {
@@ -100,7 +106,7 @@ class LCUser extends LCObject {
     return _currentUser;
   }
 
-  /// 以账号和密码登陆
+  /// 以账号 [username] 和密码 [password] 登陆
   static Future<LCUser> login(String username, String password) {
     if (isNullOrEmpty(username)) {
       throw ArgumentError.notNull('username');
@@ -112,7 +118,7 @@ class LCUser extends LCObject {
     return _login(data);
   }
 
-  /// 以邮箱和密码登陆
+  /// 以邮箱 [email] 和密码 [password] 登陆
   static Future<LCUser> loginByEmail(String email, String password) {
     if (isNullOrEmpty(email)) {
       throw ArgumentError.notNull('email');
@@ -124,7 +130,7 @@ class LCUser extends LCObject {
     return _login(data);
   }
 
-  /// 以手机号和密码登陆
+  /// 以手机号 [mobile] 和密码 [password] 登陆
   static Future<LCUser> loginByMobilePhoneNumber(
       String mobile, String password) {
     if (isNullOrEmpty(mobile)) {
@@ -140,7 +146,7 @@ class LCUser extends LCObject {
     return _login(data);
   }
 
-  /// 以手机号和验证码登录
+  /// 以手机号 [mobile] 和验证码 [code] 登录
   static Future<LCUser> loginBySMSCode(String mobile, String code) {
     if (isNullOrEmpty(mobile)) {
       throw ArgumentError.notNull('mobile');
@@ -152,7 +158,7 @@ class LCUser extends LCObject {
     return _login(data);
   }
 
-  /// 使用第三方数据登录
+  /// 使用第三方数据 [authData]，平台 [platform] 及第三方登录选项 [option] 登录
   static Future<LCUser> loginWithAuthData(
       Map<String, dynamic> authData, String platform,
       {LCUserAuthDataLoginOption option}) {
@@ -168,7 +174,7 @@ class LCUser extends LCObject {
     return _loginWithAuthData(platform, authData, option.failOnNotExist);
   }
 
-  /// 使用第三方数据和 Union Id 登录
+  /// 使用第三方数据 [authData]，平台 [platfoirm]，[unionId] 及第三方登录选项 [option] 登录
   static Future<LCUser> loginWithAuthDataAndUnionId(
       Map<String, dynamic> authData, String platform, String unionId,
       {LCUserAuthDataLoginOption option}) {
@@ -207,7 +213,7 @@ class LCUser extends LCObject {
     authData['unionid'] = unionId;
   }
 
-  /// 绑定第三方登录
+  /// 与第三方登录数据 [authData]，平台 [platform] 进行绑定
   Future associateAuthData(Map<String, dynamic> authData, String platform) {
     if (authData == null) {
       throw ArgumentError.notNull('authData');
@@ -218,7 +224,7 @@ class LCUser extends LCObject {
     return _linkWithAuthData(platform, authData);
   }
 
-  /// 使用 Union Id 绑定第三方登录
+  /// 与第三方登录数据 [authData]，平台 [platform]，[unionId] 进行绑定
   Future associateAuthDataAndUnionId(
       Map<String, dynamic> authData, String platform, String unionId,
       {LCUserAuthDataLoginOption option}) {
@@ -238,7 +244,7 @@ class LCUser extends LCObject {
     return _linkWithAuthData(platform, authData);
   }
 
-  /// 解绑第三方登录
+  /// 解绑 [platform] 平台的第三方登录数据
   Future disassociateWithAuthData(String platform) {
     if (isNullOrEmpty(platform)) {
       throw ArgumentError.notNull('platform');
@@ -257,7 +263,7 @@ class LCUser extends LCObject {
     return loginWithAuthData(data, 'anonymous');
   }
 
-  /// 请求验证邮箱
+  /// 请求验证邮箱 [email]
   static Future requestEmailVerify(String email) async {
     if (isNullOrEmpty(email)) {
       throw ArgumentError.notNull(email);
@@ -266,7 +272,7 @@ class LCUser extends LCObject {
     await LeanCloud._httpClient.post('requestEmailVerify', data: data);
   }
 
-  /// 请求手机验证码
+  /// 请求手机 [mobile] 验证码
   static Future requestMobilePhoneVerify(String mobile) async {
     if (isNullOrEmpty(mobile)) {
       throw ArgumentError.notNull('mobile');
@@ -275,7 +281,7 @@ class LCUser extends LCObject {
     await LeanCloud._httpClient.post('requestMobilePhoneVerify', data: data);
   }
 
-  /// 验证手机号
+  /// 用验证码 [code] 验证手机号 [mobile]
   static Future verifyMobilePhone(String mobile, String code) async {
     if (isNullOrEmpty(mobile)) {
       throw ArgumentError.notNull('mobile');
@@ -288,7 +294,7 @@ class LCUser extends LCObject {
     await LeanCloud._httpClient.post(path, data: data);
   }
 
-  /// 设置当前用户
+  /// 设置当前用户的 [sessionToken]
   static Future<LCUser> becomeWithSessionToken(String sessionToken) async {
     if (isNullOrEmpty(sessionToken)) {
       throw ArgumentError.notNull('sessionToken');
@@ -302,7 +308,7 @@ class LCUser extends LCObject {
     return _currentUser;
   }
 
-  /// 请求使用邮箱重置密码
+  /// 请求使用邮箱 [email] 重置密码
   static Future requestPasswordReset(String email) async {
     if (isNullOrEmpty(email)) {
       throw ArgumentError.notNull('email');
@@ -311,7 +317,7 @@ class LCUser extends LCObject {
         .post('requestPasswordReset', data: {'email': email});
   }
 
-  /// 请求验证码重置密码
+  /// 请求手机 [mobile] 验证码重置密码
   static Future requestPasswordRestBySmsCode(String mobile) async {
     if (isNullOrEmpty(mobile)) {
       throw ArgumentError.notNull('mobile');
@@ -320,7 +326,7 @@ class LCUser extends LCObject {
         data: {'mobilePhoneNumber': mobile});
   }
 
-  /// 使用验证码重置密码
+  /// 使用验证码 [code] 重置手机 [mobile] 的密码 [newPassword]
   static Future resetPasswordBySmsCode(
       String mobile, String code, String newPassword) async {
     if (isNullOrEmpty(mobile)) {
@@ -336,7 +342,7 @@ class LCUser extends LCObject {
         data: {'mobilePhoneNumber': mobile, 'password': newPassword});
   }
 
-  /// 更新密码
+  /// 使用 [newPassword] 更新旧密码 [oldPassword]
   Future updatePassword(String oldPassword, String newPassword) async {
     if (isNullOrEmpty(oldPassword)) {
       throw ArgumentError.notNull('oldPassword');

@@ -9,14 +9,16 @@ class _LCAppServer {
 
   DateTime expiredAt;
 
-  bool get isExpired => expiredAt.compareTo(DateTime.now()) < 0;
+  bool get isExpired => _ttl != -1 && expiredAt.compareTo(DateTime.now()) < 0;
+
+  int _ttl;
 
   _LCAppServer.fromJson(Map<String, dynamic> json)
       : apiServer = _getSchemeUrl(json['api_server']),
         pushServer = _getSchemeUrl(json['push_server']),
         engineServer = _getSchemeUrl(json['engine_server']) {
-    int ttl = json['ttl'];
-    Duration validDuration = new Duration(seconds: ttl);
+    _ttl = json['ttl'];
+    Duration validDuration = new Duration(seconds: _ttl);
     DateTime fetchedAt = DateTime.now();
     expiredAt = fetchedAt.add(validDuration);
   }
@@ -31,7 +33,7 @@ class _LCAppServer {
       'api_server': 'https://$prefix.api.lncldglobal.com',
       'engine_server': 'https://$prefix.engine.lncldglobal.com',
       'push_server': 'https://$prefix.push.lncldglobal.com',
-      'ttl': -1,
+      'ttl': -1, // -1 表示永不过期
     });
   }
 }

@@ -37,31 +37,11 @@ void main() {
       assert(current.mobile == '15101006008');
     });
 
-    // test('login by mobile', () async {
-    //   await LCUser.loginByMobilePhoneNumber('15101006007', '112358');
-    //   LCUser current = LCUser.currentUser;
-    //   assert(current.objectId != null);
-    // });
-
     test('login by email', () async {
       await LCUser.loginByEmail('171253484@qq.com', 'world');
       LCUser current = await LCUser.getCurrent();
       assert(current.objectId != null);
     });
-
-    // test('login by sms code', () async {
-    //   await LCUser.loginBySMSCode('15101006007', '882586');
-    //   LCUser current = LCUser.currentUser;
-    //   assert(current.objectId != null);
-    // });
-
-    // test('request login sms code', () async {
-    //   await LCUser.requestLogionSMSCode('15101006007');
-    // });
-
-    // test('login by sms code', () async {
-    //   await LCUser.loginBySMSCode('15101006007', '925752');l
-    // });
 
     test('login by session token', () async {
       String sessionToken = 'luo2fpl4qij2050e7enqfz173';
@@ -69,27 +49,6 @@ void main() {
       LCUser current = await LCUser.getCurrent();
       assert(current.objectId != null);
     });
-
-    // test('request mobile verify', () async {
-    //   await LCUser.requestMobilePhoneVerify('15101006007');
-    // });
-
-    // test('verify mobile', () async {
-    //   await LCUser.becomeWithSessionToken('sbhavbefqk2jc3wgfop3i6om0');
-    //   await LCUser.verifyMobilePhone('944616');
-    // });
-
-    // test('request email verify', () async {
-    //   await LCUser.requestEmailVerify('171253484@qq.com');
-    // });
-
-    // test('request reset password by sms code', () async {
-    //   await LCUser.requestPasswordRestBySmsCode('15101006007');
-    // });
-
-    // test('reset password by sms code', () async {
-    //   await LCUser.resetPasswordBySmsCode('15101006007', '286436', '112358');
-    // });
 
     test('relate object', () async {
       await LCUser.loginByMobilePhoneNumber('15101006007', '112358');
@@ -197,5 +156,42 @@ void main() {
       String unionId = '${DateTime.now().millisecondsSinceEpoch}';
       await currentUser.associateAuthDataAndUnionId(authData, 'qq', unionId);
     });
+
+    // test('login by mobile', () async {
+    //   await LCUser.loginByMobilePhoneNumber('15101006007', '112358');
+    //   LCUser current = LCUser.currentUser;
+    //   assert(current.objectId != null);
+    // });
+
+    // test('request login sms code', () async {
+    //   await LCUser.requestLogionSMSCode('15101006007');
+    // });
+
+    // test('login by sms code', () async {
+    //   await LCUser.loginBySMSCode('15101006007', '882586');
+    //   LCUser current = LCUser.currentUser;
+    //   assert(current.objectId != null);
+    // });
+
+    // test('request email verify', () async {
+    //   await LCUser.requestEmailVerify('171253484@qq.com');
+    // });
+
+    // test('request mobile verify', () async {
+    //   await LCUser.requestMobilePhoneVerify('15101006007');
+    // });
+
+    // test('verify mobile', () async {
+    //   await LCUser.becomeWithSessionToken('sbhavbefqk2jc3wgfop3i6om0');
+    //   await LCUser.verifyMobilePhone('15101006007', '944616');
+    // });
+
+    // test('request reset password by sms code', () async {
+    //   await LCUser.requestPasswordRestBySmsCode('15101006007');
+    // });
+
+    // test('reset password by sms code', () async {
+    //   await LCUser.resetPasswordBySmsCode('15101006007', '286436', '112358');
+    // });
   });
 }

@@ -8,6 +8,7 @@ import 'dart:math';
 import 'package:dio/dio.dart';
 import 'package:convert/convert.dart';
 import 'package:crypto/crypto.dart';
+import 'package:path/path.dart' as path;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:dio_http_cache/dio_http_cache.dart';
 

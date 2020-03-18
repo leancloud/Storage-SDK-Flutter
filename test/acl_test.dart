@@ -36,7 +36,7 @@ void main() {
       print(result.objectId);
       assert(result.objectId != null);
 
-      LCUser.logout();
+      await LCUser.logout();
       result = await query.get(account.objectId);
       assert(result == null);
     });

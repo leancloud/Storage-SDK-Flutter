@@ -1,6 +1,6 @@
 part of leancloud_storage;
 
-/// 文件类
+/// 文件
 class LCFile extends LCObject {
   static const String ClassName = '_File';
 
@@ -34,7 +34,7 @@ class LCFile extends LCObject {
     metaData = new Map<String, dynamic>();
   }
 
-  /// 根据字节数组创建对象
+  /// 通过 [data] 字节数组创建 [name] 的 [LCFile] 对象
   static LCFile fromBytes(String name, Uint8List data) {
     LCFile file = new LCFile();
     file.name = name;
@@ -42,18 +42,17 @@ class LCFile extends LCObject {
     return file;
   }
 
-  /// 根据路径创建对象
+  /// 通过 [path] 创建 [name] 的 [LCFile] 对象
   static Future<LCFile> fromPath(String name, String path) async {
     LCFile file = new LCFile();
     file.name = name;
-    String suffix = path.substring(path.lastIndexOf('.') + 1);
-    file.mimeType = _LCMimeTypeMap.getMimeTypeBySuffix(suffix);
+    file.mimeType = _LCMimeTypeMap.getMimeType(path);
     File f = new File(path);
     file.data = await f.readAsBytes();
     return file;
   }
 
-  /// 根据外链 URL 创建对象
+  /// 通过外链 [url] 创建 [name] 的 [LCFile] 对象
   static LCFile fromUrl(String name, String url) {
     LCFile file = new LCFile();
     file.name = name;
@@ -61,7 +60,7 @@ class LCFile extends LCObject {
     return file;
   }
 
-  /// 添加元数据
+  /// 添加 [key] - [value] 的元数据
   void addMetaData(String key, dynamic value) {
     metaData[key] = value;
   }
@@ -92,7 +91,7 @@ class LCFile extends LCObject {
             new _LCQiniuUploader(uploadUrl, token, key, data);
         await uploader.upload(onProgress);
       } else {
-        throw ('$provider not support.');
+        throw ('$provider is not support.');
       }
       _LCObjectData objectData = _LCObjectData.decode(uploadToken);
       super._merge(objectData);
@@ -110,7 +109,7 @@ class LCFile extends LCObject {
     await LeanCloud._httpClient.delete(path);
   }
 
-  /// 获取缩略图 url
+  /// 获取宽 [width]，高 [height]，压缩质量 [quality]，是否等比缩放 [scaleToFit]，格式为 [format] 的 缩略图 url
   String getThumbnailUrl(int width, int height,
       {int quality = 100, bool scaleToFit = true, String format = 'png'}) {
     int mode = scaleToFit ? 2 : 1;
