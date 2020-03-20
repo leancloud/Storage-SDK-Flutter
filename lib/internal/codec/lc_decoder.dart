@@ -22,6 +22,8 @@ class _LCDecoder {
           return decodeRelation(data);
         } else if (type == 'GeoPoint') {
           return decodePoint(data);
+        } else if (type == 'File') {
+          return decodeFileObject(data);
         }
       }
       // 普通的 Map 类型
@@ -39,7 +41,14 @@ class _LCDecoder {
     relation.targetClass = data['className'];
     return relation;
   }
-
+  /// 解码文件
+  static LCObject decodeFileObject(dynamic data) {
+    String className = '_File';//data['className'];
+    LCObject object = LCObject._createByName(className);
+    _LCObjectData objectData = _LCObjectData.decode(data);
+    object._merge(objectData);
+    return object;
+  }
   /// 解码对象
   static LCObject decodeNestedObject(dynamic data) {
     String className = data['className'];

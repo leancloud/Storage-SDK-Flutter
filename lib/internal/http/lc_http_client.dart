@@ -76,6 +76,23 @@ class _LCHttpClient {
     }
   }
 
+  Future postNoException(String path,
+              {Map<String, dynamic> headers,
+                dynamic data,
+                Map<String, dynamic> queryParams}) async {
+    await _refreshServer();
+    Options options = _toOptions(headers);
+    try {
+      Response response = await _dio.post(path,
+          options: options, data: data, queryParameters: queryParams);
+      return response.data;
+    } on DioError catch (e) {
+//      _handleError(e);
+      print(e);
+      return null;
+    }
+  }
+
   Future put(String path,
       {Map<String, dynamic> headers,
       dynamic data,
