@@ -1,21 +1,21 @@
-import 'package:flutter_test/flutter_test.dart';
-// import 'package:leancloud_storage/leancloud.dart';
+// import 'package:flutter_test/flutter_test.dart';
+// // import 'package:leancloud_storage/leancloud.dart';
 
-import 'utils.dart';
+// import 'utils.dart';
 
-void main() {
-  group('captcha', () {
-    setUp(() => initNorthChina());
+// void main() {
+//   group('captcha', () {
+//     setUp(() => initNorthChina());
 
-    // test('request', () async {
-    //   LCCaptcha captcha = await LCCaptchaClient.requestCaptcha();
-    //   print(captcha);
-    //   assert(captcha.token != null);
-    //   assert(captcha.url != null);
-    // });
+//     // test('request', () async {
+//     //   LCCaptcha captcha = await LCCaptchaClient.requestCaptcha();
+//     //   print(captcha);
+//     //   assert(captcha.token != null);
+//     //   assert(captcha.url != null);
+//     // });
 
-    // test('verify', () async {
-    //   await LCCaptchaClient.verifyCaptcha('hsru', 'bON8fDtn');
-    // });
-  });
-}
+//     // test('verify', () async {
+//     //   await LCCaptchaClient.verifyCaptcha('hsru', 'bON8fDtn');
+//     // });
+//   });
+// }
