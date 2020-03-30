@@ -14,7 +14,7 @@ script:
   - cd $TRAVIS_BUILD_DIR
   - flutter packages get
   - flutter analyze --no-pub --no-current-package lib
-  - flutter packages pub --trace publish --dry-run
+  - flutter packages pub publish --dry-run --trace
 before_deploy:
   - chmod +x ./.travis/publish.sh # giving execution permissions to this file to avoid error 127.
   - mv ./.travis ../ # moving this out the publication folder as we don't want to publish it.
