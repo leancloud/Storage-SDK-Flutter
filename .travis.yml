@@ -1,6 +1,6 @@
 language: dart
 dart:
-  - "2.7.1"
+  - "2.7.0"
 os:
   - osx
 install:
@@ -9,6 +9,8 @@ before_script:
   - cd ..
   - git clone https://github.com/flutter/flutter.git
   - export PATH=`pwd`/flutter/bin:`pwd`/flutter/bin/cache/dart-sdk/bin:$PATH
+  - dart --version
+  - pub --version
   - flutter doctor
 script:
   - cd $TRAVIS_BUILD_DIR
