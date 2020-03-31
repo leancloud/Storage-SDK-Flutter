@@ -12,6 +12,7 @@ before_script:
   - flutter doctor
 script:
   - cd $TRAVIS_BUILD_DIR
+  - flutter channel stable # 新版本 flutter pub 有问题，切换到稳定版本
   - flutter packages get
   - flutter analyze --no-pub --no-current-package lib
   - flutter packages pub publish --dry-run --trace
