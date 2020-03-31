@@ -1,6 +1,6 @@
 language: dart
 dart:
-  - "2.8.0-dev.14.0"
+  - "2.7.1"
 os:
   - osx
 install:
