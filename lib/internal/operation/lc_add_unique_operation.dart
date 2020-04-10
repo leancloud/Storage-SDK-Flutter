@@ -9,7 +9,7 @@ class _LCAddUniqueOperation extends _LCOperation {
 
   @override
   apply(oldValue, String key) {
-    Set result = Set.from(oldValue);
+    Set result = oldValue != null ? Set.from(oldValue) : new Set();
     result = result.union(values);
     return result;
   }
@@ -28,7 +28,7 @@ class _LCAddUniqueOperation extends _LCOperation {
       return previousOp;
     }
     if (previousOp is _LCAddUniqueOperation) {
-      values = values.union(previousOp.values);
+      values = previousOp.values.union(values);
       return this;
     }
     throw new ArgumentError('Operation is invalid after previous operation.');

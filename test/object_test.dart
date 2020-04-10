@@ -121,5 +121,23 @@ void main() {
       print(hello['content']);
       assert(hello['content'] == null);
     });
+
+    test('operate null property', () async {
+      LCObject object = new LCObject('Hello');
+      object.increment('intValue', 123);
+      object.increment('intValue', 321);
+      object.add('intList', 1);
+      object.add('intList', 2);
+      object.add('intList', 3);
+      await object.save();
+
+      assert(object['intValue'] == 444);
+      List intList = object['intList'];
+      print(intList.length);
+      assert(intList.length == 3);
+      assert(intList[0] == 1);
+      assert(intList[1] == 2);
+      assert(intList[2] == 3);
+    });
   });
 }
