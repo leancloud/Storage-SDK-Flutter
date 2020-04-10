@@ -219,16 +219,18 @@ class LCObject {
   }
 
   void _applyOperation(String key, _LCOperation op) {
+    // 先累加计算
+    if (op is _LCDeleteOperation) {
+      _estimatedData.remove(key);
+    } else {
+      _estimatedData[key] = op.apply(_estimatedData[key], key);
+    }
+    // 再合并为新的操作参数
     if (_operationMap.containsKey(key)) {
       _LCOperation previousOp = _operationMap[key];
       _operationMap[key] = op.mergeWithPrevious(previousOp);
     } else {
       _operationMap[key] = op;
-    }
-    if (op is _LCDeleteOperation) {
-      _estimatedData.remove(key);
-    } else {
-      _estimatedData[key] = op.apply(_estimatedData[key], key);
     }
   }
 

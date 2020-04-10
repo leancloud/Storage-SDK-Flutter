@@ -9,7 +9,7 @@ class _LCRemoveOperation extends _LCOperation {
 
   @override
   apply(oldValue, String key) {
-    List result = List.from(oldValue);
+    List result = oldValue != null ? List.from(oldValue) : new List();
     valueList.forEach((item) {
       result.remove(item);
     });
@@ -27,7 +27,9 @@ class _LCRemoveOperation extends _LCOperation {
       return previousOp;
     }
     if (previousOp is _LCRemoveOperation) {
-      valueList.addAll(previousOp.valueList);
+      List list = List.from(previousOp.valueList);
+      list.addAll(valueList);
+      valueList = list;
       return this;
     }
     throw new ArgumentError('Operation is invalid after previous operation.');

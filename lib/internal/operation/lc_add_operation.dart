@@ -9,7 +9,7 @@ class _LCAddOperation extends _LCOperation {
 
   @override
   apply(oldValue, String key) {
-    List result = List.from(oldValue);
+    List result = oldValue != null ? List.from(oldValue) : new List();
     result.addAll(valueList);
     return result;
   }
@@ -25,11 +25,15 @@ class _LCAddOperation extends _LCOperation {
       return previousOp;
     }
     if (previousOp is _LCAddOperation) {
-      valueList.addAll(previousOp.valueList);
+      List list = List.from(previousOp.valueList);
+      list.addAll(valueList);
+      valueList = list;
       return this;
     }
     if (previousOp is _LCAddUniqueOperation) {
-      valueList.addAll(previousOp.values);
+      List list = previousOp.values.toList();
+      list.addAll(valueList);
+      valueList = list;
       return this;
     }
     throw new ArgumentError('Operation is invalid after previous operation.');

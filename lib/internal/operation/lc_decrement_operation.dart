@@ -7,6 +7,9 @@ class _LCDecrementOperation extends _LCOperation {
 
   @override
   apply(oldValue, String key) {
+    if (oldValue == null) {
+      return -value;
+    }
     return oldValue - value;
   }
 
