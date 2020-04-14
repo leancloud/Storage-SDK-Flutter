@@ -270,6 +270,41 @@ class LCObject {
     return this;
   }
 
+  static Future<List<LCObject>> fetchAll(List<LCObject> objectList) async {
+    if (objectList == null) {
+      throw new ArgumentError.notNull('objectList');
+    }
+    Set<LCObject> objects = objectList.where((item) {
+      return item.objectId != null;
+    }).toSet();
+    List requestList = objects.map((item) {
+      String path = '/$APIVersion/classes/${item.className}/${item.objectId}';
+      return {'path': path, 'method': 'GET'};
+    }).toList();
+
+    // 发送请求
+    Map<String, dynamic> data = {
+      'requests': _LCEncoder.encodeList(requestList)
+    };
+    List results = await LeanCloud._httpClient.post('batch', data: data);
+    // 反序列化为 Object 数据
+    Map<String, _LCObjectData> map = new Map<String, _LCObjectData>();
+    results.forEach((item) {
+      if (item.containsKey('error')) {
+        int code = item['code'];
+        String message = item['error'];
+        throw ('$code : $message');
+      }
+      Map data = item['success'];
+      map[data['objectId']] = _LCObjectData.decode(data);
+    });
+    objectList.forEach((object) {
+      _LCObjectData objectData = map[object.objectId];
+      object._merge(objectData);
+    });
+    return objectList;
+  }
+
   static Future _saveBatches(Queue<_LCBatch> batches) async {
     while (batches.length > 0) {
       _LCBatch batch = batches.removeLast();
