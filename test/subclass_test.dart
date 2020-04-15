@@ -23,6 +23,20 @@ class Account extends LCObject {
   set balance(int value) => this['balance'] = value;
 
   Account() : super('Account');
+
+  static create(int balance) {
+    Account account = new Account();
+    account.balance = balance;
+    return account;
+  }
+}
+
+class Bank extends LCObject {
+  List get accounts => this['accounts'];
+
+  set accounts(List<Account> value) => this['accounts'] = value;
+
+  Bank() : super('Bank');
 }
 
 void main() {
@@ -72,6 +86,18 @@ void main() {
       print(world.objectId);
       assert(world.objectId == '5e0d55ae21460d006a1ec931');
       assert(world.content == '7788');
+    });
+
+    test('subclass collection', () async {
+      LCObject.registerSubclass<Account>('Account', () => new Account());
+      LCObject.registerSubclass<Bank>('Bank', () => new Bank());
+
+      Bank bank = new Bank();
+      bank.accounts = [Account.create(100), Account.create(200)];
+      await bank.save();
+
+      assert(bank.accounts[0].balance == 100);
+      assert(bank.accounts[1].balance == 200);
     });
   });
 }
