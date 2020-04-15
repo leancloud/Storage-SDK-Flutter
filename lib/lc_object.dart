@@ -270,6 +270,7 @@ class LCObject {
     return this;
   }
 
+  /// 批量拉取 [objectList]
   static Future<List<LCObject>> fetchAll(List<LCObject> objectList) async {
     if (objectList == null) {
       throw new ArgumentError.notNull('objectList');
