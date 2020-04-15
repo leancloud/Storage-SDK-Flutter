@@ -93,6 +93,18 @@ void main() {
       print(world['content']);
     });
 
+    test('fetchAll', () async {
+      List<LCObject> list = [
+        LCObject.createWithoutData('Hello', '5e8fe86938ed12000870ae82'),
+        LCObject.createWithoutData('Hello', '5e8fe867158a7a0006be0feb'),
+        LCObject.createWithoutData('Hello', '5e8fe84e5c385800081a1d64')
+      ];
+      await LCObject.fetchAll(list);
+      list.forEach((item) {
+        assert(item['intList'] != null);
+      });
+    });
+
     test('save with options', () async {
       LCObject account = new LCObject('Account');
       account['balance'] = 10;
