@@ -29,6 +29,12 @@ class LCQuery<T extends LCObject> {
     return this;
   }
 
+  /// [key] 中不包括 [values]
+  LCQuery<T> whereNotContainedIn(String key, Iterable values) {
+    condition.whereNotContainedIn(key, values);
+    return this;
+  }
+
   /// [key] 中包含全部 [values]
   LCQuery<T> whereContainsAll(String key, Iterable values) {
     condition.whereContainsAll(key, values);

@@ -218,6 +218,19 @@ void main() {
         assert(f);
       });
 
+      List notContainIns = [1, 2, 3];
+      query = new LCQuery('Book');
+      query.whereNotContainedIn('pages', notContainIns);
+      results = await query.find();
+      results.forEach((item) {
+        List pages = item['pages'];
+        bool f = true;
+        containIns.forEach((i) {
+          f &= !pages.contains(i);
+        });
+        assert(!f);
+      });
+
       // size
       query = new LCQuery('Book');
       query.whereSizeEqualTo('pages', 7);
