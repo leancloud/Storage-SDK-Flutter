@@ -120,6 +120,12 @@ class LCQuery<T extends LCObject> {
     return this;
   }
 
+  /// [key] 字段满足正则匹配 [regex]
+  LCQuery<T> whereMatches(String key, String regex, {String modifiers}) {
+    condition.whereMatches(key, regex, modifiers);
+    return this;
+  }
+
   /// 按 [key] 升序
   LCQuery<T> orderBy(String key) {
     condition.orderBy(key);

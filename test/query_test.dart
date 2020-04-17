@@ -262,5 +262,16 @@ void main() {
       results = await query.find();
       assert(results.length > 0);
     });
+
+    test('regex', () async {
+      LCQuery<LCObject> query = new LCQuery('Hello');
+      query.whereMatches('stringValue', '^HEllo.*', modifiers: 'i');
+      List<LCObject> results = await query.find();
+      assert(results.length > 0);
+      results.forEach((item) {
+        String str = item['stringValue'];
+        assert(str.startsWith('hello'));
+      });
+    });
   });
 }

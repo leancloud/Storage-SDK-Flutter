@@ -97,6 +97,14 @@ class _LCCompositionalCondition extends _LCQueryCondition {
     addOperation(key, '\$regex', '.*$subString.*');
   }
 
+  void whereMatches(String key, String regex, String modifiers) {
+    Map<String, dynamic> value = {'\$regex': regex};
+    if (modifiers != null) {
+      value['\$options'] = modifiers;
+    }
+    add(new _LCEqualCondition(key, value));
+  }
+
   /// 筛选条件
   void orderBy(String key) {
     if (orderByList == null) {
