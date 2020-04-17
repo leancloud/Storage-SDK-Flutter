@@ -35,6 +35,7 @@ void main() {
       assert(!current.emailVerified);
       assert(!current.mobileVerified);
       assert(current.mobile == '15101006008');
+      assert(!current.isAnonymous);
     });
 
     test('login by email', () async {
@@ -58,7 +59,8 @@ void main() {
     });
 
     test('login anonymous', () async {
-      await LCUser.loginAnonymously();
+      LCUser user = await LCUser.loginAnonymously();
+      assert(user.isAnonymous);
     });
 
     test('login with auth data', () async {

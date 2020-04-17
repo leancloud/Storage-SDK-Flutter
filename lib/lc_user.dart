@@ -379,6 +379,9 @@ class LCUser extends LCObject {
     }
   }
 
+  /// 是否是匿名登录
+  bool get isAnonymous => authData != null && authData['anonymous'] != null;
+
   /// 私有方法
   static Future<LCUser> _login(Map<String, dynamic> data) async {
     Map response = await LeanCloud._httpClient.post('login', data: data);
