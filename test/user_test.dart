@@ -166,7 +166,7 @@ void main() {
     // });
 
     // test('request login sms code', () async {
-    //   await LCUser.requestLogionSMSCode('15101006007');
+    //   await LCUser.requestLoginSMSCode('15101006007');
     // });
 
     // test('login by sms code', () async {
