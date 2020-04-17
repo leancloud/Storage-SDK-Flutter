@@ -126,6 +126,12 @@ class LCQuery<T extends LCObject> {
     return this;
   }
 
+  /// [key] 字段满足 [query] 查询
+  LCQuery<T> whereMatchesQuery(String key, LCQuery query) {
+    condition.whereMatchesQuery(key, query);
+    return this;
+  }
+
   /// 按 [key] 升序
   LCQuery<T> orderBy(String key) {
     condition.orderBy(key);

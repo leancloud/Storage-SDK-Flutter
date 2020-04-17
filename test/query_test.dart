@@ -273,5 +273,19 @@ void main() {
         assert(str.startsWith('hello'));
       });
     });
+
+    test('inquery', () async {
+      LCQuery<LCObject> worldQuery = new LCQuery('World');
+      worldQuery.whereEqualTo('content', '7788');
+      LCQuery<LCObject> helloQuery = new LCQuery('Hello');
+      helloQuery.whereMatchesQuery('objectValue', worldQuery);
+      helloQuery.include('objectValue');
+      List<LCObject> hellos = await helloQuery.find();
+      assert(hellos.length > 0);
+      hellos.forEach((item) {
+        LCObject world = item['objectValue'];
+        assert(world['content'] == '7788');
+      });
+    });
   });
 }

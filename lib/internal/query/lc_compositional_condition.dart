@@ -105,6 +105,14 @@ class _LCCompositionalCondition extends _LCQueryCondition {
     add(new _LCEqualCondition(key, value));
   }
 
+  void whereMatchesQuery(String key, LCQuery query) {
+    Map<String, dynamic> inQuery = {
+      'where': query.condition,
+      'className': query.className
+    };
+    addOperation(key, '\$inQuery', inQuery);
+  }
+
   /// 筛选条件
   void orderBy(String key) {
     if (orderByList == null) {
