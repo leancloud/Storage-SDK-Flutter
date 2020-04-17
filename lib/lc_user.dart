@@ -77,7 +77,7 @@ class LCUser extends LCObject {
   }
 
   /// 手机号 [mobile] 请求登录注册码，图像验证码为 [validateToken]
-  static Future requestLogionSMSCode(String mobile,
+  static Future requestLoginSMSCode(String mobile,
       {String validateToken}) async {
     if (isNullOrEmpty(mobile)) {
       throw ArgumentError.notNull('mobile');
@@ -378,6 +378,9 @@ class LCUser extends LCObject {
       return false;
     }
   }
+
+  /// 是否是匿名登录
+  bool get isAnonymous => authData != null && authData['anonymous'] != null;
 
   /// 私有方法
   static Future<LCUser> _login(Map<String, dynamic> data) async {

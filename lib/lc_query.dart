@@ -29,6 +29,12 @@ class LCQuery<T extends LCObject> {
     return this;
   }
 
+  /// [key] 中不包括 [values]
+  LCQuery<T> whereNotContainedIn(String key, Iterable values) {
+    condition.whereNotContainedIn(key, values);
+    return this;
+  }
+
   /// [key] 中包含全部 [values]
   LCQuery<T> whereContainsAll(String key, Iterable values) {
     condition.whereContainsAll(key, values);
@@ -111,6 +117,18 @@ class LCQuery<T extends LCObject> {
   /// [key] 字段中包含 [subString]
   LCQuery<T> whereContains(String key, String subString) {
     condition.whereContains(key, subString);
+    return this;
+  }
+
+  /// [key] 字段满足正则匹配 [regex]
+  LCQuery<T> whereMatches(String key, String regex, {String modifiers}) {
+    condition.whereMatches(key, regex, modifiers);
+    return this;
+  }
+
+  /// [key] 字段满足 [query] 查询
+  LCQuery<T> whereMatchesQuery(String key, LCQuery query) {
+    condition.whereMatchesQuery(key, query);
     return this;
   }
 

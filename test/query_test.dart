@@ -218,6 +218,19 @@ void main() {
         assert(f);
       });
 
+      List notContainIns = [1, 2, 3];
+      query = new LCQuery('Book');
+      query.whereNotContainedIn('pages', notContainIns);
+      results = await query.find();
+      results.forEach((item) {
+        List pages = item['pages'];
+        bool f = true;
+        containIns.forEach((i) {
+          f &= !pages.contains(i);
+        });
+        assert(!f);
+      });
+
       // size
       query = new LCQuery('Book');
       query.whereSizeEqualTo('pages', 7);
@@ -248,6 +261,31 @@ void main() {
       query.whereWithinGeoBox('location', southwest, northeast);
       results = await query.find();
       assert(results.length > 0);
+    });
+
+    test('regex', () async {
+      LCQuery<LCObject> query = new LCQuery('Hello');
+      query.whereMatches('stringValue', '^HEllo.*', modifiers: 'i');
+      List<LCObject> results = await query.find();
+      assert(results.length > 0);
+      results.forEach((item) {
+        String str = item['stringValue'];
+        assert(str.startsWith('hello'));
+      });
+    });
+
+    test('inquery', () async {
+      LCQuery<LCObject> worldQuery = new LCQuery('World');
+      worldQuery.whereEqualTo('content', '7788');
+      LCQuery<LCObject> helloQuery = new LCQuery('Hello');
+      helloQuery.whereMatchesQuery('objectValue', worldQuery);
+      helloQuery.include('objectValue');
+      List<LCObject> hellos = await helloQuery.find();
+      assert(hellos.length > 0);
+      hellos.forEach((item) {
+        LCObject world = item['objectValue'];
+        assert(world['content'] == '7788');
+      });
     });
   });
 }
