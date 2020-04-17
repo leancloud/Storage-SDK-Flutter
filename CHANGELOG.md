@@ -1,3 +1,31 @@
+## [0.2.6] - 版本更新
+
+- 增加 LCObject 序列化和反序列化方法
+
+```dart
+String toString();
+static LCObject parseObject(String str)
+```
+
+- 增加 LCUser 获取是否是匿名登录属性
+
+```dart
+bool get isAnonymous;
+```
+
+- 增加 LCQuery 接口
+
+```dart
+/// 不包含查询
+LCQuery<T> whereNotContainedIn(String key, Iterable values);
+
+/// 正则查询
+LCQuery<T> whereMatches(String key, String regex, {String modifiers});
+
+/// 关系查询
+LCQuery<T> whereMatchesQuery(String key, LCQuery query)
+```
+
 ## [0.2.5] - 版本更新
 
 - 支持 Flutter Storage SDK fetchAll 功能
