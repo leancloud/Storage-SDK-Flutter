@@ -39,12 +39,16 @@ class _LCObjectData {
     if (objectData == null) {
       return null;
     }
-    Map<String, dynamic> data = {
-      'className': objectData.className,
-      'objectId': objectData.objectId,
-      'createdAt': objectData.createdAt.toString(),
-      'updatedAt': objectData.updatedAt.toString()
-    };
+    Map<String, dynamic> data = {'className': objectData.className};
+    if (objectData.objectId != null) {
+      data['objectId'] = objectData.objectId;
+    }
+    if (objectData.createdAt != null) {
+      data['createdAt'] = objectData.createdAt.toString();
+    }
+    if (objectData.updatedAt != null) {
+      data['updatedAt'] = objectData.updatedAt.toString();
+    }
     if (objectData.customPropertyMap != null) {
       objectData.customPropertyMap.forEach((k, v) {
         data[k] = _LCEncoder.encode(v);

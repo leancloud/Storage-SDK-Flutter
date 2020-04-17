@@ -151,5 +151,31 @@ void main() {
       assert(intList[1] == 2);
       assert(intList[2] == 3);
     });
+
+    test('serialization', () async {
+      LCObject object = new LCObject('Hello');
+      object['intValue'] = 123;
+      object['boolValue'] = true;
+      object['stringValue'] = 'hello, world';
+      object['time'] = DateTime.now();
+      object['intList'] = [1, 1, 2, 3, 5, 8];
+      object['stringMap'] = {'k1': 111, 'k2': true, 'k3': 'haha'};
+      LCObject nestedObj = new LCObject('World');
+      nestedObj['content'] = '7788';
+      object['objectValue'] = nestedObj;
+      object['pointerList'] = [new LCObject('World'), nestedObj];
+      await object.save();
+
+      String json = object.toString();
+      print(json);
+      LCObject newObj = LCObject.parseObject(json);
+      assert(newObj.objectId != null);
+      assert(newObj.className != null);
+      assert(newObj.createdAt != null);
+      assert(newObj.updatedAt != null);
+      assert(newObj['intValue'] == 123);
+      assert(newObj['boolValue'] == true);
+      assert(newObj['stringValue'] == 'hello, world');
+    });
   });
 }

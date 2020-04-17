@@ -406,6 +406,19 @@ class LCObject {
     await LeanCloud._httpClient.delete(path);
   }
 
+  /// 序列化为字符串
+  String toString() {
+    return jsonEncode(_LCObjectData.encode(_data));
+  }
+
+  /// 反序列化为 [LCObject] 对象
+  static LCObject parseObject(String str) {
+    _LCObjectData objectData = _LCObjectData.decode(jsonDecode(str));
+    LCObject object = _createByName(objectData.className);
+    object._merge(objectData);
+    return object;
+  }
+
   /// 批量删除 [objectList]
   static Future deleteAll(List<LCObject> objectList) async {
     if (objectList == null || objectList.length == 0) {
