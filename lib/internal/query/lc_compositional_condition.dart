@@ -113,16 +113,33 @@ class _LCCompositionalCondition extends _LCQueryCondition {
     addOperation(key, '\$inQuery', inQuery);
   }
 
-  /// 筛选条件
-  void orderBy(String key) {
+  void whereDoesNotMatchQuery(String key, LCQuery query) {
+    Map<String, dynamic> inQuery = {
+      'where': query.condition,
+      'className': query.className
+    };
+    addOperation(key, '\$notInQuery', inQuery);
+  }
+
+  /// 排序
+  void orderByAscending(String key) {
+    orderByList = new List<String>();
+    orderByList.add(key);
+  }
+
+  void orderByDecending(String key) {
+    orderByAscending('-$key');
+  }
+
+  void addAscendingOrder(String key) {
     if (orderByList == null) {
       orderByList = new List<String>();
     }
     orderByList.add(key);
   }
 
-  void orderByDecending(String key) {
-    orderBy('-$key');
+  void addDescendingOrder(String key) {
+    addAscendingOrder('-$key');
   }
 
   void include(String key) {

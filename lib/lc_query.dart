@@ -132,15 +132,33 @@ class LCQuery<T extends LCObject> {
     return this;
   }
 
+  /// [key] 字段不满足 [query] 查询
+  LCQuery<T> whereDoesNotMatchQuery(String key, LCQuery query) {
+    condition.whereDoesNotMatchQuery(key, query);
+    return this;
+  }
+
   /// 按 [key] 升序
-  LCQuery<T> orderBy(String key) {
-    condition.orderBy(key);
+  LCQuery<T> orderByAscending(String key) {
+    condition.orderByAscending(key);
     return this;
   }
 
   /// 按 [key] 降序
   LCQuery<T> orderByDescending(String key) {
     condition.orderByDecending(key);
+    return this;
+  }
+
+  /// 增加按 [key] 升序
+  LCQuery<T> addAscendingOrder(String key) {
+    condition.addAscendingOrder(key);
+    return this;
+  }
+
+  /// 增加按 [key] 降序
+  LCQuery<T> addDescendingOrder(String key) {
+    condition.addDescendingOrder(key);
     return this;
   }
 
