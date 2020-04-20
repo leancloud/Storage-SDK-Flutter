@@ -8,7 +8,6 @@ void main() {
     setUp(() => initNorthChina());
 
     test('base query', () async {
-      initNorthChina();
       int limit = 2;
       LCQuery<LCObject> query = new LCQuery<LCObject>('Hello');
       query.limit(limit);
@@ -34,7 +33,6 @@ void main() {
     });
 
     test('count', () async {
-      initNorthChina();
       LCQuery<LCObject> query = new LCQuery<LCObject>('Account');
       query.whereGreaterThan('balance', 200);
       int count = await query.count();
@@ -43,9 +41,8 @@ void main() {
     });
 
     test('order by', () async {
-      initNorthChina();
       LCQuery<LCObject> query = new LCQuery<LCObject>('Account');
-      query.orderBy('balance');
+      query.orderByAscending('balance');
       List<LCObject> results = await query.find();
       assert(results[0]['balance'] <= results[1]['balance']);
 
@@ -55,8 +52,20 @@ void main() {
       assert(results[0]['balance'] >= results[1]['balance']);
     });
 
+    test('add order', () async {
+      LCQuery<LCObject> query = new LCQuery<LCObject>('Account');
+      query.addAscendingOrder('balance');
+      query.addDescendingOrder('createdAt');
+      List<LCObject> results = await query.find();
+      for (int i = 0; i + 1 < results.length; i++) {
+        LCObject a1 = results[i];
+        LCObject a2 = results[i + 1];
+        assert(a1['balance'] < a2['balance'] ||
+            a1.createdAt.compareTo(a2.createdAt) >= 0);
+      }
+    });
+
     test('include', () async {
-      initNorthChina();
       LCQuery<LCObject> query = new LCQuery<LCObject>('Hello');
       query.include('objectValue');
       LCObject hello = await query.get('5e0d55aedd3c13006a53cd87');
@@ -65,21 +74,18 @@ void main() {
     });
 
     test('get', () async {
-      initNorthChina();
       LCQuery<LCObject> query = new LCQuery<LCObject>('Account');
       LCObject account = await query.get('5e0d9f7fd4b56c008e5d048a');
       assert(account['balance'] == 400);
     });
 
     test('first', () async {
-      initNorthChina();
       LCQuery<LCObject> query = new LCQuery<LCObject>('Account');
       LCObject account = await query.first();
       assert(account.objectId != null);
     });
 
     test('greater query', () async {
-      initNorthChina();
       LCQuery<LCObject> query = new LCQuery<LCObject>('Account');
       query.whereGreaterThan('balance', 200);
       List<LCObject> list = await query.find();
@@ -87,7 +93,6 @@ void main() {
     });
 
     test('and', () async {
-      initNorthChina();
       LCQuery<LCObject> q1 = new LCQuery<LCObject>('Account');
       q1.whereGreaterThan('balance', 100);
       LCQuery<LCObject> q2 = new LCQuery<LCObject>('Account');
@@ -102,7 +107,6 @@ void main() {
     });
 
     test('or', () async {
-      initNorthChina();
       LCQuery<LCObject> q1 = new LCQuery<LCObject>('Account');
       q1.whereLessThanOrEqualTo('balance', 100);
       LCQuery<LCObject> q2 = new LCQuery<LCObject>('Account');
@@ -117,7 +121,6 @@ void main() {
     });
 
     test('where object equals', () async {
-      initNorthChina();
       LCQuery<LCObject> worldQuery = new LCQuery('World');
       LCObject world = await worldQuery.get('5e0d55ae21460d006a1ec931');
       LCQuery<LCObject> helloQuery = new LCQuery('Hello');
@@ -285,6 +288,20 @@ void main() {
       hellos.forEach((item) {
         LCObject world = item['objectValue'];
         assert(world['content'] == '7788');
+      });
+    });
+
+    test('not inquery', () async {
+      LCQuery<LCObject> worldQuery = new LCQuery('World');
+      worldQuery.whereEqualTo('content', '7788');
+      LCQuery<LCObject> helloQuery = new LCQuery('Hello');
+      helloQuery.whereDoesNotMatchQuery('objectValue', worldQuery);
+      helloQuery.include('objectValue');
+      List<LCObject> hellos = await helloQuery.find();
+      assert(hellos.length > 0);
+      hellos.forEach((item) {
+        LCObject world = item['objectValue'];
+        assert(world == null || world['content'] != '7788');
       });
     });
   });
