@@ -1,3 +1,25 @@
+## [0.2.7] - 版本更新
+
+- 增加 LCQuery 条件查询接口
+
+```dart
+/// [key] 字段不满足 [query] 查询
+LCQuery<T> whereDoesNotMatchQuery(String key, LCQuery query)
+```
+
+- 增加 LCQuery 排序接口
+
+```dart
+/// 按 [key] 升序
+LCQuery<T> orderByAscending(String key)
+/// 按 [key] 降序
+LCQuery<T> orderByDescending(String key)
+/// 增加按 [key] 升序
+LCQuery<T> addAscendingOrder(String key)
+/// 增加按 [key] 降序
+LCQuery<T> addDescendingOrder(String key)
+```
+
 ## [0.2.6] - 版本更新
 
 - 增加 LCObject 序列化和反序列化方法
