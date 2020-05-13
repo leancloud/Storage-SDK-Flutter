@@ -1,9 +1,12 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:leancloud_storage/leancloud.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'utils.dart';
 
 void main() {
+  SharedPreferences.setMockInitialValues({});
+
   group('acl', () {
     setUp(() => initNorthChina());
 

@@ -360,9 +360,11 @@ class LCUser extends LCObject {
   /// 注销登录
   static Future logout() async {
     _currentUser = null;
-    if (isMobilePlatform()) {
+    try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       prefs.remove(CurrentUserKey);
+    } on Error catch (e) {
+      LCLogger.error(e.toString());
     }
   }
 
@@ -392,14 +394,12 @@ class LCUser extends LCObject {
   }
 
   static Future _saveToLocal() async {
-    if (isMobilePlatform()) {
-      try {
-        SharedPreferences prefs = await SharedPreferences.getInstance();
-        String userData = jsonEncode(_LCObjectData.encode(_currentUser._data));
-        await prefs.setString(CurrentUserKey, userData);
-      } on Error catch (e) {
-        LCLogger.error(e.toString());
-      }
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      String userData = jsonEncode(_LCObjectData.encode(_currentUser._data));
+      await prefs.setString(CurrentUserKey, userData);
+    } on Error catch (e) {
+      LCLogger.error(e.toString());
     }
   }
 
@@ -413,15 +413,13 @@ class LCUser extends LCObject {
     if (_currentUser != null) {
       return _currentUser;
     }
-    if (isMobilePlatform()) {
-      try {
-        SharedPreferences prefs = await SharedPreferences.getInstance();
-        String userData = prefs.getString(CurrentUserKey);
-        _LCObjectData objectData = _LCObjectData.decode(jsonDecode(userData));
-        _currentUser = LCUser._fromObjectData(objectData);
-      } on Error catch (e) {
-        LCLogger.error(e.toString());
-      }
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      String userData = prefs.getString(CurrentUserKey);
+      _LCObjectData objectData = _LCObjectData.decode(jsonDecode(userData));
+      _currentUser = LCUser._fromObjectData(objectData);
+    } on Error catch (e) {
+      LCLogger.error(e.toString());
     }
     return _currentUser;
   }
