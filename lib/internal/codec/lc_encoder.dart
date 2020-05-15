@@ -74,15 +74,23 @@ class _LCEncoder {
   }
 
   static dynamic encodeACL(LCACL acl) {
-    Set<String> readers = acl.readers;
-    Set<String> writers = acl.writers;
-    Set<String> union = readers.union(writers);
+    Set<String> keys = new Set<String>();
+    if (acl.readAccess.length > 0) {
+      keys = keys.union(Set.from(acl.readAccess.keys));
+    }
+    if (acl.writeAccess.length > 0) {
+      keys = keys.union(Set.from(acl.writeAccess.keys));
+    }
     Map<String, dynamic> result = new Map<String, dynamic>();
-    union.forEach((item) {
-      result[item] = {
-        'read': readers.contains(item),
-        'write': writers.contains(item)
-      };
+    keys.forEach((key) {
+      Map access = {};
+      if (acl.readAccess.containsKey(key)) {
+        access['read'] = acl.readAccess[key];
+      }
+      if (acl.writeAccess.containsKey(key)) {
+        access['write'] = acl.writeAccess[key];
+      }
+      result[key] = access;
     });
     return result;
   }
