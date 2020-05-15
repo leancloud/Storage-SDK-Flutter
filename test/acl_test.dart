@@ -63,5 +63,22 @@ void main() {
       LCObject account = await query.get('5e144525dd3c13006a8f8de2');
       print(account.objectId);
     });
+
+    test('demo', () async {
+      // 新建一个帖子对象
+      LCObject post = LCObject("Post");
+      // 为属性赋值
+      post['title'] = '我是 Flutter';
+      //新建一个 ACL 实例
+
+      LCACL acl = LCACL();
+      acl.setPublicReadAccess(true); // 设置公开的「读」权限，任何人都可阅读
+      LCUser currentUser = await LCUser.login(
+          'hello', 'world'); // 为当前用户赋予「写」权限，有且仅有当前用户可以修改这条 Post
+      acl.setUserWriteAccess(currentUser, true); //将 ACL 实例赋予 Post对象
+      post.acl = acl;
+
+      await post.save();
+    });
   });
 }

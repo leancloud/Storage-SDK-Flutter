@@ -5,8 +5,8 @@ class LCACL {
   static const String PublicKey = '*';
   static const String RoleKeyPrefix = 'role:';
 
-  Set<String> readers = new Set<String>();
-  Set<String> writers = new Set<String>();
+  Map<String, bool> readAccess = new Map<String, bool>();
+  Map<String, bool> writeAccess = new Map<String, bool>();
 
   LCACL();
 
@@ -20,22 +20,22 @@ class LCACL {
 
   /// 是否公共可读
   bool getPublilcReadAccess() {
-    return _getAccess(readers, PublicKey);
+    return _getAccess(readAccess, PublicKey);
   }
 
   /// 设置 [value] 公共可读
   void setPublicReadAccess(bool value) {
-    _setAccess(readers, PublicKey, value);
+    _setAccess(readAccess, PublicKey, value);
   }
 
   /// 是否公共可写
   bool getPublicWriteAccess() {
-    return _getAccess(writers, PublicKey);
+    return _getAccess(writeAccess, PublicKey);
   }
 
   /// 设置 [value] 公共可写
   void setPublicWriteAccess(bool value) {
-    _setAccess(writers, PublicKey, value);
+    _setAccess(writeAccess, PublicKey, value);
   }
 
   /// [userId] 是否可读
@@ -43,7 +43,7 @@ class LCACL {
     if (userId == null || userId.isEmpty) {
       throw ArgumentError.notNull('userId');
     }
-    return _getAccess(readers, userId);
+    return _getAccess(readAccess, userId);
   }
 
   /// 设置 [userId] 可读 [value]
@@ -51,7 +51,7 @@ class LCACL {
     if (userId == null || userId.isEmpty) {
       throw ArgumentError.notNull('userId');
     }
-    _setAccess(readers, userId, value);
+    _setAccess(readAccess, userId, value);
   }
 
   /// [userId] 是否可写
@@ -59,7 +59,7 @@ class LCACL {
     if (userId == null || userId.isEmpty) {
       throw ArgumentError.notNull('userId');
     }
-    return _getAccess(writers, userId);
+    return _getAccess(writeAccess, userId);
   }
 
   /// 设置 [userId] 可写 [value]
@@ -67,7 +67,7 @@ class LCACL {
     if (userId == null || userId.isEmpty) {
       throw ArgumentError.notNull('userId');
     }
-    _setAccess(writers, userId, value);
+    _setAccess(writeAccess, userId, value);
   }
 
   /// [user] 是否可读
@@ -83,7 +83,7 @@ class LCACL {
     if (user == null) {
       throw ArgumentError.notNull('user');
     }
-    _setAccess(readers, user.objectId, value);
+    setUserIdReadAccess(user.objectId, value);
   }
 
   /// [user] 是否可写
@@ -99,7 +99,7 @@ class LCACL {
     if (user == null) {
       throw ArgumentError.notNull('user');
     }
-    _setAccess(writers, user.objectId, value);
+    setUserIdWriteAccess(user.objectId, value);
   }
 
   /// [role] 是否可读
@@ -107,7 +107,7 @@ class LCACL {
     if (role == null) {
       throw ArgumentError.notNull('role');
     }
-    return _getAccess(readers, '$RoleKeyPrefix${role.name}');
+    return _getAccess(readAccess, '$RoleKeyPrefix${role.name}');
   }
 
   /// 设置 [role] 可读 [value]
@@ -115,7 +115,7 @@ class LCACL {
     if (role == null) {
       throw ArgumentError.notNull('role');
     }
-    _setAccess(readers, '$RoleKeyPrefix${role.name}', value);
+    _setAccess(readAccess, '$RoleKeyPrefix${role.name}', value);
   }
 
   /// [role] 是否可写
@@ -123,7 +123,7 @@ class LCACL {
     if (role == null) {
       throw ArgumentError.notNull('role');
     }
-    return _getAccess(writers, '$RoleKeyPrefix${role.name}');
+    return _getAccess(writeAccess, '$RoleKeyPrefix${role.name}');
   }
 
   /// 设置 [role] 可写 [value]
@@ -131,18 +131,14 @@ class LCACL {
     if (role == null) {
       throw ArgumentError.notNull('role');
     }
-    _setAccess(writers, '$RoleKeyPrefix${role.name}', value);
+    _setAccess(writeAccess, '$RoleKeyPrefix${role.name}', value);
   }
 
-  bool _getAccess(Set<String> s, String key) {
-    return s.contains(key);
+  bool _getAccess(Map<String, bool> access, String key) {
+    return access.containsKey(key) ? access[key] : false;
   }
 
-  void _setAccess(Set<String> s, String key, bool value) {
-    if (value) {
-      s.add(key);
-    } else {
-      s.remove(key);
-    }
+  void _setAccess(Map<String, bool> access, String key, bool value) {
+    access[key] = value;
   }
 }
