@@ -174,6 +174,12 @@ class LCQuery<T extends LCObject> {
     return this;
   }
 
+  /// 是否返回 ACL
+  LCQuery<T> includeACL(bool value) {
+    condition.includeACL = value;
+    return this;
+  }
+
   /// 跳过 [value]
   LCQuery<T> skip(int value) {
     condition.skip = value;

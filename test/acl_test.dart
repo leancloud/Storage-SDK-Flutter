@@ -80,5 +80,16 @@ void main() {
 
       await post.save();
     });
+
+    test('serialization', () async {
+      await LCUser.login('hello', 'world');
+      LCQuery<LCObject> query = new LCQuery('Account');
+      query.includeACL(true).orderByDescending('createdAt');
+      List<LCObject> accounts = await query.find();
+      for (LCObject account in accounts) {
+        print('public read access: ${account.acl.getPublilcReadAccess()}');
+        print('public write access: ${account.acl.getPublicWriteAccess()}');
+      }
+    });
   });
 }

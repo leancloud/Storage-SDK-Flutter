@@ -28,8 +28,12 @@ class _LCObjectData {
       } else if (key == 'updatedAt') {
         result.updatedAt = DateTime.parse(value).toLocal();
       } else {
-        // 自定义属性
-        result.customPropertyMap[key] = _LCDecoder.decode(value);
+        if (key == 'ACL' && value is Map) {
+          result.customPropertyMap[key] = _LCDecoder.decodeACL(value);
+        } else {
+          // 自定义属性
+          result.customPropertyMap[key] = _LCDecoder.decode(value);
+        }
       }
     });
     return result;
