@@ -60,4 +60,19 @@ class _LCDecoder {
   static DateTime decodeDate(dynamic data) {
     return DateTime.parse(data).toLocal();
   }
+
+  /// 解码 ACL
+  static LCACL decodeACL(Map data) {
+    LCACL acl = new LCACL();
+    data.forEach((key, value) {
+      Map access = value;
+      if (access.containsKey('read')) {
+        acl.readAccess[key] = access['read'];
+      }
+      if (access.containsKey('write')) {
+        acl.writeAccess[key] = access['write'];
+      }
+    });
+    return acl;
+  }
 }

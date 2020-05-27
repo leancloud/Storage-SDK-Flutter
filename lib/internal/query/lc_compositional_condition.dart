@@ -11,11 +11,13 @@ class _LCCompositionalCondition extends _LCQueryCondition {
   List<String> orderByList;
   Set<String> includes;
   Set<String> selectedKeys;
+  bool includeACL;
   int skip;
   int limit;
 
   _LCCompositionalCondition({this.composition = And}) {
     conditionList = new List<_LCQueryCondition>();
+    includeACL = false;
     skip = 0;
     limit = 30;
   }
@@ -198,6 +200,9 @@ class _LCCompositionalCondition extends _LCQueryCondition {
     }
     if (selectedKeys != null && selectedKeys.length > 0) {
       result['keys'] = selectedKeys.join(',');
+    }
+    if (includeACL) {
+      result['returnACL'] = includeACL;
     }
     return result;
   }

@@ -12,6 +12,9 @@ class LCACL {
 
   /// 创建属于 [LCUser] 的 ACL 对象
   static LCACL createWithOwner(LCUser owner) {
+    if (owner == null) {
+      throw new ArgumentError.notNull('owner');
+    }
     LCACL acl = new LCACL();
     acl.setUserReadAccess(owner, true);
     acl.setUserWriteAccess(owner, true);
