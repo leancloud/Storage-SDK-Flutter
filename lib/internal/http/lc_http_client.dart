@@ -49,6 +49,7 @@ class _LCHttpClient {
     await _refreshServer();
     Options options = buildCacheOptions(Duration(days: 7));
     if (cachePolicy == CachePolicy.onlyNetwork) {
+      options.extra[DIO_CACHE_KEY_TRY_CACHE] = false;
       options.extra[DIO_CACHE_KEY_FORCE_REFRESH] = true;
     }
     options.headers = _generateHeaders(headers);
