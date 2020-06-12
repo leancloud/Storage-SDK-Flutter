@@ -423,4 +423,10 @@ class LCUser extends LCObject {
     }
     return _currentUser;
   }
+
+  /// 关注用户 [targetId]
+  Future follow(String targetId, {Map<String, dynamic> attrs}) {}
+
+  /// 取消关注
+  Future unfollow(String targetId) {}
 }
