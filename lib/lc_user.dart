@@ -425,8 +425,36 @@ class LCUser extends LCObject {
   }
 
   /// 关注用户 [targetId]
-  Future follow(String targetId, {Map<String, dynamic> attrs}) {}
+  Future follow(String targetId, {Map<String, dynamic> attrs}) async {
+    if (isNullOrEmpty(targetId)) {
+      throw ArgumentError.notNull('targetId');
+    }
+    String path = 'users/self/friendship/$targetId';
+    await LeanCloud._httpClient.post(path, data: attrs);
+  }
 
   /// 取消关注
-  Future unfollow(String targetId) {}
+  Future unfollow(String targetId) async {
+    if (isNullOrEmpty(targetId)) {
+      throw ArgumentError.notNull('targetId');
+    }
+    String path = 'users/self/friendship/$targetId';
+    await LeanCloud._httpClient.delete(path);
+  }
+
+  /// 获取粉丝查询
+  LCQuery<LCObject> followerQuery() {
+    LCQuery<LCObject> query = new LCQuery('_Follower');
+    query.whereEqualTo('user', this);
+    query.include('follower');
+    return query;
+  }
+
+  /// 获取关注查询
+  LCQuery<LCObject> followeeQuery() {
+    LCQuery<LCObject> query = new LCQuery('_Followee');
+    query.whereEqualTo('user', this);
+    query.include('followee');
+    return query;
+  }
 }
