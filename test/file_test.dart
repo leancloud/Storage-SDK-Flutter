@@ -49,6 +49,35 @@ void main() {
       print(file.objectId);
       assert(file.objectId != null);
     });
+
+    test('object with file', () async {
+      LCFile file = await LCFile.fromPath('avatar', './avatar.jpg');
+      LCObject obj = new LCObject('FileObject');
+      obj['file'] = file;
+      String text = 'hello, world';
+      Uint8List data = utf8.encode(text);
+      LCFile file2 = LCFile.fromBytes('text', data);
+      obj['files'] = [file, file2];
+      await obj.save();
+      assert(file.objectId != null && file.url != null);
+      assert(file2.objectId != null && file2.url != null);
+      assert(obj.objectId != null);
+    });
+
+    test('query object with file', () async {
+      LCQuery<LCObject> query = new LCQuery('FileObject');
+      query.include('files');
+      List<LCObject> objs = await query.find();
+      objs.forEach((item) {
+        LCFile file = item['file'] as LCFile;
+        assert(file.objectId != null && file.url != null);
+        List files = item['files'] as List;
+        files.forEach((f) {
+          assert(f is LCFile);
+          assert(f.objectId != null && f.url != null);
+        });
+      });
+    });
   });
 
   group('file in US', () {

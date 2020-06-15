@@ -30,10 +30,7 @@ class LCObject {
   set acl(LCACL value) => this['ACL'] = value;
 
   /// 是否需要保存
-  bool get _isDirty => _isNew || _estimatedData.length > 0;
-
-  /// 是否为新建
-  bool _isNew;
+  bool _isDirty;
 
   /// 创建 [className] 类型的对象
   LCObject(String className) {
@@ -41,9 +38,8 @@ class LCObject {
     _data = new _LCObjectData();
     _estimatedData = new Map<String, dynamic>();
     _operationMap = new Map<String, _LCOperation>();
-
+    _isDirty = true;
     _data.className = className;
-    _isNew = true;
   }
 
   /// 创建 [className] 类型的 [objectId] 对象
@@ -51,7 +47,7 @@ class LCObject {
     LCObject object = new LCObject(className);
     assert(objectId != null && objectId.length > 0);
     object._data.objectId = objectId;
-    object._isNew = false;
+    object._isDirty = false;
     return object;
   }
 
@@ -232,6 +228,7 @@ class LCObject {
     } else {
       _operationMap[key] = op;
     }
+    _isDirty = true;
   }
 
   void _merge(_LCObjectData data) {
@@ -249,7 +246,7 @@ class LCObject {
     _rebuildEstimatedData();
     // 清空操作
     _operationMap.clear();
-    _isNew = false;
+    _isDirty = false;
   }
 
   /// 拉取 [keys] 字段值，以及包含 [includes] 字段对象
@@ -309,9 +306,22 @@ class LCObject {
   static Future _saveBatches(Queue<_LCBatch> batches) async {
     while (batches.length > 0) {
       _LCBatch batch = batches.removeLast();
+
+      // 特殊处理 File 依赖
+      List<LCObject> dirtyFiles = batch.objects.where((item) {
+        return item is LCFile && item._isDirty;
+      }).toList();
+      for (LCObject file in dirtyFiles) {
+        await file.save();
+      }
+
       List<LCObject> dirtyObjects = batch.objects.where((item) {
         return item._isDirty;
       }).toList();
+
+      if (dirtyObjects.length == 0) {
+        continue;
+      }
 
       // 生成请求列表
       List requestList = dirtyObjects.map((item) {
@@ -332,7 +342,7 @@ class LCObject {
       List<_LCObjectData> resultList = results.map((item) {
         if (item.containsKey('error')) {
           int code = item['code'];
-          String message = item['error'];
+          String message = item['error'].toString();
           throw ('$code : $message');
         }
         return _LCObjectData.decode(item['success']);

@@ -22,6 +22,8 @@ class _LCDecoder {
           return decodeRelation(data);
         } else if (type == 'GeoPoint') {
           return decodePoint(data);
+        } else if (type == 'File') {
+          return decodeFile(data);
         }
       }
       // 普通的 Map 类型
@@ -59,6 +61,14 @@ class _LCDecoder {
   /// 解码时间
   static DateTime decodeDate(dynamic data) {
     return DateTime.parse(data).toLocal();
+  }
+
+  /// 解码文件
+  static LCFile decodeFile(dynamic data) {
+    LCFile file = new LCFile();
+    _LCObjectData objectData = _LCObjectData.decode(data);
+    file._merge(objectData);
+    return file;
   }
 
   /// 解码 ACL
