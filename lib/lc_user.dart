@@ -2,6 +2,21 @@ part of leancloud_storage;
 
 const String CurrentUserKey = 'current_user';
 
+/// 粉丝和关注
+class LCFollowersAndFollowees {
+  /// 粉丝
+  List<LCObject> followers;
+
+  /// 关注
+  List<LCObject> followees;
+
+  /// 粉丝数量
+  int followersCount;
+
+  /// 关注数量
+  int followeesCount;
+}
+
 /// 用户
 class LCUser extends LCObject {
   static const String ClassName = '_User';
@@ -433,7 +448,7 @@ class LCUser extends LCObject {
     await LeanCloud._httpClient.post(path, data: attrs);
   }
 
-  /// 取消关注
+  /// 取消关注用户 [targetId]
   Future unfollow(String targetId) async {
     if (isNullOrEmpty(targetId)) {
       throw ArgumentError.notNull('targetId');
@@ -456,5 +471,52 @@ class LCUser extends LCObject {
     query.whereEqualTo('user', this);
     query.include('followee');
     return query;
+  }
+
+  /// 同时获得粉丝和关注，[returnCount] 是否返回数量
+  Future<LCFollowersAndFollowees> getFollowersAndFollowees(
+      {bool includeFollower, bool includeFollowee, bool returnCount}) async {
+    Map<String, dynamic> queryParams = {};
+    if (returnCount) {
+      queryParams['count'] = 1;
+    }
+    if (includeFollower || includeFollowee) {
+      List<String> includes = new List<String>();
+      if (includeFollower) {
+        includes.add('follower');
+      }
+      if (includeFollowee) {
+        includes.add('followee');
+      }
+      queryParams['include'] = includes.join(',');
+    }
+    Map response = await LeanCloud._httpClient
+        .get('users/$objectId/followersAndFollowees', queryParams: queryParams);
+    LCFollowersAndFollowees result = new LCFollowersAndFollowees();
+    if (response.containsKey('followers')) {
+      result.followers = new List<LCObject>();
+      for (dynamic item in response['followers']) {
+        _LCObjectData objectData = _LCObjectData.decode(item);
+        LCObject follower = new LCObject('_Follower');
+        follower._merge(objectData);
+        result.followers.add(follower);
+      }
+    }
+    if (response.containsKey('followees')) {
+      result.followees = new List<LCObject>();
+      for (dynamic item in response['followees']) {
+        _LCObjectData objectData = _LCObjectData.decode(item);
+        LCObject followee = new LCObject('_Followee');
+        followee._merge(objectData);
+        result.followees.add(followee);
+      }
+    }
+    if (response.containsKey('followers_count')) {
+      result.followersCount = response['followers_count'];
+    }
+    if (response.containsKey('followees_count')) {
+      result.followeesCount = response['followees_count'];
+    }
+    return result;
   }
 }
