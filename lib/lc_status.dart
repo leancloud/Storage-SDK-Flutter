@@ -2,23 +2,11 @@ part of leancloud_storage;
 
 /// 状态数量
 class LCStatusCount {
-  int _total;
-  int _unread;
+  /// 总数
+  int total;
 
-  int get total {
-    return _total;
-  }
-
-  int get unread {
-    return _unread;
-  }
-
-  static LCStatusCount create(int total, int unread) {
-    LCStatusCount count = new LCStatusCount();
-    count._total = total;
-    count._unread = unread;
-    return count;
-  }
+  /// 未读数
+  int unread;
 }
 
 /// 状态
@@ -165,7 +153,10 @@ class LCStatus extends LCObject {
     }
     Map response = await LeanCloud._httpClient
         .get('subscribe/statuses/count', queryParams: params);
-    return LCStatusCount.create(response['total'], response['unread']);
+    LCStatusCount statusCount = new LCStatusCount();
+    statusCount.total = response['total'];
+    statusCount.unread = response['unread'];
+    return statusCount;
   }
 
   /// 重置 [inboxType] 类型状态的数量
