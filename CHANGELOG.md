@@ -1,3 +1,7 @@
+## [0.4.0] - 版本更新
+
+- 支持应用内社交，包括粉丝，关注，状态，私信。[更多示例](https://github.com/leancloud/Storage-SDK-Flutter/blob/master/test/status_test.dart)
+
 ## [0.3.1] - 版本更新
 
 - 支持 LCObject 包含 LCFile 字段的自动保存
