@@ -70,6 +70,8 @@ part 'lc_role.dart';
 part 'lc_user.dart';
 part 'lc_user_auth_data_login_option.dart';
 part 'lc_logger.dart';
+part 'lc_status.dart';
+part 'lc_status_query.dart';
 
 const String SDKVersion = '0.3.1';
 
@@ -99,6 +101,8 @@ class LeanCloud {
     LCObject.registerSubclass<LCFile>(LCFile.ClassName, () => new LCFile());
     LCObject.registerSubclass<LCUser>(LCUser.ClassName, () => new LCUser());
     LCObject.registerSubclass<LCRole>(LCRole.ClassName, () => new LCRole());
+    LCObject.registerSubclass<LCStatus>(
+        LCStatus.ClassName, () => new LCStatus());
 
     _httpClient = new _LCHttpClient(
         appId, appKey, server, SDKVersion, APIVersion, queryCache);
