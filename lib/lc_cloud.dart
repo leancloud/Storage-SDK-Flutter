@@ -4,6 +4,8 @@ part of leancloud_storage;
 class LCCloud {
   static bool isProd = true;
 
+  /// 切换云引擎环境
+  /// [prod] 是否为正式环境
   static void setProduction(bool prod) {
     isProd = prod;
   }
