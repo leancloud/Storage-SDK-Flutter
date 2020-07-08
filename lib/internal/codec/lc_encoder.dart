@@ -1,6 +1,6 @@
 part of leancloud_storage;
 
-/// 编码工具类
+/// Encoding
 class _LCEncoder {
   static dynamic encode(dynamic object) {
     if (object is DateTime) {

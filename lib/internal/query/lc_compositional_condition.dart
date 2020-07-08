@@ -123,7 +123,7 @@ class _LCCompositionalCondition extends _LCQueryCondition {
     addOperation(key, '\$notInQuery', inQuery);
   }
 
-  /// 排序
+  /// Ordering
   void orderByAscending(String key) {
     orderByList = new List<String>();
     orderByList.add(key);

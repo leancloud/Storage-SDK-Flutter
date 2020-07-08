@@ -1,19 +1,19 @@
 part of leancloud_storage;
 
-/// 关系
+/// LeanCloud Relation.
+/// 
+/// This can be used to access all of the children of a many-to-many relationship.
+/// Each relation is associated with a particular parent object and key. 
 class LCRelation<T extends LCObject> {
-  /// 字段名
   String key;
 
-  /// 父对象
   LCObject parent;
 
-  /// 关联类型名
   String targetClass;
 
   LCRelation();
 
-  /// 获取 Relation 的查询对象
+  /// Constructs a [LCQuery] that is limited to [LCObject] in this relation.
   LCQuery<T> query() {
     LCQuery<T> query = new LCQuery(targetClass);
     query.whereRelatedTo(parent, key);

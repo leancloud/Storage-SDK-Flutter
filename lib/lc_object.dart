@@ -1,38 +1,44 @@
 part of leancloud_storage;
 
-/// 对象
+/// LeanCloud Object
+///
+/// Object is also called Record (in traditional relational databases)
+/// or Document (in some NoSQL databases). 
 class LCObject {
-  /// 最近一次与服务端同步的数据
+  /// The last known data for this object from cloud.
   _LCObjectData _data;
 
-  /// 预算数据
+  /// The best estimate of this's current data.
   Map<String, dynamic> _estimatedData;
 
-  /// 操作字典
+  /// List of sets of changes to the data.
   Map<String, _LCOperation> _operationMap;
 
-  /// 类名
+  /// The class name of the object.
+  ///
+  /// Class is also called Table (in traditional relational databases)
+  /// or Document (in some NoSQL databases).
   String get className => _data.className;
 
-  /// 对象 Id
+  /// Gets the object's objectId.
   String get objectId => _data.objectId;
 
-  /// 创建时间
+  /// Gets the object's createdAt attribute.
   DateTime get createdAt => _data.createdAt;
 
-  /// 更新时间
+  /// Gets the object's updatedAt attribute.
   DateTime get updatedAt => _data.updatedAt ?? _data.createdAt;
 
-  /// 获得访问权限
+  /// Gets the ACL for this object.
   LCACL get acl => this['ACL'];
 
-  /// 设置访问权限
+  /// Sets the ACL to be used for this object.
   set acl(LCACL value) => this['ACL'] = value;
 
-  /// 是否需要保存
+  /// If this object has been modified since its last save/refresh.
   bool _isDirty;
 
-  /// 创建 [className] 类型的对象
+  /// Creates a new object in [className].
   LCObject(String className) {
     assert(className != null && className.length > 0);
     _data = new _LCObjectData();
@@ -42,7 +48,9 @@ class LCObject {
     _data.className = className;
   }
 
-  /// 创建 [className] 类型的 [objectId] 对象
+  /// Constructs a object in [className] of [objectId].
+  ///
+  /// The object corresponding to the [objectId] specified must already exists on the cloud.
   static LCObject createWithoutData(String className, String objectId) {
     LCObject object = new LCObject(className);
     assert(objectId != null && objectId.length > 0);
@@ -51,7 +59,7 @@ class LCObject {
     return object;
   }
 
-  /// 获取 [key] 对应的值
+  /// Gets the value of [key].
   operator [](String key) {
     dynamic value = _estimatedData[key];
     if (value is LCRelation) {
@@ -62,7 +70,7 @@ class LCObject {
     return value;
   }
 
-  /// 设置 [key] 对应的值 [value]
+  /// Sets [key] to [value].
   operator []=(String key, dynamic value) {
     if (isNullOrEmpty(key)) {
       throw ArgumentError.notNull(key);
@@ -77,7 +85,9 @@ class LCObject {
     _applyOperation(key, op);
   }
 
-  /// 删除 [key] 字段
+  /// Removes the [key].
+  ///
+  /// This is a noop if the [key] does not exist.
   void unset(String key) {
     if (isNullOrEmpty(key)) {
       throw ArgumentError.notNull('key');
@@ -86,7 +96,7 @@ class LCObject {
     _applyOperation(key, op);
   }
 
-  /// 增加 [key] 对应的关联 [value]
+  /// Adds a relation [value] to [key].
   void addRelation(String key, LCObject value) {
     if (isNullOrEmpty(key)) {
       throw ArgumentError.notNull('key');
@@ -98,7 +108,7 @@ class LCObject {
     _applyOperation(key, op);
   }
 
-  /// 删除 [key] 对应的关联 [value]
+  /// Removes relation [value] to [key]. 
   void removeRelation(String key, LCObject value) {
     if (isNullOrEmpty(key)) {
       throw ArgumentError.notNull('key');
@@ -110,7 +120,7 @@ class LCObject {
     _applyOperation(key, op);
   }
 
-  /// 增加 [key] 数字属性值 [amount]
+  /// Atomically increments the value of the given [key] with [amount].
   void increment(String key, num amount) {
     if (isNullOrEmpty(key)) {
       throw ArgumentError.notNull('key');
@@ -119,7 +129,7 @@ class LCObject {
     _applyOperation(key, op);
   }
 
-  /// 减少 [key] 数字属性值 [amount]
+  /// Atomically decrements the value of the given [key] with [amount]. 
   void decrement(String key, num amount) {
     if (isNullOrEmpty(key)) {
       throw ArgumentError.notNull('key');
@@ -128,7 +138,7 @@ class LCObject {
     _applyOperation(key, op);
   }
 
-  /// 在 [key] 数组属性中增加一个元素 [value]
+  /// Atomically add [value] to the end of the array [key].
   void add(String key, dynamic value) {
     if (isNullOrEmpty(key)) {
       throw ArgumentError.notNull('key');
@@ -140,7 +150,7 @@ class LCObject {
     _applyOperation(key, op);
   }
 
-  /// 在 [key] 数组属性中增加一组元素 [values]
+  /// Atomically add [values] to the end of the array [key].
   void addAll(String key, Iterable values) {
     if (isNullOrEmpty(key)) {
       throw ArgumentError.notNull('key');
@@ -152,7 +162,9 @@ class LCObject {
     _applyOperation(key, op);
   }
 
-  /// 在 [key] 数组属性中增加一个唯一元素 [value]
+  /// Atomically add [value] to the array [key], only if not already present.
+  ///
+  /// The position of the insert is not guaranteed.
   void addUnique(String key, dynamic value) {
     if (isNullOrEmpty(key)) {
       throw ArgumentError.notNull('key');
@@ -164,7 +176,9 @@ class LCObject {
     _applyOperation(key, op);
   }
 
-  /// 在 [key] 数组属性中增加一组唯一元素 [values]
+  /// Atomically add [values] to the array [key], only if not already present.
+  ///
+  /// The position of the insert is not guaranteed.
   void addAllUnique(String key, Iterable values) {
     if (isNullOrEmpty(key)) {
       throw ArgumentError.notNull('key');
@@ -176,7 +190,7 @@ class LCObject {
     _applyOperation(key, op);
   }
 
-  /// 移除 [key] 数组中的元素 [value]
+  /// Atomically remove all [value] from the array [key].
   void remove(String key, dynamic value) {
     if (isNullOrEmpty(key)) {
       throw ArgumentError.notNull('key');
@@ -188,7 +202,7 @@ class LCObject {
     _applyOperation(key, op);
   }
 
-  /// 移除 [key] 数组中的一组元素 [values]
+  /// Atomically remove all [values] from the array [key].
   void removeAll(String key, Iterable values) {
     if (isNullOrEmpty(key)) {
       throw ArgumentError.notNull('key');
@@ -200,6 +214,11 @@ class LCObject {
     _applyOperation(key, op);
   }
 
+  /// Refreshes the attributes.
+  /// 
+  /// This populates attributes by starting with the last known data from the
+  /// server, and applying all of the local changes that have been made since
+  /// then.
   void _rebuildEstimatedData() {
     _estimatedData = new Map<String, dynamic>();
     _data.customPropertyMap.forEach((String key, dynamic value) {
@@ -249,7 +268,10 @@ class LCObject {
     _isDirty = false;
   }
 
-  /// 拉取 [keys] 字段值，以及包含 [includes] 字段对象
+  /// Fetches the object from the cloud.
+  /// 
+  /// Can also specifies which [keys] to fetch,
+  /// and if this [includes] pointed objects.
   Future<LCObject> fetch(
       {Iterable<String> keys, Iterable<String> includes}) async {
     Map<String, dynamic> queryParams = {};
@@ -267,7 +289,7 @@ class LCObject {
     return this;
   }
 
-  /// 批量拉取 [objectList]
+  /// Fetches all objects in [objectList].
   static Future<List<LCObject>> fetchAll(List<LCObject> objectList) async {
     if (objectList == null) {
       throw new ArgumentError.notNull('objectList');
@@ -355,7 +377,10 @@ class LCObject {
     }
   }
 
-  /// 保存，[fetchWhenSave] 是否在保存后拉取，是否根据 [query] 条件更新对象
+  /// Saves the object to the cloud.
+  /// 
+  /// Can also specify whether to [fetchWhenSave],
+  /// or only saving the object when it matches the [query].
   Future<LCObject> save(
       {bool fetchWhenSave = false, LCQuery<LCObject> query}) async {
     // 检测循环依赖
@@ -390,7 +415,7 @@ class LCObject {
     return this;
   }
 
-  /// 批量保存 [objectList]
+  /// Saves all objects in [objectList].
   static Future<List<LCObject>> saveAll(List<LCObject> objectList) async {
     if (objectList == null) {
       throw new ArgumentError.notNull('objectList');
@@ -407,7 +432,7 @@ class LCObject {
     return objectList;
   }
 
-  /// 删除
+  /// Deletes this object.
   Future delete() async {
     if (objectId == null) {
       return;
@@ -416,12 +441,12 @@ class LCObject {
     await LeanCloud._httpClient.delete(path);
   }
 
-  /// 序列化为字符串
+  /// Serializes this [LCObject] to a JSON string. 
   String toString() {
     return jsonEncode(_LCObjectData.encode(_data));
   }
 
-  /// 反序列化为 [LCObject] 对象
+  /// The inverse function of [toString].
   static LCObject parseObject(String str) {
     _LCObjectData objectData = _LCObjectData.decode(jsonDecode(str));
     LCObject object = _createByName(objectData.className);
@@ -429,7 +454,7 @@ class LCObject {
     return object;
   }
 
-  /// 批量删除 [objectList]
+  /// Delete all objects in [objectList].
   static Future deleteAll(List<LCObject> objectList) async {
     if (objectList == null || objectList.length == 0) {
       return;
@@ -449,13 +474,13 @@ class LCObject {
     await LeanCloud._httpClient.post('batch', data: data);
   }
 
-  /// 子类化
+  /// Subclass of [LCObject].
   static Map<Type, _LCSubclassInfo> _subclassTypeMap =
       new Map<Type, _LCSubclassInfo>();
   static Map<String, _LCSubclassInfo> _subclassNameMap =
       new Map<String, _LCSubclassInfo>();
 
-  /// 注册类名为 [className] 子类，其构造方法为 [constructor]
+  /// Registers a subclass named [className] with [constructor].
   static void registerSubclass<T extends LCObject>(
       String className, Function constructor) {
     _LCSubclassInfo subclassInfo =

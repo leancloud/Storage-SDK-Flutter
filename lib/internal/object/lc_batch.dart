@@ -1,8 +1,7 @@
 part of leancloud_storage;
 
-/// 对象保存时的辅助批次类
+/// LeanCloud batch saving utilities.
 class _LCBatch {
-  /// 包含的对象
   HashSet<LCObject> objects;
 
   _LCBatch(Iterable<LCObject> objs) {

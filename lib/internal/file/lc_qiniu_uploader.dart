@@ -1,6 +1,6 @@
 part of leancloud_storage;
 
-/// 七牛直传方式
+/// Uploads files to Qiniu directly.
 class _LCQiniuUploader {
   String uploadUrl;
 

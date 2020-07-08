@@ -1,6 +1,6 @@
 part of leancloud_storage;
 
-/// 解码工具类
+/// Decoding
 class _LCDecoder {
   static dynamic decode(dynamic data) {
     if (data is Map) {
@@ -42,7 +42,6 @@ class _LCDecoder {
     return relation;
   }
 
-  /// 解码对象
   static LCObject decodeNestedObject(dynamic data) {
     String className = data['className'];
     LCObject object = LCObject._createByName(className);
@@ -51,19 +50,16 @@ class _LCDecoder {
     return object;
   }
 
-  /// 解码坐标
   static LCGeoPoint decodePoint(dynamic data) {
     double latitude = data['latitude'];
     double longitude = data['longitude'];
     return new LCGeoPoint(latitude, longitude);
   }
 
-  /// 解码时间
   static DateTime decodeDate(dynamic data) {
     return DateTime.parse(data).toLocal();
   }
 
-  /// 解码文件
   static LCFile decodeFile(dynamic data) {
     LCFile file = new LCFile();
     _LCObjectData objectData = _LCObjectData.decode(data);
@@ -71,7 +67,6 @@ class _LCDecoder {
     return file;
   }
 
-  /// 解码 ACL
   static LCACL decodeACL(Map data) {
     LCACL acl = new LCACL();
     data.forEach((key, value) {

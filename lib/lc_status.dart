@@ -1,22 +1,20 @@
 part of leancloud_storage;
 
-/// 状态数量
+/// [LCStatus] count.
 class LCStatusCount {
-  /// 总数
   int total;
 
-  /// 未读数
   int unread;
 }
 
-/// 状态
+/// LeanCloud Status
 class LCStatus extends LCObject {
   static const String ClassName = '_Status';
 
-  /// 公开，会进入到关注者的时间线
+  /// Public, shown on followees' timeline.
   static const String InboxTypeDefault = 'default';
 
-  /// 私信，不会公开显示
+  /// Private.
   static const String InboxTypePrivate = 'private';
 
   /// Keys
@@ -25,12 +23,20 @@ class LCStatus extends LCObject {
   static const String OwnerKey = 'owner';
   static const String MessageIdKey = 'messageId';
 
+  /// Id.
   int messageId;
 
+  /// The type of inbox.
+  /// 
+  /// There are two built-in inbox types:
+  /// `timeline` (alias: `default`) and `private`.
+  /// You can customize your own inbox types.
   String inboxType;
 
+  /// A query for targets of status. 
   LCQuery query;
 
+  /// Content.
   Map<String, dynamic> data;
 
   LCStatus() : super(ClassName) {
@@ -38,7 +44,7 @@ class LCStatus extends LCObject {
     data = {};
   }
 
-  /// 向粉丝群体发送 [status] 状态
+  /// Send a status to current signined user's followers.
   static Future<LCStatus> sendToFollowers(LCStatus status) async {
     if (status == null) {
       throw ArgumentError.notNull('status');
@@ -60,7 +66,7 @@ class LCStatus extends LCObject {
     return await status.send();
   }
 
-  /// 向 [targetId] 用户发送 [status] 状态
+  /// Send a status from current signined user to private inbox of [targetId].
   static Future<LCStatus> sendPrivately(
       LCStatus status, String targetId) async {
     if (status == null) {
@@ -85,7 +91,7 @@ class LCStatus extends LCObject {
     return await status.send();
   }
 
-  /// 发布状态
+  /// Send a status to users matching a [LCQuery].
   Future<LCStatus> send() async {
     LCUser user = await LCUser.getCurrent();
     if (user == null) {
@@ -115,7 +121,11 @@ class LCStatus extends LCObject {
     return this;
   }
 
-  /// 删除状态。如果当前用户是 Status 的发布者，则直接删掉源 Status；否则从当前用户的时间线上删除
+  /// Deletes this status.
+  ///
+  /// If the current signed in [LCUser] is the publisher,
+  /// this will delete this status and it will not be avaiable in other [LCUser]'s inboxes.
+  /// If not, this will just delete this status from the current [LCUser]'s timeline.
   Future delete() async {
     LCUser user = await LCUser.getCurrent();
     if (user == null) {
@@ -138,7 +148,7 @@ class LCStatus extends LCObject {
     }
   }
 
-  /// 获取 [inboxType] 类型状态的数量
+  /// Counts the statuses of [inboxType].
   static Future<LCStatusCount> getCount({String inboxType}) async {
     LCUser user = await LCUser.getCurrent();
     if (user == null) {
@@ -159,7 +169,7 @@ class LCStatus extends LCObject {
     return statusCount;
   }
 
-  /// 重置 [inboxType] 类型状态的数量
+  /// Resets unread count of [inboxType].
   static Future resetUnreadCount({String inboxType}) async {
     LCUser user = await LCUser.getCurrent();
     if (user == null) {

@@ -1,7 +1,8 @@
 part of leancloud_storage;
 
-/// 短信模块
+/// LeanCloud SMS Client
 class LCSMSClient {
+  /// Requests an SMS code for operation verification.
   static Future requestSMSCode(String mobile,
       {String template,
       String signature,
@@ -26,6 +27,7 @@ class LCSMSClient {
     await LeanCloud._httpClient.post(path, data: data);
   }
 
+  /// Requests to send the verification code via phone call. 
   static Future requestVoiceCode(String mobile) async {
     String path = 'requestSmsCode';
     Map<String, dynamic> data = {

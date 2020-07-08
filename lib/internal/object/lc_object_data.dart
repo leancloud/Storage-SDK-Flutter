@@ -1,6 +1,6 @@
 part of leancloud_storage;
 
-/// 对象数据类
+/// LeanCloud object data.
 class _LCObjectData {
   String className;
 

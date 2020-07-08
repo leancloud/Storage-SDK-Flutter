@@ -1,11 +1,12 @@
 part of leancloud_storage;
 
-/// 缓存查询策略
+/// Specifies interaction with the cached responses.
 enum CachePolicy {
-  /// 只从服务端拉取
+  /// Always queries from the cloud.
   onlyNetwork,
 
-  /// 先从服务端拉取，如果失败则从缓存中查找
+  /// Queries from the cloud first,
+  /// if failed, it will queries from the cache instead.
   networkElseCache
 }
 

@@ -1,14 +1,16 @@
 part of leancloud_storage;
 
-/// 第三方登录选项
+/// [LCUser] UnionID login parameters.
 class LCUserAuthDataLoginOption {
-  /// Union Id 平台
+  /// The platform of the UnionID.
+  /// 
+  /// This name can be specified by the developer.
   String unionIdPlatform;
 
-  /// 是否作为主账号
+  /// Whether the current authentication information will be used as the main account.
   bool asMainAccount;
 
-  /// 是否在不存在的情况下返回失败
+  /// Whether the login request will fail if no user matching this authData exists.
   bool failOnNotExist;
 
   LCUserAuthDataLoginOption() {

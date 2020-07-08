@@ -1,18 +1,18 @@
 part of leancloud_storage;
 
-/// 云引擎
+/// LeanEngine
 class LCCloud {
   static bool isProd = true;
 
-  /// 切换云引擎环境
-  /// [prod] 是否为正式环境
+  /// Switches the LeanEngine environment.
+  /// 
+  /// - `true`: the production environment.
+  /// - `false`: the staging environment.
   static void setProduction(bool prod) {
     isProd = prod;
   }
 
-  /// 调用云函数，结果为 Map 类型
-  /// [name] 函数名称
-  /// [params] 函数参数
+  /// Invokes a cloud function named [name] with [params] and receives a `Map`.
   static Future run(String name, {Map<String, dynamic> params}) async {
     String path = 'functions/$name';
     Map<String, dynamic> headers = {'X-LC-Prod': isProd ? 1 : 0};
@@ -20,9 +20,7 @@ class LCCloud {
         .post(path, headers: headers, data: params);
   }
 
-  /// RPC 调用云函数，结果反序列化为相应对象
-  /// [name] 函数名称
-  /// [params] 函数参数
+  /// Invokes a cloud function named [name] with [params] and receives a [LCObject].
   static Future rpc(String name, {Map<String, dynamic> params}) async {
     String path = 'call/$name';
     Map<String, dynamic> headers = {'X-LC-Prod': isProd ? 1 : 0};

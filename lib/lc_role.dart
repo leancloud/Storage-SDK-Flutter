@@ -1,24 +1,27 @@
 part of leancloud_storage;
 
-/// 角色
+/// LeanCloud Role, a group of users for the purposes of granting permissions.
+/// 
+/// Role is specified by their sets of child [LCUser]s and child [LCRole]s,
+/// all of which are granted any permissions that the parent role has.
+/// 
 class LCRole extends LCObject {
   static const String ClassName = '_Role';
 
-  /// 获取角色名字
   String get name => this['name'];
 
-  /// 设置角色名字 [value]
   set name(String value) => this['name'] = value;
 
-  /// 获取角色 Relation
   LCRelation get roles => this['roles'];
 
-  /// 获取用户 Relation
   LCRelation get users => this['users'];
 
   LCRole() : super(ClassName);
 
-  /// 创建以 [name] 具有 [acl] 的角色
+  /// Creates a role.
+  /// 
+  /// Role must have a name (which cannot be changed after creation),
+  /// and must specify a [LCACL].
   static LCRole create(String name, LCACL acl) {
     LCRole role = new LCRole();
     role.name = name;
@@ -26,7 +29,7 @@ class LCRole extends LCObject {
     return role;
   }
 
-  /// 获取角色查询对象
+  /// Constructs a [LCQuery] for this role.
   static LCQuery<LCRole> getQuery() {
     return new LCQuery<LCRole>(ClassName);
   }
