@@ -1,10 +1,10 @@
 # leancloud_storage
 
-LeanCloud 数据存储 Flutter SDK。
+LeanCloud Storage Flutter SDK
 
-## 安装
+## Install
 
-在 pubspec.yaml 依赖中增加 SDK 库：
+Adding dependency in `pubspec.yaml`:
 
 ```dart
 dependencies:
@@ -12,37 +12,39 @@ dependencies:
   leancloud_storage: ^0.2.7
 ```
 
-在控制台中执行安装命令：
+Then run the following command:
 
 ```sh
 $ flutter pub get
 ```
 
-## 导入
-
-在需要使用 SDK 的 .dart 文件中，引入 SDK：
+## Import
 
 ```dart
 import 'package:leancloud_storage/leancloud.dart';
 ```
 
-## 初始化
+## Initialize
 
 ```dart
-LeanCloud.initialize(APP_ID, APP_KEY, server: APP_SERVER);
+LeanCloud.initialize(
+  APP_ID, APP_KEY,
+  server: APP_SERVER, // to use your own custom domain
+  queryCache: new LCQueryCache() // optinoal, enable cache
+);
 ```
 
-## 调试
+## Debug
 
-开启调试日志
+Enable debug logs:
 
 ```dart
 LCLogger.setLevel(LCLogger.DebugLevel);
 ```
 
-## 用法
+## Usage
 
-### 对象
+### Objects
 
 ```dart
 LCObject object = new LCObject('Hello');
@@ -50,9 +52,7 @@ object['intValue'] = 123;
 await object.save();
 ```
 
-更多关于**对象**用法：[参考](https://github.com/leancloud/Storage-SDK-Flutter/blob/master/test/object_test.dart)
-
-### 查询
+### Queries
 
 ```dart
 LCQuery<LCObject> query = new LCQuery<LCObject>('Hello');
@@ -60,9 +60,7 @@ query.limit(limit);
 List<LCObject> list = await query.find();
 ```
 
-更多关于**查询**用法：[参考](https://github.com/leancloud/Storage-SDK-Flutter/blob/master/test/query_test.dart)
-
-### 文件
+### Files
 
 ```dart
 LCFile file = await LCFile.fromPath('avatar', './avatar.jpg');
@@ -74,20 +72,26 @@ await file.save(onProgress: (int count, int total) {
 });
 ```
 
-更多关于**文件**用法：[参考](https://github.com/leancloud/Storage-SDK-Flutter/blob/master/test/file_test.dart)
-
-### 用户
+### Users
 
 ```dart
 await LCUser.login('hello', 'world');
 ```
 
-更多关于**用户**用法：[参考](https://github.com/leancloud/Storage-SDK-Flutter/blob/master/test/user_test.dart)
-
-### GeoPoint
+### GeoPoints
 
 ```dart
 LCGeoPoint p1 = new LCGeoPoint(20.0059, 110.3665);
 ```
 
-更多关于 **GeoPoint** 用法：[参考](https://github.com/leancloud/Storage-SDK-Flutter/blob/master/test/geo_test.dart)
+## More
+
+Refer to [LeanStorage Flutter Guide][guide] for more usage information.
+The guide is also available in Chinese ([中文指南][zh]).
+
+[guide]: https://docs.leancloud.app/leanstorage_guide-flutter.html
+[zh]: https://leancloud.cn/docs/leanstorage_guide-flutter.html
+
+For LeanMessage, check out [LeanCloud Official Plugin][plugin].
+
+[plugin]: https://pub.dev/packages/leancloud_official_plugin
