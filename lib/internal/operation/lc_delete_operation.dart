@@ -1,6 +1,6 @@
 part of leancloud_storage;
 
-/// 设置操作
+/// Deletion
 class _LCDeleteOperation extends _LCOperation {
   @override
   _LCOperation mergeWithPrevious(_LCOperation previousOp) {

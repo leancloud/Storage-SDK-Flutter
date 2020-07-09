@@ -1,6 +1,6 @@
 part of leancloud_storage;
 
-/// 验证码
+/// An image CAPTCHA to prevent SMS abuse.
 class LCCaptcha {
   String url;
   String token;
@@ -8,9 +8,11 @@ class LCCaptcha {
   LCCaptcha(this.url, this.token);
 }
 
-/// 验证码模块
+/// Requests a CAPTCHA image and sends the verification code.
 class LCCaptchaClient {
-  /// 请求宽 [width]，高 [height] 的验证码
+  /// Requests a CAPTCHA image ([width] x [height]) from LeanCloud.
+  ///
+  /// LeanCloud will send back a [LCCaptcha].
   static Future<LCCaptcha> requestCaptcha(
       {int width = 85, int height = 39}) async {
     String path = 'requestCaptcha';
@@ -19,7 +21,9 @@ class LCCaptchaClient {
     return new LCCaptcha(response['captcha_url'], response['captcha_token']);
   }
 
-  /// 使用 [token] 验证
+  /// Sends the [code] entered by the user to LeanCloud for verification.
+  ///
+  /// Also sends the [token] so LeanCloud can recognize which CAPTCHA to verify.
   static Future verifyCaptcha(String code, String token) async {
     String path = 'verifyCaptcha';
     Map<String, dynamic> data = {'captcha_code': code, 'captcha_token': token};

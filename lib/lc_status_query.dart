@@ -1,13 +1,16 @@
 part of leancloud_storage;
 
-/// 收件箱状态查询
+/// [LCQuery] of [LCStatus] to find someone's statuses. 
 class LCStatusQuery extends LCQuery<LCStatus> {
+  /// See [LCStatus.inboxType]
   String inboxType;
 
+  /// Queries [LCStatus] whose messageId is greater than this.
   int sinceId;
-
+  /// Queries [LCStatus] whose messageId is not greater than this.
   int maxId;
 
+  /// Constructs a [LCQuery] for [LCStatus].
   LCStatusQuery({String inboxType = LCStatus.InboxTypeDefault})
       : super('_Status') {
     this.inboxType = inboxType;
@@ -15,7 +18,7 @@ class LCStatusQuery extends LCQuery<LCStatus> {
     this.maxId = 0;
   }
 
-  /// 查找
+  /// See [LCQuery.find].
   Future<List<LCStatus>> find(
       {CachePolicy cachePolicy = CachePolicy.onlyNetwork}) async {
     LCUser user = await LCUser.getCurrent();

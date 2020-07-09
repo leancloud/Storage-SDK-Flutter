@@ -1,22 +1,17 @@
 part of leancloud_storage;
 
-/// 日志
+/// Configures the logger.
 class LCLogger {
-  /// 关闭日志
   static const int OffLevel = 0;
 
-  /// 错误级
   static const int ErrorLevel = 1;
 
-  /// 警告级
   static const int WarningLevel = 2;
 
-  /// 调试级
   static const int DebugLevel = 3;
 
   static int level = OffLevel;
 
-  /// 设置日志输出级别 [logLevel]
   static void setLevel(int logLevel) {
     level = logLevel;
     if (level >= DebugLevel) {
@@ -24,7 +19,7 @@ class LCLogger {
     }
   }
 
-  /// 输出错误日志 [message]
+  /// Prints an error message.
   static void error(String message) {
     if (level < ErrorLevel) {
       return;
@@ -32,7 +27,7 @@ class LCLogger {
     print('[ERROR]: $message');
   }
 
-  /// 输出警告日志 [message]
+  /// Prints a warning message.
   static void warning(String message) {
     if (level < WarningLevel) {
       return;
@@ -40,7 +35,7 @@ class LCLogger {
     print('[WARN]: $message');
   }
 
-  /// 输出调试日志 [message]
+  /// Prints a debug message.
   static void debug(String message) {
     if (level < DebugLevel) {
       return;

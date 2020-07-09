@@ -1,6 +1,6 @@
 part of leancloud_storage;
 
-/// 设置操作
+/// Set Operation
 class _LCSetOperation extends _LCOperation {
   dynamic value;
 

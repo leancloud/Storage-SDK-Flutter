@@ -1,23 +1,18 @@
 part of leancloud_storage;
 
-/// 地理坐标
+/// LeanCloud GeoPoint
 class LCGeoPoint {
-  /// 纬度
   double latitude;
 
-  /// 经度
   double longitude;
 
-  /// 创建纬度 [latitude]，经度 [longitude] 的坐标对象
   LCGeoPoint(this.latitude, this.longitude);
 
-  /// 原点坐标
   LCGeoPoint.origin() {
     latitude = 0;
     longitude = 0;
   }
 
-  /// 到 [point] 的距离（单位：千米）
   double kilometersTo(LCGeoPoint point) {
     if (point == null) {
       throw new ArgumentError.notNull('point');
@@ -25,12 +20,10 @@ class LCGeoPoint {
     return radiansTo(point) * 6371.0;
   }
 
-  /// 到 [point] 的距离（单位：英里）
   double milesTo(LCGeoPoint point) {
     return radiansTo(point) * 3958.8;
   }
 
-  /// 到 [point] 的弧度
   double radiansTo(LCGeoPoint point) {
     if (point == null) {
       throw new ArgumentError.notNull('point');

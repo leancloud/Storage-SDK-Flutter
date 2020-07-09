@@ -1,198 +1,193 @@
 part of leancloud_storage;
 
-/// 查询
+/// A query to fetch [LCObject]. 
 class LCQuery<T extends LCObject> {
+  /// Which [className] to query.
   String className;
 
   _LCCompositionalCondition condition;
 
-  /// 创建 [className] 类型的查询对象
+  /// Creates a new query for [className].
   LCQuery(this.className) {
     condition = new _LCCompositionalCondition();
   }
 
-  /// [key] 等于 [value]
   LCQuery<T> whereEqualTo(String key, dynamic value) {
     condition.whereEqualTo(key, value);
     return this;
   }
 
-  /// [key] 不等于 [value]
   LCQuery<T> whereNotEqualTo(String key, dynamic value) {
     condition.whereNotEqualTo(key, value);
     return this;
   }
 
-  /// [key] 中包含 [values]
+  /// The value of [key] must be contained in [values].
   LCQuery<T> whereContainedIn(String key, Iterable values) {
     condition.whereContainedIn(key, values);
     return this;
   }
 
-  /// [key] 中不包括 [values]
+  /// The value of [key] must not be contained in [values].
   LCQuery<T> whereNotContainedIn(String key, Iterable values) {
     condition.whereNotContainedIn(key, values);
     return this;
   }
 
-  /// [key] 中包含全部 [values]
+  /// The array [key] must contain all [values].
   LCQuery<T> whereContainsAll(String key, Iterable values) {
     condition.whereContainsAll(key, values);
     return this;
   }
 
-  /// 存在 [key] 字段
+  /// The [LCObject] must contain the given [key].
   LCQuery<T> whereExists(String key) {
     condition.whereExists(key);
     return this;
   }
 
-  /// 不存在 [key] 字段
+  /// The [LCObject] must not contain the given [key].
   LCQuery<T> whereDoesNotExist(String key) {
     condition.whereDoesNotExist(key);
     return this;
   }
 
-  /// [key] 字段长度等于 [size]
   LCQuery<T> whereSizeEqualTo(String key, int size) {
     condition.whereSizeEqualTo(key, size);
     return this;
   }
 
-  /// [key] 字段大于 [value]
   LCQuery<T> whereGreaterThan(String key, dynamic value) {
     condition.whereGreaterThan(key, value);
     return this;
   }
 
-  /// [key] 字段大于等于 [value]
   LCQuery<T> whereGreaterThanOrEqualTo(String key, dynamic value) {
     condition.whereGreaterThanOrEqualTo(key, value);
     return this;
   }
 
-  /// [key] 字段小于 [value]
   LCQuery<T> whereLessThan(String key, dynamic value) {
     condition.whereLessThan(key, value);
     return this;
   }
 
-  /// [key] 字段小于等于 [value]
   LCQuery<T> whereLessThanOrEqualTo(String key, dynamic value) {
     condition.whereLessThanOrEqualTo(key, value);
     return this;
   }
 
-  /// [key] 字段相邻 [point] 位置
   LCQuery<T> whereNear(String key, LCGeoPoint point) {
     condition.whereNear(key, point);
     return this;
   }
 
-  /// [key] 字段在 [southwest] 到 [northeast] 坐标区域内
   LCQuery<T> whereWithinGeoBox(
       String key, LCGeoPoint southwest, LCGeoPoint northeast) {
     condition.whereWithinGeoBox(key, southwest, northeast);
     return this;
   }
 
-  /// [key] 字段与 [parent] 相关
   LCQuery<T> whereRelatedTo(LCObject parent, String key) {
     condition.whereRelatedTo(parent, key);
     return this;
   }
 
-  /// [key] 字段以 [prefix] 为前缀
   LCQuery<T> whereStartsWith(String key, String prefix) {
     condition.whereStartsWith(key, prefix);
     return this;
   }
 
-  /// [key] 字段以 [suffix] 为后缀
   LCQuery<T> whereEndsWith(String key, String suffix) {
     condition.whereEndsWith(key, suffix);
     return this;
   }
 
-  /// [key] 字段中包含 [subString]
   LCQuery<T> whereContains(String key, String subString) {
     condition.whereContains(key, subString);
     return this;
   }
 
-  /// [key] 字段满足正则匹配 [regex]
   LCQuery<T> whereMatches(String key, String regex, {String modifiers}) {
     condition.whereMatches(key, regex, modifiers);
     return this;
   }
 
-  /// [key] 字段满足 [query] 查询
+  /// The value of [key] must match [query].
   LCQuery<T> whereMatchesQuery(String key, LCQuery query) {
     condition.whereMatchesQuery(key, query);
     return this;
   }
 
-  /// [key] 字段不满足 [query] 查询
+  /// The value of [key] must not match [query].
   LCQuery<T> whereDoesNotMatchQuery(String key, LCQuery query) {
     condition.whereDoesNotMatchQuery(key, query);
     return this;
   }
 
-  /// 按 [key] 升序
   LCQuery<T> orderByAscending(String key) {
     condition.orderByAscending(key);
     return this;
   }
 
-  /// 按 [key] 降序
   LCQuery<T> orderByDescending(String key) {
     condition.orderByDecending(key);
     return this;
   }
 
-  /// 增加按 [key] 升序
+  /// Also sorts the results in ascending order by the given [key].
+  ///
+  /// The previous sort keys have precedence over this [key]. 
   LCQuery<T> addAscendingOrder(String key) {
     condition.addAscendingOrder(key);
     return this;
   }
 
-  /// 增加按 [key] 降序
+  /// Also sorts the results in descending order by the given [key].
+  ///
+  /// The previous sort keys have precedence over this [key]. 
   LCQuery<T> addDescendingOrder(String key) {
     condition.addDescendingOrder(key);
     return this;
   }
 
-  /// 拉取 [key] 的完整对象
+  /// Includes nested [LCObject] for the provided [key].
   LCQuery<T> include(String key) {
     condition.include(key);
     return this;
   }
 
-  /// 包含 [key]
-  LCQuery<T> select(String key) {
-    condition.select(key);
+  /// Restricts the [keys] of the [LCObject] returned.
+  LCQuery<T> select(String keys) {
+    condition.select(keys);
     return this;
   }
 
-  /// 是否返回 ACL
+  /// Includes the ALC or not.
   LCQuery<T> includeACL(bool value) {
     condition.includeACL = value;
     return this;
   }
 
-  /// 跳过 [value]
-  LCQuery<T> skip(int value) {
-    condition.skip = value;
+  /// Sets the [amount] of results to skip before returning any results.
+  ///
+  /// This is useful for pagination.
+  /// Default is to skip zero results.
+  LCQuery<T> skip(int amount) {
+    condition.skip = amount;
     return this;
   }
 
-  /// 限制 [value] 数量
-  LCQuery<T> limit(int value) {
-    condition.limit = value;
+  /// Sets the limit of the number of results to return.
+  ///
+  /// The default limit is 100,
+  /// with a maximum of 1000 results being returned at a time. 
+  LCQuery<T> limit(int amount) {
+    condition.limit = amount;
     return this;
   }
 
-  /// 数量
+  /// Counts the number of results. 
   Future<int> count() async {
     String path = 'classes/$className';
     Map<String, dynamic> params = _buildParams();
@@ -202,7 +197,7 @@ class LCQuery<T extends LCObject> {
     return result['count'];
   }
 
-  /// 获取 [objectId] 对应的对象
+  /// Constructs a [LCObject] whose [objectId] is already known.
   Future<T> get(String objectId) async {
     if (isNullOrEmpty(objectId)) {
       throw new ArgumentError.notNull('objectId');
@@ -219,7 +214,7 @@ class LCQuery<T extends LCObject> {
     return null;
   }
 
-  /// 根据 [cachePolicy] 查找
+  /// Retrieves a list of [LCObject]s matching this query, respecting [cachePolicy].
   Future<List<T>> find(
       {CachePolicy cachePolicy = CachePolicy.onlyNetwork}) async {
     if (cachePolicy == CachePolicy.onlyNetwork) {
@@ -251,7 +246,7 @@ class LCQuery<T extends LCObject> {
     return list;
   }
 
-  /// 返回符合条件的第一个对象
+  /// Retrieves at most one [LCObject] matching this query.
   Future<T> first() async {
     limit(1);
     List<T> results = await find();
@@ -261,7 +256,7 @@ class LCQuery<T extends LCObject> {
     return null;
   }
 
-  /// [queries] 的 and 查询
+  /// Constructs a [LCQuery] that is the AND of the passed in [queries].
   static LCQuery<T> and<T extends LCObject>(Iterable<LCQuery<T>> queries) {
     if (queries == null || queries.length < 1) {
       throw new ArgumentError.notNull('queries');
@@ -279,7 +274,7 @@ class LCQuery<T extends LCObject> {
     return compositionQuery;
   }
 
-  /// [queries] 的 or 查询
+  /// Constructs a [LCQuery] that is the OR of the passed in [queries].
   static LCQuery<T> or<T extends LCObject>(Iterable<LCQuery<T>> queries) {
     if (queries == null || queries.length < 1) {
       throw new ArgumentError.notNull('queries');

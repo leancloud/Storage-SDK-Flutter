@@ -1,31 +1,25 @@
 part of leancloud_storage;
 
-/// 文件
+/// LeanCloud File
 class LCFile extends LCObject {
   static const String ClassName = '_File';
 
-  /// 获取文件名
+  /// Gets file name.
   String get name => this['name'];
 
-  /// 设置文件名
+  /// Sets file name.
   set name(String value) => this['name'] = value;
 
-  /// 获取文件类型
   String get mimeType => this['mime_type'];
 
-  /// 设置文件类型
   set mimeType(String value) => this['mime_type'] = value;
 
-  /// 获取 url
   String get url => this['url'];
 
-  /// 设置 url
   set url(String value) => this['url'] = value;
 
-  /// 获取文件元数据
   Map<String, dynamic> get metaData => this['metaData'];
 
-  /// 设置文件元数据
   set metaData(Map<String, dynamic> value) => this['metaData'] = value;
 
   Uint8List data;
@@ -34,7 +28,6 @@ class LCFile extends LCObject {
     metaData = new Map<String, dynamic>();
   }
 
-  /// 通过 [data] 字节数组创建 [name] 的 [LCFile] 对象
   static LCFile fromBytes(String name, Uint8List data) {
     LCFile file = new LCFile();
     file.name = name;
@@ -42,7 +35,6 @@ class LCFile extends LCObject {
     return file;
   }
 
-  /// 通过 [path] 创建 [name] 的 [LCFile] 对象
   static Future<LCFile> fromPath(String name, String path) async {
     LCFile file = new LCFile();
     file.name = name;
@@ -52,7 +44,6 @@ class LCFile extends LCObject {
     return file;
   }
 
-  /// 通过外链 [url] 创建 [name] 的 [LCFile] 对象
   static LCFile fromUrl(String name, String url) {
     LCFile file = new LCFile();
     file.name = name;
@@ -60,12 +51,14 @@ class LCFile extends LCObject {
     return file;
   }
 
-  /// 添加 [key] - [value] 的元数据
   void addMetaData(String key, dynamic value) {
     metaData[key] = value;
   }
 
-  /// 保存
+  /// Saves the file to LeanCloud.
+  /// 
+  /// Unless the file is constructed [fromUrl],
+  /// this will automatically upload the file content to LeanCloud.
   @override
   Future<LCFile> save(
       {bool fetchWhenSave = false,
@@ -99,7 +92,7 @@ class LCFile extends LCObject {
     return this;
   }
 
-  /// 删除
+  /// Also deletes the uploaded file stored on LeanCloud.
   @override
   Future delete() async {
     if (objectId == null) {
@@ -109,7 +102,7 @@ class LCFile extends LCObject {
     await LeanCloud._httpClient.delete(path);
   }
 
-  /// 获取宽 [width]，高 [height]，压缩质量 [quality]，是否等比缩放 [scaleToFit]，格式为 [format] 的 缩略图 url
+  /// Gets the thunbnail URL for an image.
   String getThumbnailUrl(int width, int height,
       {int quality = 100, bool scaleToFit = true, String format = 'png'}) {
     int mode = scaleToFit ? 2 : 1;
