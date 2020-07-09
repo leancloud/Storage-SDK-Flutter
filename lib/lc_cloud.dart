@@ -12,7 +12,7 @@ class LCCloud {
     isProd = prod;
   }
 
-  /// Invokes a cloud function named [name] with [params] and receives a `Map`.
+  /// Invokes a cloud function named [name] with [params] and receives a `Map` or `List`.
   static Future run(String name, {Map<String, dynamic> params}) async {
     String path = 'functions/$name';
     Map<String, dynamic> headers = {'X-LC-Prod': isProd ? 1 : 0};
@@ -20,7 +20,8 @@ class LCCloud {
         .post(path, headers: headers, data: params);
   }
 
-  /// Invokes a cloud function named [name] with [params] and receives a [LCObject].
+  /// Invokes a cloud function named [name] with [params],
+  /// and receives a [LCObject], List<[LCObject]>, or Map<String, [LCObject]>.
   static Future rpc(String name, {Map<String, dynamic> params}) async {
     String path = 'call/$name';
     Map<String, dynamic> headers = {'X-LC-Prod': isProd ? 1 : 0};
