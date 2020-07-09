@@ -17,7 +17,7 @@ class LCObject {
   /// The class name of the object.
   ///
   /// Class is also called Table (in traditional relational databases)
-  /// or Document (in some NoSQL databases).
+  /// or Collection (in some NoSQL databases).
   String get className => _data.className;
 
   /// Gets the object's objectId.
