@@ -1,5 +1,9 @@
 # leancloud_storage
 
+![build](https://img.shields.io/travis/leancloud/Storage-SDK-Flutter)
+![the latest version](https://img.shields.io/pub/v/leancloud_storage)
+![platform](https://img.shields.io/badge/platform-flutter%7Cdart%20vm-ff69b4.svg)
+
 LeanCloud Storage Flutter SDK
 
 ## Install
@@ -9,7 +13,7 @@ Adding dependency in `pubspec.yaml`:
 ```dart
 dependencies:
   ...
-  leancloud_storage: ^0.2.7
+  leancloud_storage: ${latest version}
 ```
 
 Then run the following command:
