@@ -56,7 +56,7 @@ class LCUser extends LCObject {
   }
 
   /// Signs up a new user.
-  /// 
+  ///
   /// This will create a new user on the server,
   /// and also persist the session.
   Future<LCUser> signUp() async {
@@ -117,7 +117,7 @@ class LCUser extends LCObject {
     return _login(data);
   }
 
-  /// Signs in a user with their [email] and [password]. 
+  /// Signs in a user with their [email] and [password].
   static Future<LCUser> loginByEmail(String email, String password) {
     if (isNullOrEmpty(email)) {
       throw ArgumentError.notNull('email');
@@ -129,7 +129,7 @@ class LCUser extends LCObject {
     return _login(data);
   }
 
-  /// Signs in a user with their [mobile] number and [password]. 
+  /// Signs in a user with their [mobile] number and [password].
   static Future<LCUser> loginByMobilePhoneNumber(
       String mobile, String password) {
     if (isNullOrEmpty(mobile)) {
@@ -145,7 +145,7 @@ class LCUser extends LCObject {
     return _login(data);
   }
 
-  /// Signs in a [LCUser] with their [mobile] number and verification [code]. 
+  /// Signs in a [LCUser] with their [mobile] number and verification [code].
   static Future<LCUser> loginBySMSCode(String mobile, String code) {
     if (isNullOrEmpty(mobile)) {
       throw ArgumentError.notNull('mobile');
@@ -280,7 +280,7 @@ class LCUser extends LCObject {
     await LeanCloud._httpClient.post('requestMobilePhoneVerify', data: data);
   }
 
-  /// Requests to verify a user's [mobile] number with sms [code] they received. 
+  /// Requests to verify a user's [mobile] number with sms [code] they received.
   static Future verifyMobilePhone(String mobile, String code) async {
     if (isNullOrEmpty(mobile)) {
       throw ArgumentError.notNull('mobile');
@@ -307,7 +307,7 @@ class LCUser extends LCObject {
     return _currentUser;
   }
 
-  /// Requests a password reset email to be sent to a user's [email] address. 
+  /// Requests a password reset email to be sent to a user's [email] address.
   static Future requestPasswordReset(String email) async {
     if (isNullOrEmpty(email)) {
       throw ArgumentError.notNull('email');
@@ -380,7 +380,7 @@ class LCUser extends LCObject {
     }
   }
 
-  /// Checks whether this user is anonymous. 
+  /// Checks whether this user is anonymous.
   bool get isAnonymous => authData != null && authData['anonymous'] != null;
 
   static Future<LCUser> _login(Map<String, dynamic> data) async {
@@ -457,7 +457,7 @@ class LCUser extends LCObject {
   }
 
   /// Queries followers and followees at the same time.
-  /// 
+  ///
   /// [returnCount] indicates whether to return followers/followees count.
   Future<LCFollowersAndFollowees> getFollowersAndFollowees(
       {bool includeFollower, bool includeFollowee, bool returnCount}) async {
@@ -503,5 +503,24 @@ class LCUser extends LCObject {
       result.followeesCount = response['followees_count'];
     }
     return result;
+  }
+
+  /// Requests an SMS code for updating phone number.
+  static Future requestSMSCodeForUpdatingPhoneNumber(String mobile,
+      {int ttl = 360, String captchaToken}) async {
+    String path = 'requestChangePhoneNumber';
+    Map<String, dynamic> data = {'mobilePhoneNumber': mobile, 'ttl': ttl};
+    if (captchaToken != null) {
+      data['validate_token'] = captchaToken;
+    }
+    await LeanCloud._httpClient.post(path, data: data);
+  }
+
+  /// Verify code for updating phone number.
+  static Future verifyCodeForUpdatingPhoneNumber(
+      String mobile, String code) async {
+    String path = 'changePhoneNumber';
+    Map<String, dynamic> data = {'mobilePhoneNumber': mobile, 'code': code};
+    await LeanCloud._httpClient.post(path, data: data);
   }
 }
