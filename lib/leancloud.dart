@@ -73,7 +73,7 @@ part 'lc_logger.dart';
 part 'lc_status.dart';
 part 'lc_status_query.dart';
 
-const String SDKVersion = '0.4.1';
+const String SDKVersion = '0.4.2';
 
 const String APIVersion = '1.1';
 
