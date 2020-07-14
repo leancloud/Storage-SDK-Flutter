@@ -198,5 +198,15 @@ void main() {
     // test('reset password by sms code', () async {
     //   await LCUser.resetPasswordBySmsCode('15101006007', '286436', '112358');
     // });
+
+    // test('request sms code for updating phone number', () async {
+    //   await LCUser.login('hello', 'world');
+    //   await LCUser.requestSMSCodeForUpdatingPhoneNumber('15101006007');
+    // });
+
+    // test('verify code for updating phone number', () async {
+    //   await LCUser.login('hello', 'world');
+    //   await LCUser.verifyCodeForUpdatingPhoneNumber('15101006007', '965764');
+    // });
   });
 }
