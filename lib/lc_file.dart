@@ -90,11 +90,11 @@ class LCFile extends LCObject {
         }
         _LCObjectData objectData = _LCObjectData.decode(uploadToken);
         super._merge(objectData);
-        await LeanCloud._httpClient
-            .post('fileCallback', data: {'result': true, 'token': token});
+        LeanCloud._httpClient.post('fileCallback',
+            data: {'result': true, 'token': token}).catchError((_) {});
       } catch (err) {
-        await LeanCloud._httpClient
-            .post('fileCallback', data: {'result': false, 'token': token});
+        LeanCloud._httpClient.post('fileCallback',
+            data: {'result': false, 'token': token}).catchError((_) {});
         throw err;
       }
     }
