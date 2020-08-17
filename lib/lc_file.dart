@@ -56,7 +56,7 @@ class LCFile extends LCObject {
   }
 
   /// Saves the file to LeanCloud.
-  /// 
+  ///
   /// Unless the file is constructed [fromUrl],
   /// this will automatically upload the file content to LeanCloud.
   @override
@@ -74,20 +74,29 @@ class LCFile extends LCObject {
       String key = uploadToken['key'];
       String token = uploadToken['token'];
       String provider = uploadToken['provider'];
-      if (provider == 's3') {
-        // AWS
-        _LCAWSUploader uploader = new _LCAWSUploader(uploadUrl, mimeType, data);
-        await uploader.upload(onProgress);
-      } else if (provider == 'qiniu') {
-        // Qiniu
-        _LCQiniuUploader uploader =
-            new _LCQiniuUploader(uploadUrl, token, key, data);
-        await uploader.upload(onProgress);
-      } else {
-        throw ('$provider is not support.');
+      try {
+        if (provider == 's3') {
+          // AWS
+          _LCAWSUploader uploader =
+              new _LCAWSUploader(uploadUrl, mimeType, data);
+          await uploader.upload(onProgress);
+        } else if (provider == 'qiniu') {
+          // Qiniu
+          _LCQiniuUploader uploader =
+              new _LCQiniuUploader(uploadUrl, token, key, data);
+          await uploader.upload(onProgress);
+        } else {
+          throw ('$provider is not support.');
+        }
+        _LCObjectData objectData = _LCObjectData.decode(uploadToken);
+        super._merge(objectData);
+        LeanCloud._httpClient.post('fileCallback',
+            data: {'result': true, 'token': token}).catchError((_) {});
+      } catch (err) {
+        LeanCloud._httpClient.post('fileCallback',
+            data: {'result': false, 'token': token}).catchError((_) {});
+        throw err;
       }
-      _LCObjectData objectData = _LCObjectData.decode(uploadToken);
-      super._merge(objectData);
     }
     return this;
   }
