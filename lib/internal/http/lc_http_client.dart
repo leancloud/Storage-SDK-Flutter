@@ -24,9 +24,8 @@ class _LCHttpClient {
     _appRouter = new _LCAppRouter(appId, server);
     BaseOptions options = new BaseOptions(headers: {
       'X-LC-Id': appId,
-      'Content-Type': ContentType.parse('application/json'),
       'User-Agent': 'LeanCloud-Flutter-SDK/$sdkVersion'
-    });
+    }, contentType: 'application/json');
     _dio = new Dio(options);
     if (queryCache != null) {
       _cacheManager = new DioCacheManager(CacheConfig());
