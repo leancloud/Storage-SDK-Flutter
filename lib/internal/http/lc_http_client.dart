@@ -127,9 +127,6 @@ class _LCHttpClient {
   Map<String, dynamic> _generateHeaders(
       Map<String, dynamic> additionalHeaders) {
     Map<String, dynamic> headers = new Map<String, dynamic>();
-    if (additionalHeaders != null) {
-      headers.addAll(additionalHeaders);
-    }
     int timestamp = DateTime.now().millisecondsSinceEpoch;
     Uint8List data = Utf8Encoder().convert('$timestamp$appKey');
     Digest digest = md5.convert(data);
@@ -138,6 +135,11 @@ class _LCHttpClient {
     LCUser currentUser = LCUser._currentUser;
     if (currentUser != null) {
       headers['X-LC-Session'] = currentUser.sessionToken;
+    }
+    if (additionalHeaders != null) {
+      additionalHeaders.forEach((key, value) {
+        headers[key] = value;
+      });
     }
     return headers;
   }

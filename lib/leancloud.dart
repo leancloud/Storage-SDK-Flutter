@@ -72,6 +72,7 @@ part 'lc_user_auth_data_login_option.dart';
 part 'lc_logger.dart';
 part 'lc_status.dart';
 part 'lc_status_query.dart';
+part 'lc_friendship.dart';
 
 const String SDKVersion = '0.5.0';
 
@@ -103,6 +104,8 @@ class LeanCloud {
     LCObject.registerSubclass<LCRole>(LCRole.ClassName, () => new LCRole());
     LCObject.registerSubclass<LCStatus>(
         LCStatus.ClassName, () => new LCStatus());
+    LCObject.registerSubclass<LCFriendshipRequest>(
+        LCFriendshipRequest.ClassName, () => new LCFriendshipRequest());
 
     _httpClient = new _LCHttpClient(
         appId, appKey, server, SDKVersion, APIVersion, queryCache);
