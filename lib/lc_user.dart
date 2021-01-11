@@ -251,9 +251,19 @@ class LCUser extends LCObject {
     return _linkWithAuthData(platform, null);
   }
 
-  Future _linkWithAuthData(String authType, Map<String, dynamic> data) {
+  Future _linkWithAuthData(String authType, Map<String, dynamic> data) async {
+    Map oriAuthData = Map.from(this.authData);
     this.authData = {authType: data};
-    return super.save();
+    try {
+      await super.save();
+      this.authData.addAll(oriAuthData);
+    } on LCException catch (e) {
+      if (e.code == 137) {
+        // 重复绑定，回滚
+        this.authData = oriAuthData;
+      }
+      throw e;
+    }
   }
 
   /// Creates an anonymous user.
