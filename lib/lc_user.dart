@@ -248,12 +248,33 @@ class LCUser extends LCObject {
     if (isNullOrEmpty(platform)) {
       throw ArgumentError.notNull('platform');
     }
-    return _linkWithAuthData(platform, null);
+    return _unlinkWithAuthData(platform);
   }
 
-  Future _linkWithAuthData(String authType, Map<String, dynamic> data) {
+  Future _linkWithAuthData(String authType, Map<String, dynamic> data) async {
+    Map oriAuthData = Map.from(this.authData);
     this.authData = {authType: data};
-    return super.save();
+    try {
+      await super.save();
+      this.authData.addAll(oriAuthData);
+      await _saveToLocal();
+    } on Exception catch (e) {
+      this.authData = oriAuthData;
+      throw e;
+    }
+  }
+
+  Future _unlinkWithAuthData(String authType) async {
+    Map oriAuthData = Map.from(this.authData);
+    this.authData = {authType: null};
+    try {
+      await super.save();
+      oriAuthData.remove(authType);
+      await _saveToLocal();
+    } on Exception catch (e) {
+      this.authData = oriAuthData;
+      throw e;
+    }
   }
 
   /// Creates an anonymous user.
