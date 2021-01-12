@@ -248,7 +248,7 @@ class LCUser extends LCObject {
     if (isNullOrEmpty(platform)) {
       throw ArgumentError.notNull('platform');
     }
-    return _linkWithAuthData(platform, null);
+    return _unlinkWithAuthData(platform);
   }
 
   Future _linkWithAuthData(String authType, Map<String, dynamic> data) async {
@@ -257,11 +257,22 @@ class LCUser extends LCObject {
     try {
       await super.save();
       this.authData.addAll(oriAuthData);
-    } on LCException catch (e) {
-      if (e.code == 137) {
-        // 重复绑定，回滚
-        this.authData = oriAuthData;
-      }
+      await _saveToLocal();
+    } on Exception catch (e) {
+      this.authData = oriAuthData;
+      throw e;
+    }
+  }
+
+  Future _unlinkWithAuthData(String authType) async {
+    Map oriAuthData = Map.from(this.authData);
+    this.authData = {authType: null};
+    try {
+      await super.save();
+      oriAuthData.remove(authType);
+      await _saveToLocal();
+    } on Exception catch (e) {
+      this.authData = oriAuthData;
       throw e;
     }
   }
