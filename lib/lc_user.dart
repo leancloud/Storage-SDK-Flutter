@@ -270,6 +270,7 @@ class LCUser extends LCObject {
     try {
       await super.save();
       oriAuthData.remove(authType);
+      this.authData = oriAuthData;
       await _saveToLocal();
     } on Exception catch (e) {
       this.authData = oriAuthData;
