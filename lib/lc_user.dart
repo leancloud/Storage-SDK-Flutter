@@ -256,7 +256,8 @@ class LCUser extends LCObject {
     this.authData = {authType: data};
     try {
       await super.save();
-      this.authData.addAll(oriAuthData);
+      oriAuthData.addAll(this.authData);
+      _updateAuthData(oriAuthData);
       await _saveToLocal();
     } on Exception catch (e) {
       this.authData = oriAuthData;
@@ -270,12 +271,18 @@ class LCUser extends LCObject {
     try {
       await super.save();
       oriAuthData.remove(authType);
-      this.authData = oriAuthData;
+      _updateAuthData(oriAuthData);
       await _saveToLocal();
     } on Exception catch (e) {
       this.authData = oriAuthData;
       throw e;
     }
+  }
+
+  void _updateAuthData(Map oriAuthData) {
+    _LCObjectData objData = new _LCObjectData();
+    objData.customPropertyMap['authData'] = oriAuthData;
+    _merge(objData);
   }
 
   /// Creates an anonymous user.
@@ -436,6 +443,7 @@ class LCUser extends LCObject {
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       String userData = prefs.getString(CurrentUserKey);
+      LCLogger.debug(userData);
       _LCObjectData objectData = _LCObjectData.decode(jsonDecode(userData));
       _currentUser = LCUser._fromObjectData(objectData);
     } on Error catch (e) {
