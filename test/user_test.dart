@@ -17,7 +17,7 @@ void main() {
       String email = '${DateTime.now().millisecondsSinceEpoch}@qq.com';
       user.email = email;
       String mobile =
-          '${(DateTime.now().millisecondsSinceEpoch / 100).round()}';
+          '151${(DateTime.now().millisecondsSinceEpoch / 100000).round()}';
       user.mobile = mobile;
       await user.signUp();
 
@@ -37,7 +37,7 @@ void main() {
       assert(current.objectId != null);
       assert(!current.emailVerified);
       assert(!current.mobileVerified);
-      assert(current.mobile == '15101006008');
+      assert(current.mobile == '15101006007');
       assert(!current.isAnonymous);
     });
 
@@ -55,7 +55,7 @@ void main() {
     });
 
     test('relate object', () async {
-      await LCUser.loginByMobilePhoneNumber('15101006007', '112358');
+      await LCUser.loginByMobilePhoneNumber('15101006007', 'world');
       LCObject account = new LCObject('Account');
       account['user'] = await LCUser.getCurrent();
       await account.save();

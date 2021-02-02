@@ -8,8 +8,9 @@ void main() {
     setUp(() => initNorthChina());
 
     test('increment', () async {
-      LCQuery<LCObject> query = new LCQuery('Account');
-      LCObject account = await query.get('5e154a5143c257006fbff63f');
+      LCObject account = new LCObject('Account');
+      account['balance'] = 0;
+      await account.save();
       print(account['balance']);
       int balance = account['balance'];
       account.increment('balance', 100);
@@ -19,8 +20,9 @@ void main() {
     });
 
     test('decrement', () async {
-      LCQuery<LCObject> query = new LCQuery('Account');
-      LCObject account = await query.get('5e154a5143c257006fbff63f');
+      LCObject account = new LCObject('Account');
+      account['balance'] = 0;
+      await account.save();
       print(account['balance']);
       int balance = account['balance'];
       account.decrement('balance', 10);

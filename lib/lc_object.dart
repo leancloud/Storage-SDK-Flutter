@@ -81,8 +81,7 @@ class LCObject {
     if (key == 'objectId' ||
         key == 'createdAt' ||
         key == 'updatedAt' ||
-        key == 'className' ||
-        key == 'ACL') {
+        key == 'className') {
       throw new ArgumentError('$key is reserved by LeanCloud');
     }
     _LCSetOperation op = new _LCSetOperation(value);
