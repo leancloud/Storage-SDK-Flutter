@@ -56,9 +56,6 @@ class _LCEncoder {
   static dynamic encodeMap(Map map) {
     Map m = new Map();
     map.forEach((key, value) {
-      if (key.startsWith('_')) {
-        throw new ArgumentError('key should not start with \'_\'');
-      }
       m[key] = encode(value);
     });
     return m;

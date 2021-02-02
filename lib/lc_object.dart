@@ -3,7 +3,7 @@ part of leancloud_storage;
 /// LeanCloud Object
 ///
 /// Object is also called Record (in traditional relational databases)
-/// or Document (in some NoSQL databases). 
+/// or Document (in some NoSQL databases).
 class LCObject {
   /// The last known data for this object from cloud.
   _LCObjectData _data;
@@ -78,7 +78,11 @@ class LCObject {
     if (key.startsWith('_')) {
       throw new ArgumentError('key should not start with \'_\'');
     }
-    if (key == 'objectId' || key == 'createdAt' || key == 'updatedAt') {
+    if (key == 'objectId' ||
+        key == 'createdAt' ||
+        key == 'updatedAt' ||
+        key == 'className' ||
+        key == 'ACL') {
       throw new ArgumentError('$key is reserved by LeanCloud');
     }
     _LCSetOperation op = new _LCSetOperation(value);
@@ -108,7 +112,7 @@ class LCObject {
     _applyOperation(key, op);
   }
 
-  /// Removes relation [value] to [key]. 
+  /// Removes relation [value] to [key].
   void removeRelation(String key, LCObject value) {
     if (isNullOrEmpty(key)) {
       throw ArgumentError.notNull('key');
@@ -129,7 +133,7 @@ class LCObject {
     _applyOperation(key, op);
   }
 
-  /// Atomically decrements the value of the given [key] with [amount]. 
+  /// Atomically decrements the value of the given [key] with [amount].
   void decrement(String key, num amount) {
     if (isNullOrEmpty(key)) {
       throw ArgumentError.notNull('key');
@@ -215,7 +219,7 @@ class LCObject {
   }
 
   /// Refreshes the attributes.
-  /// 
+  ///
   /// This populates attributes by starting with the last known data from the
   /// server, and applying all of the local changes that have been made since
   /// then.
@@ -269,7 +273,7 @@ class LCObject {
   }
 
   /// Fetches the object from the cloud.
-  /// 
+  ///
   /// Can also specifies which [keys] to fetch,
   /// and if this [includes] pointed objects.
   Future<LCObject> fetch(
@@ -378,7 +382,7 @@ class LCObject {
   }
 
   /// Saves the object to the cloud.
-  /// 
+  ///
   /// Can also specify whether to [fetchWhenSave],
   /// or only saving the object when it matches the [query].
   Future<LCObject> save(
@@ -441,7 +445,7 @@ class LCObject {
     await LeanCloud._httpClient.delete(path);
   }
 
-  /// Serializes this [LCObject] to a JSON string. 
+  /// Serializes this [LCObject] to a JSON string.
   String toString() {
     return jsonEncode(_LCObjectData.encode(_data));
   }
