@@ -9,7 +9,7 @@ class _LCAddOperation extends _LCOperation {
 
   @override
   apply(oldValue, String key) {
-    List result = oldValue != null ? List.from(oldValue) : new List();
+    List result = oldValue != null ? List.from(oldValue) : [];
     result.addAll(valueList);
     return result;
   }

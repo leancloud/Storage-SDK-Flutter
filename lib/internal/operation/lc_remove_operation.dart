@@ -9,7 +9,7 @@ class _LCRemoveOperation extends _LCOperation {
 
   @override
   apply(oldValue, String key) {
-    List result = oldValue != null ? List.from(oldValue) : new List();
+    List result = oldValue != null ? List.from(oldValue) : [];
     valueList.forEach((item) {
       result.remove(item);
     });

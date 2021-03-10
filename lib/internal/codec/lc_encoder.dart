@@ -46,7 +46,7 @@ class _LCEncoder {
   }
 
   static dynamic encodeList(List list) {
-    List l = new List();
+    List l = [];
     list.forEach((item) {
       l.add(encode(item));
     });

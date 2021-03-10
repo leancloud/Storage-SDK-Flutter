@@ -496,7 +496,7 @@ class LCUser extends LCObject {
       queryParams['count'] = 1;
     }
     if (includeFollower || includeFollowee) {
-      List<String> includes = new List<String>();
+      List<String> includes = <String>[];
       if (includeFollower) {
         includes.add('follower');
       }
@@ -509,7 +509,7 @@ class LCUser extends LCObject {
         .get('users/$objectId/followersAndFollowees', queryParams: queryParams);
     LCFollowersAndFollowees result = new LCFollowersAndFollowees();
     if (response.containsKey('followers')) {
-      result.followers = new List<LCObject>();
+      result.followers = <LCObject>[];
       for (dynamic item in response['followers']) {
         _LCObjectData objectData = _LCObjectData.decode(item);
         LCObject follower = new LCObject('_Follower');
@@ -518,7 +518,7 @@ class LCUser extends LCObject {
       }
     }
     if (response.containsKey('followees')) {
-      result.followees = new List<LCObject>();
+      result.followees = <LCObject>[];
       for (dynamic item in response['followees']) {
         _LCObjectData objectData = _LCObjectData.decode(item);
         LCObject followee = new LCObject('_Followee');
