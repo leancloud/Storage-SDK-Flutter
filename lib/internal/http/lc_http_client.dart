@@ -155,6 +155,8 @@ class _LCHttpClient {
         int code = response.data['code'];
         String message = response.data['error'];
         throw new LCException(code, message);
+      } on LCException catch (ex) {
+        throw ex;
       } on Exception {
         throw new LCException(response.statusCode, response.statusMessage);
       }
