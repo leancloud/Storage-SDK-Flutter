@@ -1,6 +1,6 @@
 part of leancloud_storage;
 
-/// A query to fetch [LCObject]. 
+/// A query to fetch [LCObject].
 class LCQuery<T extends LCObject> {
   /// Which [className] to query.
   String className;
@@ -137,7 +137,7 @@ class LCQuery<T extends LCObject> {
 
   /// Also sorts the results in ascending order by the given [key].
   ///
-  /// The previous sort keys have precedence over this [key]. 
+  /// The previous sort keys have precedence over this [key].
   LCQuery<T> addAscendingOrder(String key) {
     condition.addAscendingOrder(key);
     return this;
@@ -145,7 +145,7 @@ class LCQuery<T extends LCObject> {
 
   /// Also sorts the results in descending order by the given [key].
   ///
-  /// The previous sort keys have precedence over this [key]. 
+  /// The previous sort keys have precedence over this [key].
   LCQuery<T> addDescendingOrder(String key) {
     condition.addDescendingOrder(key);
     return this;
@@ -181,13 +181,13 @@ class LCQuery<T extends LCObject> {
   /// Sets the limit of the number of results to return.
   ///
   /// The default limit is 100,
-  /// with a maximum of 1000 results being returned at a time. 
+  /// with a maximum of 1000 results being returned at a time.
   LCQuery<T> limit(int amount) {
     condition.limit = amount;
     return this;
   }
 
-  /// Counts the number of results. 
+  /// Counts the number of results.
   Future<int> count() async {
     String path = 'classes/$className';
     Map<String, dynamic> params = _buildParams();
@@ -236,7 +236,7 @@ class LCQuery<T extends LCObject> {
     Map response = await LeanCloud._httpClient
         .get(path, queryParams: params, cachePolicy: cachePolicy);
     List results = response['results'];
-    List<T> list = new List();
+    List<T> list = [];
     results.forEach((item) {
       _LCObjectData objectData = _LCObjectData.decode(item);
       LCObject object = LCObject._create(T, className: className);

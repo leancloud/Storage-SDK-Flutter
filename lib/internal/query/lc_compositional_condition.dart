@@ -16,7 +16,7 @@ class _LCCompositionalCondition extends _LCQueryCondition {
   int limit;
 
   _LCCompositionalCondition({this.composition = And}) {
-    conditionList = new List<_LCQueryCondition>();
+    conditionList = <_LCQueryCondition>[];
     includeACL = false;
     skip = 0;
     limit = 30;
@@ -125,7 +125,7 @@ class _LCCompositionalCondition extends _LCQueryCondition {
 
   /// Ordering
   void orderByAscending(String key) {
-    orderByList = new List<String>();
+    orderByList = <String>[];
     orderByList.add(key);
   }
 
@@ -135,7 +135,7 @@ class _LCCompositionalCondition extends _LCQueryCondition {
 
   void addAscendingOrder(String key) {
     if (orderByList == null) {
-      orderByList = new List<String>();
+      orderByList = <String>[];
     }
     orderByList.add(key);
   }

@@ -1,12 +1,13 @@
 part of leancloud_storage;
 
-/// [LCQuery] of [LCStatus] to find someone's statuses. 
+/// [LCQuery] of [LCStatus] to find someone's statuses.
 class LCStatusQuery extends LCQuery<LCStatus> {
   /// See [LCStatus.inboxType]
   String inboxType;
 
   /// Queries [LCStatus] whose messageId is greater than this.
   int sinceId;
+
   /// Queries [LCStatus] whose messageId is not greater than this.
   int maxId;
 
@@ -37,7 +38,7 @@ class LCStatusQuery extends LCQuery<LCStatus> {
     Map response = await LeanCloud._httpClient
         .get('subscribe/statuses', queryParams: params);
     List results = response['results'];
-    List<LCStatus> list = new List();
+    List<LCStatus> list = [];
     results.forEach((item) {
       _LCObjectData objectData = _LCObjectData.decode(item);
       LCStatus status = new LCStatus();
