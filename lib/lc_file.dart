@@ -121,16 +121,13 @@ class LCFile extends LCObject {
   Future<Map> _getUploadToken() async {
     Map<String, dynamic> data = {
       'name': name,
-      'key': _newUUID(),
       '__type': 'File',
       'mime_type': mimeType,
-      'metaData': metaData
+      'metaData': metaData,
     };
+    if (acl != null) {
+      data['ACL'] = _LCEncoder.encodeACL(acl);
+    }
     return await LeanCloud._httpClient.post('fileTokens', data: data);
-  }
-
-  String _newUUID() {
-    _LCUuid uuid = new _LCUuid();
-    return uuid.generateV4();
   }
 }

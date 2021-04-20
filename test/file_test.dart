@@ -78,6 +78,24 @@ void main() {
         });
       });
     });
+    
+    test('file acl', () async {
+      LCUser user = await LCUser.loginAnonymously();
+
+      LCFile file = await LCFile.fromPath('avatar', './avatar.jpg');
+      LCACL acl = new LCACL();
+      acl.setUserReadAccess(user, true);
+      file.acl = acl;
+      await file.save();
+
+      LCQuery<LCFile> query = new LCQuery(LCFile.ClassName);
+      LCFile avatar = await query.get(file.objectId);
+      assert(avatar.objectId != null);
+
+      await LCUser.loginAnonymously();
+      LCFile forbiddenAvatar = await query.get(file.objectId);
+      assert(forbiddenAvatar == null);
+    });
   });
 
   group('file in US', () {
