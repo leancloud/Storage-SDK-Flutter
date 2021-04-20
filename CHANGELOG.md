@@ -1,3 +1,7 @@
+## [0.6.4] - 版本更新
+
+- 修复 LCFile#acl 设置无效的 bug
+
 ## [0.6.3] - 版本更新
 
 - 修复解析 http response 异常的 bug
