@@ -20,11 +20,10 @@ void main() {
 
     test('query', () async {
       LCQuery<LCRole> query = LCRole.getQuery();
-      List<LCRole> list = await query.find();
+      List<LCRole> list = (await query.find())!;
       list.forEach((item) {
         print('${item.objectId} : ${item.name}');
         assert(item.objectId != null);
-        assert(item.name != null);
         assert(item.roles is LCRelation);
         assert(item.users is LCRelation);
       });

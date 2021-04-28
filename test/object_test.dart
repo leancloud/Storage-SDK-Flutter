@@ -55,7 +55,7 @@ void main() {
     });
 
     test('save all', () async {
-      List<LCObject> list = new List<LCObject>();
+      List<LCObject> list = [];
       for (int i = 0; i < 5; i++) {
         LCObject world = new LCObject('World');
         world['content'] = 'word_$i';
@@ -86,10 +86,10 @@ void main() {
 
     test('fetch', () async {
       LCQuery<LCObject> query = new LCQuery<LCObject>('Hello');
-      LCObject hello = await query.get('5e14392743c257006fb769d5');
+      LCObject? hello = await query.get('5e14392743c257006fb769d5');
       print(hello);
-      await hello.fetch(includes: ['objectValue']);
-      LCObject world = hello['objectValue'];
+      await hello?.fetch(includes: ['objectValue']);
+      LCObject world = hello?['objectValue'];
       print(world['content']);
     });
 

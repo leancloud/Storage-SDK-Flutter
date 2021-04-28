@@ -32,7 +32,7 @@ class Account extends LCObject {
 }
 
 class Bank extends LCObject {
-  List get accounts => this['accounts'];
+  List<Account> get accounts => List<Account>.from(this['accounts']);
 
   set accounts(List<Account> value) => this['accounts'] = value;
 
@@ -56,7 +56,7 @@ void main() {
       LCObject.registerSubclass<Account>('Account', () => new Account());
       LCQuery<Account> query = new LCQuery<Account>('Account');
       query.whereGreaterThan('balance', 500);
-      List<Account> list = await query.find();
+      List<Account> list = (await query.find())!;
       print(list.length);
       assert(list.length > 0);
       list.forEach((item) {
@@ -78,7 +78,7 @@ void main() {
 
       LCQuery<Hello> helloQuery = new LCQuery<Hello>('Hello');
       helloQuery.include('objectValue');
-      Hello hello = await helloQuery.get('5e0d55aedd3c13006a53cd87');
+      Hello hello = (await helloQuery.get('5e0d55aedd3c13006a53cd87'))!;
       World world = hello.world;
 
       print(hello.objectId);
@@ -96,8 +96,9 @@ void main() {
       bank.accounts = [Account.create(100), Account.create(200)];
       await bank.save();
 
-      assert(bank.accounts[0].balance == 100);
-      assert(bank.accounts[1].balance == 200);
+      List<Account> accounts = bank.accounts;
+      assert(accounts[0].balance == 100);
+      assert(accounts[1].balance == 200);
     });
   });
 }

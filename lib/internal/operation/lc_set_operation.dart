@@ -22,7 +22,7 @@ class _LCSetOperation extends _LCOperation {
   }
 
   @override
-  List getNewObjectList() {
+  List? getNewObjectList() {
     if (value is List) {
       return List.from(value);
     }

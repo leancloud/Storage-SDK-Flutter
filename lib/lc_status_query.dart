@@ -3,13 +3,13 @@ part of leancloud_storage;
 /// [LCQuery] of [LCStatus] to find someone's statuses.
 class LCStatusQuery extends LCQuery<LCStatus> {
   /// See [LCStatus.inboxType]
-  String inboxType;
+  late String inboxType;
 
   /// Queries [LCStatus] whose messageId is greater than this.
-  int sinceId;
+  late int sinceId;
 
   /// Queries [LCStatus] whose messageId is not greater than this.
-  int maxId;
+  late int maxId;
 
   /// Constructs a [LCQuery] for [LCStatus].
   LCStatusQuery({String inboxType = LCStatus.InboxTypeDefault})
@@ -22,7 +22,7 @@ class LCStatusQuery extends LCQuery<LCStatus> {
   /// See [LCQuery.find].
   Future<List<LCStatus>> find(
       {CachePolicy cachePolicy = CachePolicy.onlyNetwork}) async {
-    LCUser user = await LCUser.getCurrent();
+    LCUser? user = await LCUser.getCurrent();
     if (user == null) {
       throw new ArgumentError.notNull('current user');
     }

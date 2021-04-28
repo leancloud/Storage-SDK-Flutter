@@ -6,41 +6,41 @@ part of leancloud_storage;
 /// or Document (in some NoSQL databases).
 class LCObject {
   /// The last known data for this object from cloud.
-  _LCObjectData _data;
+  late _LCObjectData _data;
 
   /// The best estimate of this's current data.
-  Map<String, dynamic> _estimatedData;
+  late Map<String, dynamic> _estimatedData;
 
   /// List of sets of changes to the data.
-  Map<String, _LCOperation> _operationMap;
+  late Map<String, _LCOperation> _operationMap;
 
   /// The class name of the object.
   ///
   /// Class is also called Table (in traditional relational databases)
   /// or Collection (in some NoSQL databases).
-  String get className => _data.className;
+  String? get className => _data.className;
 
   /// Gets the object's objectId.
-  String get objectId => _data.objectId;
+  String? get objectId => _data.objectId;
 
   /// Gets the object's createdAt attribute.
-  DateTime get createdAt => _data.createdAt;
+  DateTime? get createdAt => _data.createdAt;
 
   /// Gets the object's updatedAt attribute.
-  DateTime get updatedAt => _data.updatedAt ?? _data.createdAt;
+  DateTime? get updatedAt => _data.updatedAt ?? _data.createdAt;
 
   /// Gets the ACL for this object.
-  LCACL get acl => this['ACL'];
+  LCACL? get acl => this['ACL'] as LCACL;
 
   /// Sets the ACL to be used for this object.
-  set acl(LCACL value) => this['ACL'] = value;
+  set acl(LCACL? value) => this['ACL'] = value!;
 
   /// If this object has been modified since its last save/refresh.
-  bool _isDirty;
+  late bool _isDirty;
 
   /// Creates a new object in [className].
   LCObject(String className) {
-    assert(className != null && className.length > 0);
+    assert(className.length > 0);
     _data = new _LCObjectData();
     _estimatedData = new Map<String, dynamic>();
     _operationMap = new Map<String, _LCOperation>();
@@ -53,7 +53,7 @@ class LCObject {
   /// The object corresponding to the [objectId] specified must already exists on the cloud.
   static LCObject createWithoutData(String className, String objectId) {
     LCObject object = new LCObject(className);
-    assert(objectId != null && objectId.length > 0);
+    assert(objectId.length > 0);
     object._data.objectId = objectId;
     object._isDirty = false;
     return object;
@@ -245,15 +245,18 @@ class LCObject {
     }
     // 再合并为新的操作参数
     if (_operationMap.containsKey(key)) {
-      _LCOperation previousOp = _operationMap[key];
-      _operationMap[key] = op.mergeWithPrevious(previousOp);
+      _LCOperation? previousOp = _operationMap[key];
+      _operationMap[key] = op.mergeWithPrevious(previousOp!);
     } else {
       _operationMap[key] = op;
     }
     _isDirty = true;
   }
 
-  void _merge(_LCObjectData data) {
+  void _merge(_LCObjectData? data) {
+    if (data == null) {
+      return;
+    }
     _data.className = data.className ?? _data.className;
     _data.objectId = data.objectId ?? _data.objectId;
     _data.createdAt = data.createdAt ?? _data.createdAt;
@@ -276,7 +279,7 @@ class LCObject {
   /// Can also specifies which [keys] to fetch,
   /// and if this [includes] pointed objects.
   Future<LCObject> fetch(
-      {Iterable<String> keys, Iterable<String> includes}) async {
+      {Iterable<String>? keys, Iterable<String>? includes}) async {
     Map<String, dynamic> queryParams = {};
     if (keys != null) {
       queryParams['keys'] = keys.join(',');
@@ -285,7 +288,7 @@ class LCObject {
       queryParams['include'] = includes.join(',');
     }
     String path = 'classes/$className/$objectId';
-    Map response =
+    Map<String, dynamic> response =
         await LeanCloud._httpClient.get(path, queryParams: queryParams);
     _LCObjectData objectData = _LCObjectData.decode(response);
     _merge(objectData);
@@ -294,9 +297,6 @@ class LCObject {
 
   /// Fetches all objects in [objectList].
   static Future<List<LCObject>> fetchAll(List<LCObject> objectList) async {
-    if (objectList == null) {
-      throw new ArgumentError.notNull('objectList');
-    }
     Set<LCObject> objects = objectList.where((item) {
       return item.objectId != null;
     }).toSet();
@@ -318,11 +318,11 @@ class LCObject {
         String message = item['error'];
         throw ('$code : $message');
       }
-      Map data = item['success'];
+      Map<String, dynamic> data = item['success'];
       map[data['objectId']] = _LCObjectData.decode(data);
     });
     objectList.forEach((object) {
-      _LCObjectData objectData = map[object.objectId];
+      _LCObjectData? objectData = map[object.objectId];
       object._merge(objectData);
     });
     return objectList;
@@ -385,7 +385,7 @@ class LCObject {
   /// Can also specify whether to [fetchWhenSave],
   /// or only saving the object when it matches the [query].
   Future<LCObject> save(
-      {bool fetchWhenSave = false, LCQuery<LCObject> query}) async {
+      {bool fetchWhenSave = false, LCQuery<LCObject>? query}) async {
     // 检测循环依赖
     if (_LCBatch.hasCircleReference(this, new HashSet<LCObject>())) {
       throw new ArgumentError('Found a circle dependency when save.');
@@ -408,7 +408,7 @@ class LCObject {
     if (query != null) {
       queryParams['where'] = query._buildWhere();
     }
-    Map response = objectId == null
+    Map<String, dynamic> response = objectId == null
         ? await LeanCloud._httpClient.post(path,
             data: _LCEncoder.encode(_operationMap), queryParams: queryParams)
         : await LeanCloud._httpClient.put(path,
@@ -420,9 +420,6 @@ class LCObject {
 
   /// Saves all objects in [objectList].
   static Future<List<LCObject>> saveAll(List<LCObject> objectList) async {
-    if (objectList == null) {
-      throw new ArgumentError.notNull('objectList');
-    }
     // 断言没有循环依赖
     objectList.forEach((item) {
       if (_LCBatch.hasCircleReference(item, new HashSet<LCObject>())) {
@@ -452,14 +449,14 @@ class LCObject {
   /// The inverse function of [toString].
   static LCObject parseObject(String str) {
     _LCObjectData objectData = _LCObjectData.decode(jsonDecode(str));
-    LCObject object = _createByName(objectData.className);
+    LCObject object = _createByName(objectData.className!);
     object._merge(objectData);
     return object;
   }
 
   /// Delete all objects in [objectList].
   static Future deleteAll(List<LCObject> objectList) async {
-    if (objectList == null || objectList.length == 0) {
+    if (objectList.length == 0) {
       return;
     }
     Set<LCObject> objects = objectList.where((item) {
@@ -492,19 +489,13 @@ class LCObject {
     _subclassNameMap[className] = subclassInfo;
   }
 
-  static LCObject _create(Type type, {String className}) {
-    if (_subclassTypeMap.containsKey(type)) {
-      _LCSubclassInfo subclassInfo = _subclassTypeMap[type];
-      return subclassInfo.constructor();
-    }
-    return new LCObject(className);
+  static T _create<T>(String className) {
+    return _subclassTypeMap.containsKey(T) ? 
+      _subclassTypeMap[T]!.constructor() : new LCObject(className);
   }
 
   static LCObject _createByName(String className) {
-    if (_subclassNameMap.containsKey(className)) {
-      _LCSubclassInfo subclassInfo = _subclassNameMap[className];
-      return subclassInfo.constructor();
-    }
-    return new LCObject(className);
+    return _subclassNameMap.containsKey(className) ?
+      _subclassNameMap[className]!.constructor() : new LCObject(className);
   }
 }

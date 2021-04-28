@@ -2,15 +2,15 @@ part of leancloud_storage;
 
 /// LeanCloud object data.
 class _LCObjectData {
-  String className;
+  String? className;
 
-  String objectId;
+  String? objectId;
 
-  DateTime createdAt;
+  DateTime? createdAt;
 
-  DateTime updatedAt;
+  DateTime? updatedAt;
 
-  Map<String, dynamic> customPropertyMap;
+  late Map<String, dynamic> customPropertyMap;
 
   _LCObjectData() {
     customPropertyMap = new Map<String, dynamic>();
@@ -39,7 +39,7 @@ class _LCObjectData {
     return result;
   }
 
-  static Map<String, dynamic> encode(_LCObjectData objectData) {
+  static Map<String, dynamic>? encode(_LCObjectData? objectData) {
     if (objectData == null) {
       return null;
     }
@@ -53,11 +53,9 @@ class _LCObjectData {
     if (objectData.updatedAt != null) {
       data['updatedAt'] = objectData.updatedAt.toString();
     }
-    if (objectData.customPropertyMap != null) {
-      objectData.customPropertyMap.forEach((k, v) {
-        data[k] = _LCEncoder.encode(v);
-      });
-    }
+    objectData.customPropertyMap.forEach((k, v) {
+      data[k] = _LCEncoder.encode(v);
+    });
     return data;
   }
 }

@@ -2,9 +2,9 @@ part of leancloud_storage;
 
 /// LeanCloud batch saving utilities.
 class _LCBatch {
-  HashSet<LCObject> objects;
+  late HashSet<LCObject> objects;
 
-  _LCBatch(Iterable<LCObject> objs) {
+  _LCBatch(Iterable<LCObject>? objs) {
     objects = new HashSet<LCObject>();
     if (objs != null) {
       objs.forEach((item) {
@@ -13,11 +13,11 @@ class _LCBatch {
     }
   }
 
-  static bool hasCircleReference(Object object, HashSet<LCObject> parents) {
+  static bool hasCircleReference(Object? object, HashSet<LCObject> parents) {
     if (parents.contains(object)) {
       return true;
     }
-    Iterable deps;
+    Iterable? deps;
     if (object is List) {
       deps = object;
     } else if (object is Map) {
@@ -30,7 +30,7 @@ class _LCBatch {
       depParents.add(object);
     }
     if (deps != null) {
-      for (Object dep in deps) {
+      for (Object? dep in deps) {
         HashSet<LCObject> ps = HashSet<LCObject>.from(depParents);
         if (hasCircleReference(dep, ps)) {
           return true;
@@ -46,7 +46,7 @@ class _LCBatch {
     if (containSelf) {
       batches.addLast(new _LCBatch(objects));
     }
-    HashSet<Object> deps = new HashSet<Object>();
+    HashSet deps = new HashSet();
     objects.forEach((item) {
       Iterable it = item._operationMap.values.map((op) {
         return op.getNewObjectList();
@@ -54,9 +54,9 @@ class _LCBatch {
       deps.addAll(it);
     });
     do {
-      HashSet<Object> childSet = new HashSet<Object>();
+      HashSet childSet = new HashSet();
       deps.forEach((dep) {
-        Iterable children;
+        Iterable? children;
         if (dep is List) {
           children = dep;
         } else if (dep is Map) {
@@ -78,11 +78,11 @@ class _LCBatch {
           })
           .cast<LCObject>()
           .toList();
-      if (depObjs != null && depObjs.length > 0) {
+      if (depObjs.length > 0) {
         batches.addLast(new _LCBatch(depObjs));
       }
       deps = childSet;
-    } while (deps != null && deps.length > 0);
+    } while (deps.length > 0);
     return batches;
   }
 }

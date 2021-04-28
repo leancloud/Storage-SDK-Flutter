@@ -32,7 +32,7 @@ void main() {
 
     test('query', () async {
       LCQuery<LCObject> query = new LCQuery<LCObject>('Parent');
-      LCObject parent = await query.get('5e13112021b47e0070ed0922');
+      LCObject parent = (await query.get('5e13112021b47e0070ed0922'))!;
       LCRelation relation = parent['children'];
 
       print(relation.key);
@@ -44,7 +44,7 @@ void main() {
       assert(relation.targetClass != null);
 
       LCQuery<LCObject> relationQuery = relation.query();
-      List<LCObject> list = await relationQuery.find();
+      List<LCObject> list = (await relationQuery.find())!;
       list.forEach((item) {
         print(item.objectId);
         assert(item.objectId != null);

@@ -4,7 +4,7 @@ part of leancloud_storage;
 class LCException implements Exception {
   int code;
 
-  String message;
+  String? message;
 
   LCException(this.code, this.message);
 }

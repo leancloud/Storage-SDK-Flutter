@@ -4,10 +4,7 @@ class _LCMimeTypeMap {
   static String getMimeType(String fileName) {
     try {
       String ext = path.extension(fileName).substring(1);
-      if (MimeTypesMap.containsKey(ext)) {
-        return MimeTypesMap[ext];
-      }
-      return 'unknown/unknown';
+      return MimeTypesMap[ext] ?? 'unknown/unknown';
     } on Error catch (e) {
       LCLogger.error(e.toString());
       return 'unknown/unknown';

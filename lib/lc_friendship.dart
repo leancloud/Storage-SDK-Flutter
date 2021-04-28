@@ -8,8 +8,8 @@ class LCFriendshipRequest extends LCObject {
 
 class LCFriendship {
   static Future request(String userId,
-      {Map<String, dynamic> attributes}) async {
-    LCUser user = await LCUser.getCurrent();
+      {Map<String, dynamic>? attributes}) async {
+    LCUser? user = await LCUser.getCurrent();
     if (user == null) {
       throw new ArgumentError('Current user is null.');
     }
@@ -20,12 +20,9 @@ class LCFriendship {
   }
 
   static Future acceptRequest(LCFriendshipRequest request,
-      {Map<String, dynamic> attributes}) async {
-    if (request == null) {
-      throw new ArgumentError.notNull('request');
-    }
+      {Map<String, dynamic>? attributes}) async {
     String path = 'users/friendshipRequests/${request.objectId}/accept';
-    Map<String, dynamic> data;
+    Map<String, dynamic>? data;
     if (attributes != null) {
       data = {'friendship': attributes};
     }
@@ -33,9 +30,6 @@ class LCFriendship {
   }
 
   static Future declineRequest(LCFriendshipRequest request) async {
-    if (request == null) {
-      throw new ArgumentError.notNull('request');
-    }
     String path = 'users/friendshipRequests/${request.objectId}/decline';
     await LeanCloud._httpClient.put(path);
   }

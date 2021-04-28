@@ -25,8 +25,8 @@ void main() {
     test('user read and write', () async {
       await LCUser.login('hello', 'world');
       LCObject account = new LCObject('Account');
-      LCUser currentUser = await LCUser.getCurrent();
-      LCACL acl = LCACL.createWithOwner(currentUser);
+      LCUser? currentUser = await LCUser.getCurrent();
+      LCACL acl = LCACL.createWithOwner(currentUser!);
       account.acl = acl;
       account['balance'] = 512;
       await account.save();
@@ -35,21 +35,21 @@ void main() {
       assert(acl.getUserWriteAccess(currentUser) == true);
 
       LCQuery<LCObject> query = new LCQuery('Account');
-      LCObject result = await query.get(account.objectId);
-      print(result.objectId);
-      assert(result.objectId != null);
+      LCObject? result = await query.get(account.objectId!);
+      print(result?.objectId);
+      assert(result?.objectId != null);
 
       await LCUser.logout();
-      result = await query.get(account.objectId);
+      result = await query.get(account.objectId!);
       assert(result == null);
     });
 
     test('role read and write', () async {
       LCQuery<LCRole> query = LCRole.getQuery();
-      LCRole owner = await query.get('5e1440cbfc36ed006add1b8d');
+      LCRole? owner = await query.get('5e1440cbfc36ed006add1b8d');
       LCObject account = new LCObject('Account');
       LCACL acl = new LCACL();
-      acl.setRoleReadAccess(owner, true);
+      acl.setRoleReadAccess(owner!, true);
       acl.setRoleWriteAccess(owner, true);
       account.acl = acl;
       await account.save();
@@ -60,8 +60,8 @@ void main() {
     test('query', () async {
       await LCUser.login('game', 'play');
       LCQuery<LCObject> query = new LCQuery<LCObject>('Account');
-      LCObject account = await query.get('5e144525dd3c13006a8f8de2');
-      print(account.objectId);
+      LCObject? account = await query.get('5e144525dd3c13006a8f8de2');
+      print(account?.objectId);
     });
 
     test('demo', () async {
@@ -85,10 +85,12 @@ void main() {
       await LCUser.login('hello', 'world');
       LCQuery<LCObject> query = new LCQuery('Account');
       query.includeACL(true).orderByDescending('createdAt');
-      List<LCObject> accounts = await query.find();
-      for (LCObject account in accounts) {
-        print('public read access: ${account.acl.getPublilcReadAccess()}');
-        print('public write access: ${account.acl.getPublicWriteAccess()}');
+      List<LCObject>? accounts = await query.find();
+      if (accounts != null) {
+        for (LCObject account in accounts) {
+          print('public read access: ${account.acl!.getPublilcReadAccess()}');
+          print('public write access: ${account.acl!.getPublicWriteAccess()}');
+        }
       }
     });
   });

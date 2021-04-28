@@ -8,9 +8,9 @@ void main() {
   SharedPreferences.setMockInitialValues({});
 
   group('status', () {
-    LCUser user1;
-    LCUser user2;
-    LCUser user3;
+    late LCUser user1;
+    late LCUser user2;
+    late LCUser user3;
 
     setUp(() => initNorthChina());
 
@@ -28,7 +28,7 @@ void main() {
 
       // user2 follow user1
       Map<String, dynamic> attrs = {'score': 100};
-      await user2.follow(user1.objectId, attrs: attrs);
+      await user2.follow(user1.objectId!, attrs: attrs);
       await LCUser.logout();
 
       user3 = new LCUser();
@@ -37,22 +37,22 @@ void main() {
       await user3.signUp();
 
       // user3 follow user2
-      await user3.follow(user2.objectId);
+      await user3.follow(user2.objectId!);
       await LCUser.logout();
     });
 
     test('query followers and followees', () async {
-      await LCUser.becomeWithSessionToken(user2.sessionToken);
+      await LCUser.becomeWithSessionToken(user2.sessionToken!);
 
       LCQuery<LCObject> query = user2.followeeQuery();
-      List<LCObject> results = await query.find();
+      List<LCObject> results = (await query.find())!;
       assert(results.length > 0);
       results.forEach((item) {
         assert(user1.objectId == item['followee'].objectId);
       });
 
       query = user2.followerQuery();
-      results = await query.find();
+      results = (await query.find())!;
       assert(results.length > 0);
       results.forEach((item) {
         assert(user3.objectId == item['follower'].objectId);
@@ -68,7 +68,7 @@ void main() {
     });
 
     test('send', () async {
-      await LCUser.becomeWithSessionToken(user1.sessionToken);
+      await LCUser.becomeWithSessionToken(user1.sessionToken!);
 
       // 给粉丝发送状态
       LCStatus status = new LCStatus();
@@ -77,13 +77,13 @@ void main() {
       // 给某个用户发送私信
       LCStatus privateStatus = new LCStatus();
       privateStatus.data = {'image': 'xxx.jpg', 'content': 'hello, game'};
-      await LCStatus.sendPrivately(privateStatus, user2.objectId);
+      await LCStatus.sendPrivately(privateStatus, user2.objectId!);
 
       await LCUser.logout();
     });
 
     test('query', () async {
-      await LCUser.becomeWithSessionToken(user2.sessionToken);
+      await LCUser.becomeWithSessionToken(user2.sessionToken!);
 
       LCStatusCount statusCount =
           await LCStatus.getCount(inboxType: LCStatus.InboxTypeDefault);
@@ -109,12 +109,12 @@ void main() {
     });
 
     test('unfollow', () async {
-      await LCUser.becomeWithSessionToken(user2.sessionToken);
-      await user2.unfollow(user1.objectId);
+      await LCUser.becomeWithSessionToken(user2.sessionToken!);
+      await user2.unfollow(user1.objectId!);
       await LCUser.logout();
 
-      await LCUser.becomeWithSessionToken(user3.sessionToken);
-      await user3.unfollow(user2.objectId);
+      await LCUser.becomeWithSessionToken(user3.sessionToken!);
+      await user3.unfollow(user2.objectId!);
       await LCUser.logout();
     });
   });

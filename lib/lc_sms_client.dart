@@ -4,10 +4,10 @@ part of leancloud_storage;
 class LCSMSClient {
   /// Requests an SMS code for operation verification.
   static Future requestSMSCode(String mobile,
-      {String template,
-      String signature,
-      String captchaToken,
-      Map<String, dynamic> variables}) async {
+      {String? template,
+      String? signature,
+      String? captchaToken,
+      Map<String, dynamic>? variables}) async {
     String path = 'requestSmsCode';
     Map<String, dynamic> data = {'mobilePhoneNumber': mobile};
     if (template != null) {

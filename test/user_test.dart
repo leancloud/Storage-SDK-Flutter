@@ -33,31 +33,31 @@ void main() {
 
     test('login', () async {
       await LCUser.login('hello', 'world');
-      LCUser current = await LCUser.getCurrent();
+      LCUser current = (await LCUser.getCurrent())!;
       assert(current.objectId != null);
       assert(!current.emailVerified);
-      assert(!current.mobileVerified);
+      assert(current.mobileVerified);
       assert(current.mobile == '15101006007');
       assert(!current.isAnonymous);
     });
 
     test('login by email', () async {
       await LCUser.loginByEmail('171253484@qq.com', 'world');
-      LCUser current = await LCUser.getCurrent();
+      LCUser current = (await LCUser.getCurrent())!;
       assert(current.objectId != null);
     });
 
     test('login by session token', () async {
       String sessionToken = 'luo2fpl4qij2050e7enqfz173';
       await LCUser.becomeWithSessionToken(sessionToken);
-      LCUser current = await LCUser.getCurrent();
+      LCUser current = (await LCUser.getCurrent())!;
       assert(current.objectId != null);
     });
 
     test('relate object', () async {
       await LCUser.loginByMobilePhoneNumber('15101006007', 'world');
       LCObject account = new LCObject('Account');
-      account['user'] = await LCUser.getCurrent();
+      account['user'] = (await LCUser.getCurrent())!;
       await account.save();
     });
 
@@ -72,10 +72,9 @@ void main() {
         'openid': '${DateTime.now().millisecondsSinceEpoch}',
         'access_token': '${DateTime.now().millisecondsSinceEpoch}'
       };
-      LCUser currentUser = await LCUser.loginWithAuthData(authData, 'weixin');
+      LCUser? currentUser = await LCUser.loginWithAuthData(authData, 'weixin');
       print(currentUser.sessionToken);
-      assert(currentUser.sessionToken != null);
-      String userId = currentUser.objectId;
+      String userId = currentUser.objectId!;
       print('userId: $userId');
       print(currentUser.authData);
 
@@ -129,12 +128,12 @@ void main() {
       String unionId = '${DateTime.now().millisecondsSinceEpoch}';
       LCUserAuthDataLoginOption option = new LCUserAuthDataLoginOption();
       option.asMainAccount = true;
-      LCUser currentUser = await LCUser.loginWithAuthDataAndUnionId(
+      LCUser? currentUser = await LCUser.loginWithAuthDataAndUnionId(
           authData, 'weixin_app', unionId,
           option: option);
       print(currentUser.sessionToken);
       assert(currentUser.sessionToken != null);
-      String userId = currentUser.objectId;
+      String userId = currentUser.objectId!;
       print('userId: $userId');
       print(currentUser.authData);
 
@@ -161,6 +160,11 @@ void main() {
       String unionId = '${DateTime.now().millisecondsSinceEpoch}';
       await currentUser.associateAuthDataAndUnionId(authData, 'qq', unionId);
     });
+     
+   
+
+
+
 
     // test('login by mobile', () async {
     //   await LCUser.loginByMobilePhoneNumber('15101006007', '112358');
