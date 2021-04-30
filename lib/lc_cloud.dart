@@ -17,7 +17,15 @@ class LCCloud {
     String path = 'functions/$name';
     Map<String, dynamic> headers = {'X-LC-Prod': isProd ? 1 : 0};
     return await LeanCloud._httpClient
-        .post(path, headers: headers, data: params);
+        .post(path, headers: headers, data: params ?? {});
+  }
+
+  static Future<T?> call<T>(String name, {Map<String, dynamic>? params}) async {
+    Map<String, dynamic> response = await run(name, params: params);
+    if (response.containsKey("result")) {
+      return response["result"] as T;
+    }
+    return null;
   }
 
   /// Invokes a cloud function named [name] with [params],
@@ -26,7 +34,7 @@ class LCCloud {
     String path = 'call/$name';
     Map<String, dynamic> headers = {'X-LC-Prod': isProd ? 1 : 0};
     Map response =
-        await LeanCloud._httpClient.post(path, headers: headers, data: params);
+        await LeanCloud._httpClient.post(path, headers: headers, data: params ?? {});
     return _LCDecoder.decode(response);
   }
 }
