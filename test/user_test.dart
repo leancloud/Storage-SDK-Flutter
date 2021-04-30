@@ -4,6 +4,10 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'utils.dart';
 
+String getTestEmail() {
+  return '$TestPhone@leancloud.rocks';
+}
+
 void main() {
   SharedPreferences.setMockInitialValues({});
 
@@ -21,43 +25,60 @@ void main() {
       user.mobile = mobile;
       await user.signUp();
 
-      print(user.username);
-      print(user.password);
+      LCLogger.debug(user.username);
+      LCLogger.debug(user.password);
 
       assert(user.objectId != null);
-      print(user.objectId);
+      LCLogger.debug(user.objectId);
       assert(user.sessionToken != null);
-      print(user.sessionToken);
+      LCLogger.debug(user.sessionToken);
       assert(user.email == email);
     });
 
     test('login', () async {
-      await LCUser.login('hello', 'world');
+      try {
+        await LCUser.login(TestPhone, TestPhone);
+      } on LCException catch (e) {
+        if (e.code == 211) {
+          LCUser user = new LCUser();
+          user.username = TestPhone;
+          user.password = TestPhone;
+          user.mobile = TestPhone;
+          user.email = getTestEmail();
+          await user.signUp();
+        } else {
+          throw e;
+        }
+      }
+
+      await LCUser.login(TestPhone, TestPhone);
       LCUser current = (await LCUser.getCurrent())!;
       assert(current.objectId != null);
       assert(!current.emailVerified);
       assert(current.mobileVerified);
-      assert(current.mobile == '15101006007');
       assert(!current.isAnonymous);
     });
 
     test('login by email', () async {
-      await LCUser.loginByEmail('171253484@qq.com', 'world');
+      await LCUser.loginByEmail(getTestEmail(), TestPhone);
       LCUser current = (await LCUser.getCurrent())!;
       assert(current.objectId != null);
     });
 
     test('login by session token', () async {
-      String sessionToken = 'luo2fpl4qij2050e7enqfz173';
+      LCUser user = await LCUser.login(TestPhone, TestPhone);
+      String sessionToken = user.sessionToken!;
+      await LCUser.logout();
+
       await LCUser.becomeWithSessionToken(sessionToken);
       LCUser current = (await LCUser.getCurrent())!;
       assert(current.objectId != null);
     });
 
     test('relate object', () async {
-      await LCUser.loginByMobilePhoneNumber('15101006007', 'world');
-      LCObject account = new LCObject('Account');
-      account['user'] = (await LCUser.getCurrent())!;
+      await LCUser.loginByMobilePhoneNumber(TestPhone, TestPhone);
+      Account account = new Account();
+      account.user = (await LCUser.getCurrent())!;
       await account.save();
     });
 
@@ -73,50 +94,51 @@ void main() {
         'access_token': '${DateTime.now().millisecondsSinceEpoch}'
       };
       LCUser? currentUser = await LCUser.loginWithAuthData(authData, 'weixin');
-      print(currentUser.sessionToken);
+      LCLogger.debug(currentUser.sessionToken);
       String userId = currentUser.objectId!;
-      print('userId: $userId');
-      print(currentUser.authData);
+      LCLogger.debug('userId: $userId');
+      LCLogger.debug(currentUser.authData);
 
       await LCUser.logout();
       currentUser = await LCUser.getCurrent();
       assert(currentUser == null);
 
       currentUser = await LCUser.loginWithAuthData(authData, 'weixin');
-      print(currentUser.sessionToken);
+      LCLogger.debug(currentUser.sessionToken);
       assert(currentUser.sessionToken != null);
       assert(currentUser.objectId == userId);
-      print(currentUser.authData);
+      LCLogger.debug(currentUser.authData);
     });
 
     test('associate auth data', () async {
-      LCUser currentUser = await LCUser.login('hello', 'world');
+      LCUser currentUser = await LCUser.login(TestPhone, TestPhone);
       Map<String, dynamic> authData = {
         'expires_in': 7200,
         'openid': '${DateTime.now().millisecondsSinceEpoch}',
         'access_token': '${DateTime.now().millisecondsSinceEpoch}'
       };
       await currentUser.associateAuthData(authData, 'weixin');
-      print(currentUser.authData);
-      print(currentUser.authData['weixin']);
+      LCLogger.debug(currentUser.authData);
+      LCLogger.debug(currentUser.authData['weixin']);
     });
 
     test('disassociate auth data', () async {
-      LCUser currentUser = await LCUser.login('hello', 'world');
+      LCUser currentUser = await LCUser.login(TestPhone, TestPhone);
       await currentUser.disassociateWithAuthData('weixin');
     });
 
     test('is authenticated', () async {
-      LCUser currentUser = await LCUser.login('hello', 'world');
+      LCUser currentUser = await LCUser.login(TestPhone, TestPhone);
       bool isAuthenticated = await currentUser.isAuthenticated();
-      print(isAuthenticated);
+      LCLogger.debug(isAuthenticated);
       assert(isAuthenticated);
     });
 
     test('update password', () async {
-      LCUser currentUser = await LCUser.login('hello', 'world');
-      await currentUser.updatePassword('world', 'newWorld');
-      await currentUser.updatePassword('newWorld', 'world');
+      LCUser currentUser = await LCUser.login(TestPhone, TestPhone);
+      String newPassword = "newpassword";
+      await currentUser.updatePassword(TestPhone, newPassword);
+      await currentUser.updatePassword(newPassword, TestPhone);
     });
 
     test('login with auth data and union id', () async {
@@ -131,11 +153,11 @@ void main() {
       LCUser? currentUser = await LCUser.loginWithAuthDataAndUnionId(
           authData, 'weixin_app', unionId,
           option: option);
-      print(currentUser.sessionToken);
+      LCLogger.debug(currentUser.sessionToken);
       assert(currentUser.sessionToken != null);
       String userId = currentUser.objectId!;
-      print('userId: $userId');
-      print(currentUser.authData);
+      LCLogger.debug('userId: $userId');
+      LCLogger.debug(currentUser.authData);
 
       await LCUser.logout();
       currentUser = await LCUser.getCurrent();
@@ -144,14 +166,14 @@ void main() {
       currentUser = await LCUser.loginWithAuthDataAndUnionId(
           authData, 'weixin_mini_app', unionId,
           option: option);
-      print(currentUser.sessionToken);
+      LCLogger.debug(currentUser.sessionToken);
       assert(currentUser.sessionToken != null);
       assert(currentUser.objectId == userId);
-      print(currentUser.authData);
+      LCLogger.debug(currentUser.authData);
     });
 
     test('associate auth data with union id', () async {
-      LCUser currentUser = await LCUser.login('hello', 'world');
+      LCUser currentUser = await LCUser.login(TestPhone, TestPhone);
       Map<String, dynamic> authData = {
         'expires_in': 7200,
         'openid': '${DateTime.now().millisecondsSinceEpoch}',
@@ -160,27 +182,20 @@ void main() {
       String unionId = '${DateTime.now().millisecondsSinceEpoch}';
       await currentUser.associateAuthDataAndUnionId(authData, 'qq', unionId);
     });
-     
-   
 
-
-
-
-    // test('login by mobile', () async {
-    //   await LCUser.loginByMobilePhoneNumber('15101006007', '112358');
-    //   LCUser current = LCUser.currentUser;
-    //   assert(current.objectId != null);
-    // });
+    test('login by mobile', () async {
+      LCUser current = await LCUser.loginByMobilePhoneNumber(TestPhone, TestPhone);
+      assert(current.objectId != null);
+    });
 
     // test('request login sms code', () async {
     //   await LCUser.requestLoginSMSCode('15101006007');
     // });
 
-    // test('login by sms code', () async {
-    //   await LCUser.loginBySMSCode('15101006007', '882586');
-    //   LCUser current = LCUser.currentUser;
-    //   assert(current.objectId != null);
-    // });
+    test('login by sms code', () async {
+      LCUser current = await LCUser.loginBySMSCode(TestPhone, TestSMSCode);
+      assert(current.objectId != null);
+    });
 
     // test('request email verify', () async {
     //   await LCUser.requestEmailVerify('171253484@qq.com');
@@ -190,10 +205,9 @@ void main() {
     //   await LCUser.requestMobilePhoneVerify('15101006007');
     // });
 
-    // test('verify mobile', () async {
-    //   await LCUser.becomeWithSessionToken('sbhavbefqk2jc3wgfop3i6om0');
-    //   await LCUser.verifyMobilePhone('15101006007', '944616');
-    // });
+    test('verify mobile', () async {
+      await LCUser.verifyMobilePhone(TestPhone, TestSMSCode);
+    });
 
     // test('request reset password by sms code', () async {
     //   await LCUser.requestPasswordRestBySmsCode('15101006007');
@@ -204,13 +218,13 @@ void main() {
     // });
 
     // test('request sms code for updating phone number', () async {
-    //   await LCUser.login('hello', 'world');
-    //   await LCUser.requestSMSCodeForUpdatingPhoneNumber('15101006007');
+    //   await LCUser.login(TestPhone, TestPhone);
+    //   await LCUser.requestSMSCodeForUpdatingPhoneNumber(TestPhone);
     // });
 
-    // test('verify code for updating phone number', () async {
-    //   await LCUser.login('hello', 'world');
-    //   await LCUser.verifyCodeForUpdatingPhoneNumber('15101006007', '965764');
-    // });
+    test('verify code for updating phone number', () async {
+      await LCUser.login(TestPhone, TestPhone);
+      await LCUser.verifyCodeForUpdatingPhoneNumber(TestPhone, TestSMSCode);
+    });
   });
 }

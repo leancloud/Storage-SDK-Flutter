@@ -1,11 +1,12 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:leancloud_storage/leancloud.dart';
 
 class Hello {
 }
 
 void main() {
   void length(String? str) {
-    print(str?.length);
+    LCLogger.debug(str?.length);
   }
 
   test('null safety', () {
@@ -16,10 +17,10 @@ void main() {
       "a": "aaa",
       "b": "bbb"
     };
-    print(map["a"] ?? "hello");
-    print(map["c"] ?? "world");
+    LCLogger.debug(map["a"] ?? "hello");
+    LCLogger.debug(map["c"] ?? "world");
 
     Type type = Hello;
-    print(type.runtimeType.toString());
+    LCLogger.debug(type.runtimeType.toString());
   });
 }

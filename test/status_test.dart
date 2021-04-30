@@ -87,10 +87,10 @@ void main() {
 
       LCStatusCount statusCount =
           await LCStatus.getCount(inboxType: LCStatus.InboxTypeDefault);
-      print('${statusCount.total}, ${statusCount.unread}');
+      LCLogger.debug('${statusCount.total}, ${statusCount.unread}');
       LCStatusCount privateCount =
           await LCStatus.getCount(inboxType: LCStatus.InboxTypePrivate);
-      print('${privateCount.total}, ${privateCount.unread}');
+      LCLogger.debug('${privateCount.total}, ${privateCount.unread}');
 
       LCStatusQuery query =
           new LCStatusQuery(inboxType: LCStatus.InboxTypeDefault);

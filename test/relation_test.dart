@@ -7,11 +7,15 @@ void main() {
   group('relation', () {
     setUp(() => initNorthChina());
 
+    late LCObject parent;
+    late LCObject c1;
+    late LCObject c2;
+
     test('add and remove', () async {
-      LCObject parent = new LCObject('Parent');
-      LCObject c1 = new LCObject('Child');
+      parent = new LCObject('Parent');
+      c1 = new LCObject('Child');
       parent.addRelation('children', c1);
-      LCObject c2 = new LCObject('Child');
+      c2 = new LCObject('Child');
       parent.addRelation('children', c2);
       await parent.save();
 
@@ -19,34 +23,30 @@ void main() {
       LCQuery<LCObject> query = relation.query();
       int count = await query.count();
 
-      print('count: $count');
+      LCLogger.debug('count: $count');
       assert(count == 2);
 
       parent.removeRelation('children', c2);
       await parent.save();
 
       int count2 = await query.count();
-      print('count: $count2');
+      LCLogger.debug('count: $count2');
       assert(count2 == 1);
     });
 
     test('query', () async {
       LCQuery<LCObject> query = new LCQuery<LCObject>('Parent');
-      LCObject parent = (await query.get('5e13112021b47e0070ed0922'))!;
-      LCRelation relation = parent['children'];
+      LCObject queryParent = (await query.get(parent.objectId!))!;
+      LCRelation relation = queryParent['children'];
 
-      print(relation.key);
-      print(relation.parent);
-      print(relation.targetClass);
-
-      assert(relation.key != null);
-      assert(relation.parent != null);
-      assert(relation.targetClass != null);
+      LCLogger.debug(relation.key);
+      LCLogger.debug(relation.parent);
+      LCLogger.debug(relation.targetClass);
 
       LCQuery<LCObject> relationQuery = relation.query();
       List<LCObject> list = (await relationQuery.find())!;
       list.forEach((item) {
-        print(item.objectId);
+        LCLogger.debug(item.objectId);
         assert(item.objectId != null);
       });
     });

@@ -11,11 +11,11 @@ void main() {
       LCObject account = new LCObject('Account');
       account['balance'] = 0;
       await account.save();
-      print(account['balance']);
+      LCLogger.debug(account['balance']);
       int balance = account['balance'];
       account.increment('balance', 100);
       await account.save();
-      print(account['balance']);
+      LCLogger.debug(account['balance']);
       assert(account['balance'] == balance + 100);
     });
 
@@ -23,11 +23,11 @@ void main() {
       LCObject account = new LCObject('Account');
       account['balance'] = 0;
       await account.save();
-      print(account['balance']);
+      LCLogger.debug(account['balance']);
       int balance = account['balance'];
       account.decrement('balance', 10);
       await account.save();
-      print(account['balance']);
+      LCLogger.debug(account['balance']);
       assert(account['balance'] == balance - 10);
     });
 
@@ -39,21 +39,21 @@ void main() {
       // add
       book.add('pages', 6);
       await book.save();
-      print(book['pages']);
+      LCLogger.debug(book['pages']);
       assert(book['pages'].length == 6);
       book.addAll('pages', [7, 8, 9]);
       await book.save();
-      print(book['pages']);
+      LCLogger.debug(book['pages']);
       assert(book['pages'].length == 9);
 
       // remove
       book.remove('pages', 2);
-      print(book['pages']);
+      LCLogger.debug(book['pages']);
       await book.save();
       assert(book['pages'].length == 8);
       book.removeAll('pages', [1, 2, 3]);
       await book.save();
-      print(book['pages']);
+      LCLogger.debug(book['pages']);
       assert(book['pages'].length == 6);
     });
 
@@ -65,12 +65,12 @@ void main() {
       // add
       book.addUnique('pages', 1);
       await book.save();
-      print(book['pages']);
+      LCLogger.debug(book['pages']);
       assert(book['pages'].length == 5);
 
       book.addAllUnique('pages', [5, 6, 7]);
       await book.save();
-      print(book['pages']);
+      LCLogger.debug(book['pages']);
       assert(book['pages'].length == 7);
     });
   });
