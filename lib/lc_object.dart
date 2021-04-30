@@ -30,7 +30,7 @@ class LCObject {
   DateTime? get updatedAt => _data.updatedAt ?? _data.createdAt;
 
   /// Gets the ACL for this object.
-  LCACL? get acl => this['ACL'] as LCACL;
+  LCACL? get acl => this['ACL'];
 
   /// Sets the ACL to be used for this object.
   set acl(LCACL? value) => this['ACL'] = value!;
@@ -52,8 +52,13 @@ class LCObject {
   ///
   /// The object corresponding to the [objectId] specified must already exists on the cloud.
   static LCObject createWithoutData(String className, String objectId) {
-    LCObject object = new LCObject(className);
-    assert(objectId.length > 0);
+    if (isNullOrEmpty(className)) {
+      throw ArgumentError.notNull(className);
+    }
+    if (isNullOrEmpty(objectId)) {
+      throw ArgumentError.notNull(objectId);
+    }
+    LCObject object = _createByName(className);
     object._data.objectId = objectId;
     object._isDirty = false;
     return object;
@@ -104,9 +109,6 @@ class LCObject {
     if (isNullOrEmpty(key)) {
       throw ArgumentError.notNull('key');
     }
-    if (value == null) {
-      throw ArgumentError.notNull('value');
-    }
     _LCAddRelationOperation op = new _LCAddRelationOperation(value);
     _applyOperation(key, op);
   }
@@ -115,9 +117,6 @@ class LCObject {
   void removeRelation(String key, LCObject value) {
     if (isNullOrEmpty(key)) {
       throw ArgumentError.notNull('key');
-    }
-    if (value == null) {
-      throw ArgumentError.notNull('value');
     }
     _LCRemoveRelationOperation op = new _LCRemoveRelationOperation(value);
     _applyOperation(key, op);
@@ -158,9 +157,6 @@ class LCObject {
     if (isNullOrEmpty(key)) {
       throw ArgumentError.notNull('key');
     }
-    if (values == null) {
-      throw ArgumentError.notNull('values');
-    }
     _LCAddOperation op = new _LCAddOperation(values);
     _applyOperation(key, op);
   }
@@ -186,9 +182,6 @@ class LCObject {
     if (isNullOrEmpty(key)) {
       throw ArgumentError.notNull('key');
     }
-    if (values == null) {
-      throw ArgumentError.notNull('values');
-    }
     _LCAddUniqueOperation op = new _LCAddUniqueOperation(values);
     _applyOperation(key, op);
   }
@@ -209,9 +202,6 @@ class LCObject {
   void removeAll(String key, Iterable values) {
     if (isNullOrEmpty(key)) {
       throw ArgumentError.notNull('key');
-    }
-    if (values == null) {
-      throw ArgumentError.notNull('values');
     }
     _LCRemoveOperation op = new _LCRemoveOperation(values);
     _applyOperation(key, op);

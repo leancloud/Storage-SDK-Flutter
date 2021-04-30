@@ -10,7 +10,7 @@ class LCFile extends LCObject {
   /// Sets file name.
   set name(String value) => this['name'] = value;
 
-  String? get mimeType => this['mime_type'] as String;
+  String? get mimeType => this['mime_type'];
 
   set mimeType(String? value) => this['mime_type'] = value!;
 
@@ -129,5 +129,9 @@ class LCFile extends LCObject {
       data['ACL'] = _LCEncoder.encodeACL(acl!);
     }
     return await LeanCloud._httpClient.post('fileTokens', data: data);
+  }
+
+  static LCQuery<LCFile> getQuery() {
+    return new LCQuery<LCFile>('_File');
   }
 }

@@ -193,14 +193,17 @@ class _LCCompositionalCondition extends _LCQueryCondition {
     if (conditionList.length > 0) {
       result['where'] = jsonEncode(encode());
     }
-    if (orderByList != null && orderByList!.length > 0) {
-      result['order'] = orderByList!.join(',');
+    String? orders = _buildOrder();
+    if (orders != null) {
+      result['order'] = orders;
     }
-    if (includes != null && includes!.length > 0) {
-      result['include'] = includes!.join(',');
+    String? includes = _buildIncludes();
+    if (includes != null) {
+      result['include'] = includes;
     }
-    if (selectedKeys != null && selectedKeys!.length > 0) {
-      result['keys'] = selectedKeys!.join(',');
+    String? selectedKeys = _buildSelectedKeys();
+    if (selectedKeys != null) {
+      result['keys'] = selectedKeys;
     }
     if (includeACL) {
       result['returnACL'] = includeACL;
@@ -211,6 +214,27 @@ class _LCCompositionalCondition extends _LCQueryCondition {
   String? _buildWhere() {
     if (conditionList.length > 0) {
       return jsonEncode(encode());
+    }
+    return null;
+  }
+
+  String? _buildOrder() {
+    if (orderByList != null && orderByList!.length > 0) {
+      return orderByList!.join(',');
+    }
+    return null;
+  }
+
+  String? _buildIncludes() {
+    if (includes != null && includes!.length > 0) {
+      return includes!.join(',');
+    }
+    return null;
+  }
+
+  String? _buildSelectedKeys() {
+    if (selectedKeys != null && selectedKeys!.length > 0) {
+      return selectedKeys!.join(',');
     }
     return null;
   }

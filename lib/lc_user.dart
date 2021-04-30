@@ -161,9 +161,6 @@ class LCUser extends LCObject {
   static Future<LCUser> loginWithAuthData(
       Map<String, dynamic> authData, String platform,
       {LCUserAuthDataLoginOption? option}) {
-    if (authData == null) {
-      throw ArgumentError.notNull('authData');
-    }
     if (isNullOrEmpty(platform)) {
       throw ArgumentError.notNull('platform');
     }
@@ -177,9 +174,6 @@ class LCUser extends LCObject {
   static Future<LCUser> loginWithAuthDataAndUnionId(
       Map<String, dynamic> authData, String platform, String unionId,
       {LCUserAuthDataLoginOption? option}) {
-    if (authData == null) {
-      throw ArgumentError.notNull('authData');
-    }
     if (isNullOrEmpty(platform)) {
       throw ArgumentError.notNull('platform');
     }
@@ -221,9 +215,6 @@ class LCUser extends LCObject {
   Future associateAuthDataAndUnionId(
       Map<String, dynamic> authData, String platform, String unionId,
       {LCUserAuthDataLoginOption? option}) {
-    if (authData == null) {
-      throw ArgumentError.notNull('authData');
-    }
     if (isNullOrEmpty(platform)) {
       throw ArgumentError.notNull('platform');
     }
@@ -404,7 +395,7 @@ class LCUser extends LCObject {
   }
 
   /// Checks whether this user is anonymous.
-  bool get isAnonymous => authData != null && authData['anonymous'] != null;
+  bool get isAnonymous => authData['anonymous'] != null;
 
   static Future<LCUser> _login(Map<String, dynamic> data) async {
     Map<String, dynamic> response = await LeanCloud._httpClient.post('login', data: data);

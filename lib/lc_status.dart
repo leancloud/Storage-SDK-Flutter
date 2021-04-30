@@ -46,9 +46,6 @@ class LCStatus extends LCObject {
 
   /// Send a status to current signined user's followers.
   static Future<LCStatus> sendToFollowers(LCStatus status) async {
-    if (status == null) {
-      throw ArgumentError.notNull('status');
-    }
     LCUser? user = await LCUser.getCurrent();
     if (user == null) {
       throw ArgumentError.notNull('current user');
