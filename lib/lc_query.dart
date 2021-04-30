@@ -202,16 +202,17 @@ class LCQuery<T extends LCObject> {
     if (isNullOrEmpty(objectId)) {
       throw new ArgumentError.notNull('objectId');
     }
-    whereEqualTo('objectId', objectId);
-    limit(1);
-    List<T>? results = await find();
-    if (results != null) {
-      if (results.length == 0) {
-        return null;
-      }
-      return results[0];
+    String path = "classes/$className/$objectId";
+    Map<String, dynamic>? queryParams;
+    String? includes = condition._buildIncludes();
+    if (includes != null) {
+      queryParams = {
+        "include": includes
+      };
     }
-    return null;
+    Map<String, dynamic> response = await LeanCloud._httpClient
+        .get(path, queryParams: queryParams);
+    return _decodeLCObject(response);
   }
 
   /// Retrieves a list of [LCObject]s matching this query, respecting [cachePolicy].
@@ -238,9 +239,7 @@ class LCQuery<T extends LCObject> {
     List results = response['results'];
     List<T> list = [];
     results.forEach((item) {
-      _LCObjectData objectData = _LCObjectData.decode(item);
-      T object = LCObject._create<T>(className!);
-      object._merge(objectData);
+      T object = _decodeLCObject(item);
       list.add(object);
     });
     return list;
@@ -297,5 +296,12 @@ class LCQuery<T extends LCObject> {
 
   String? _buildWhere() {
     return condition._buildWhere();
+  }
+
+  T _decodeLCObject(Map<String, dynamic> data) {
+    _LCObjectData objectData = _LCObjectData.decode(data);
+    T object = LCObject._create<T>(className!);
+    object._merge(objectData);
+    return object;
   }
 }
