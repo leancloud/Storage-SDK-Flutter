@@ -69,7 +69,7 @@ class LCUser extends LCObject {
     if (objectId != null) {
       throw ArgumentError('Cannot sign up a user that already exists.');
     }
-    _currentUser = await save();
+    await save();
     return this;
   }
 
@@ -540,8 +540,9 @@ class LCUser extends LCObject {
   }
 
   @override
-  Future<LCObject> save({bool fetchWhenSave = false, LCQuery<LCObject> query}) async {
-    _currentUser = await super.save(fetchWhenSave: fetchWhenSave, query: query);
+  Future<LCUser> save({bool fetchWhenSave = false, LCQuery<LCObject>? query}) async {
+    await super.save(fetchWhenSave: fetchWhenSave, query: query);
+    _currentUser = this;
     await _saveToLocal();
     return this;
   }
