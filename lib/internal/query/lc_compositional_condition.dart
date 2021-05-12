@@ -83,6 +83,14 @@ class _LCCompositionalCondition extends _LCQueryCondition {
     addOperation(key, '\$within', value);
   }
 
+  void whereWithinRadians(String key, LCGeoPoint point, num distance) {
+    Map<String, dynamic> value = {
+      '\$nearSphere': point,
+      '\$maxDistance': distance
+    };
+    add(new _LCEqualCondition(key, value));
+  }
+
   void whereRelatedTo(LCObject parent, String key) {
     add(new _LCRelatedCondition(parent, key));
   }
