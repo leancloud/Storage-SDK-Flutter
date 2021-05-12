@@ -74,7 +74,7 @@ part 'lc_status.dart';
 part 'lc_status_query.dart';
 part 'lc_friendship.dart';
 
-const String SDKVersion = '0.6.5';
+const String SDKVersion = '0.6.6';
 
 const String APIVersion = '1.1';
 
