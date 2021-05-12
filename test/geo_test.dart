@@ -34,16 +34,16 @@ void main() {
     double km = p1.kilometersTo(p2);
     LCQuery<LCObject> query = new LCQuery('GeoObj');
     query.whereWithinKilometers('location', p2, km.ceil().toDouble());
-    assert((await query.find()).length > 0);
+    assert((await query.find())!.length > 0);
 
     double miles = p1.milesTo(p2);
     query = new LCQuery('GeoObj');
     query.whereWithinMiles('location', p2, miles.ceil().toDouble());
-    assert((await query.find()).length > 0);
+    assert((await query.find())!.length > 0);
 
     double radians = p1.radiansTo(p2);
     query = new LCQuery('GeoObj');
     query.whereWithinRadians('location', p2, radians.ceil().toDouble());
-    assert((await query.find()).length > 0);
+    assert((await query.find())!.length > 0);
   });
 }
