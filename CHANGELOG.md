@@ -1,3 +1,11 @@
+## [0.6.6] - 版本更新
+
+- 新增 Geo 查询接口
+
+LCQuery#whereWithinRadians
+LCQuery#whereWithinMiles
+LCQuery#whereWithinKilometers
+
 ## [0.6.5] - 版本更新
 
 - 修复 LCUser#save 没有将数据同步到本地的 bug
