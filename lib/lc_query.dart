@@ -88,6 +88,19 @@ class LCQuery<T extends LCObject> {
     return this;
   }
 
+  LCQuery<T> whereWithinRadians(String key, LCGeoPoint point, double maxDistance) {
+    condition.whereWithinRadians(key, point, maxDistance);
+    return this;
+  }
+
+  LCQuery<T> whereWithinMiles(String key, LCGeoPoint point, double maxDistance) {
+    return whereWithinRadians(key, point, maxDistance / 3958.8);
+  }
+
+  LCQuery<T> whereWithinKilometers(String key, LCGeoPoint point, double maxDistance) {
+    return whereWithinRadians(key, point, maxDistance / 6371.0);
+  }
+
   LCQuery<T> whereRelatedTo(LCObject parent, String key) {
     condition.whereRelatedTo(parent, key);
     return this;
