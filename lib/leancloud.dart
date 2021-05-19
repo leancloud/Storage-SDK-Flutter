@@ -73,8 +73,11 @@ part 'lc_logger.dart';
 part 'lc_status.dart';
 part 'lc_status_query.dart';
 part 'lc_friendship.dart';
+part 'lc_search_query.dart';
+part 'lc_search_response.dart';
+part 'lc_search_sort_builder.dart';
 
-const String SDKVersion = '0.6.6';
+const String SDKVersion = '0.6.7';
 
 const String APIVersion = '1.1';
 
