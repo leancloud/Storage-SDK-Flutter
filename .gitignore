@@ -77,3 +77,5 @@ build/
 .VSCodeCounter/
 coverage/
 .vscode/
+
+pubspec.lock
