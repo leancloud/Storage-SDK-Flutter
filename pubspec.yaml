@@ -13,8 +13,7 @@ dependencies:
   convert: ^3.0.0
   crypto: ^3.0.1
   shared_preferences: ^2.0.5
-  dio_http_cache:
-    git: "https://github.com/hurshi/dio-http-cache"
+  dio_http_cache: ^0.3.0
   path: ^1.8.0
 
 dev_dependencies:
