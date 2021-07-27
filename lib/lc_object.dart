@@ -480,12 +480,14 @@ class LCObject {
   }
 
   static T _create<T>(String className) {
-    return _subclassTypeMap.containsKey(T) ? 
-      _subclassTypeMap[T]!.constructor() : new LCObject(className);
+    return _subclassTypeMap.containsKey(T)
+        ? _subclassTypeMap[T]!.constructor()
+        : new LCObject(className);
   }
 
   static LCObject _createByName(String className) {
-    return _subclassNameMap.containsKey(className) ?
-      _subclassNameMap[className]!.constructor() : new LCObject(className);
+    return _subclassNameMap.containsKey(className)
+        ? _subclassNameMap[className]!.constructor()
+        : new LCObject(className);
   }
 }
