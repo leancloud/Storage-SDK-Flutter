@@ -7,22 +7,45 @@ void main() {
   group('cloud', () {
     setUp(() => initNorthChina());
 
-    test('call', () async {
+    test("ping", () async {
+      String? response = await LCCloud.call<String>('ping');
+      LCLogger.debug(response);
+      assert(response == "pong");
+    });
+
+    test('hello', () async {
       Map response = await LCCloud.run('hello', params: {'name': 'world'});
-      print(response['result']);
+      LCLogger.debug(response['result']);
       assert(response['result'] == 'hello, world');
     });
 
-    test('call no params', () async {
-      await LCCloud.run('hello');
+    test('getObject', () async {
+      LCObject hello = new LCObject("Hello");
+      await hello.save();
+      Map result = await LCCloud.rpc('getObject', params: {
+        "className": "Hello",
+        "id": hello.objectId
+      });
+      LCObject obj = result['result'];
+      assert(obj.objectId == hello.objectId);
     });
 
-    test('rpc', () async {
-      Map result = await LCCloud.rpc('getTycoonList');
-      List tycoonList = result['result'];
-      tycoonList.forEach((item) {
-        print(item.objectId);
-        assert(item.objectId != null);
+    test('getObjects', () async {
+      Map response = await LCCloud.rpc('getObjects');
+      List<LCObject> monopolies = List<LCObject>.from(response['result']);
+      LCLogger.debug(monopolies.length);
+      assert(monopolies.length > 0);
+      monopolies.forEach((m) {
+        assert(m['balance'] > 100);
+      });
+    });
+
+    test('getObjectMap', () async {
+      Map response = await LCCloud.rpc('getObjectMap');
+      Map<String, LCObject> map = Map<String, LCObject>.from(response['result']);
+      LCLogger.debug(map.length);
+      map.forEach((key, value) {
+        assert(key == value.objectId);
       });
     });
   });

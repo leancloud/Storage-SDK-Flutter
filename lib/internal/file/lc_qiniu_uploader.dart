@@ -12,7 +12,7 @@ class _LCQiniuUploader {
 
   _LCQiniuUploader(this.uploadUrl, this.token, this.key, this.data);
 
-  Future upload(void Function(int count, int total) onProgress) async {
+  Future upload(void Function(int count, int total)? onProgress) async {
     Dio dio = new Dio();
     FormData formData = FormData.fromMap(
         {'key': key, 'token': token, 'file': MultipartFile.fromBytes(data)});

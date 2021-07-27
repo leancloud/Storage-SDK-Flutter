@@ -9,7 +9,7 @@ void main() {
 
     // test('request', () async {
     //   LCCaptcha captcha = await LCCaptchaClient.requestCaptcha();
-    //   print(captcha);
+    //   LCLogger.debug(captcha);
     //   assert(captcha.token != null);
     //   assert(captcha.url != null);
     // });

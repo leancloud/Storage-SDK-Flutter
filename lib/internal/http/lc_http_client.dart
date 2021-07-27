@@ -5,22 +5,22 @@ class _LCHttpClient {
 
   String appKey;
 
-  String server;
+  String? server;
 
   String sdkVersion;
 
   String apiVersion;
 
-  _LCAppRouter _appRouter;
+  late _LCAppRouter _appRouter;
 
-  Dio _dio;
+  late Dio _dio;
 
-  LogInterceptor _logInterceptor;
+  LogInterceptor? _logInterceptor;
 
-  DioCacheManager _cacheManager;
+  DioCacheManager? _cacheManager;
 
   _LCHttpClient(this.appId, this.appKey, this.server, this.sdkVersion,
-      this.apiVersion, LCQueryCache queryCache) {
+      this.apiVersion, LCQueryCache? queryCache) {
     _appRouter = new _LCAppRouter(appId, server);
     BaseOptions options = new BaseOptions(headers: {
       'X-LC-Id': appId,
@@ -29,7 +29,7 @@ class _LCHttpClient {
     _dio = new Dio(options);
     if (queryCache != null) {
       _cacheManager = new DioCacheManager(CacheConfig());
-      _dio.interceptors.add(_cacheManager.interceptor);
+      _dio.interceptors.add(_cacheManager!.interceptor);
     }
   }
 
@@ -38,18 +38,18 @@ class _LCHttpClient {
       _logInterceptor =
           new LogInterceptor(requestBody: true, responseBody: true);
     }
-    _dio.interceptors.add(_logInterceptor);
+    _dio.interceptors.add(_logInterceptor!);
   }
 
   Future get(String path,
-      {Map<String, dynamic> headers,
-      Map<String, dynamic> queryParams,
-      CachePolicy cachePolicy}) async {
+      {Map<String, dynamic>? headers,
+      Map<String, dynamic>? queryParams,
+      CachePolicy? cachePolicy}) async {
     await _refreshServer();
     Options options = buildCacheOptions(Duration(days: 7));
     if (cachePolicy == CachePolicy.onlyNetwork) {
-      options.extra[DIO_CACHE_KEY_TRY_CACHE] = false;
-      options.extra[DIO_CACHE_KEY_FORCE_REFRESH] = true;
+      options.extra![DIO_CACHE_KEY_TRY_CACHE] = false;
+      options.extra![DIO_CACHE_KEY_FORCE_REFRESH] = true;
     }
     options.headers = _generateHeaders(headers);
     try {
@@ -62,9 +62,9 @@ class _LCHttpClient {
   }
 
   Future post(String path,
-      {Map<String, dynamic> headers,
-      dynamic data,
-      Map<String, dynamic> queryParams}) async {
+      {Map<String, dynamic>? headers,
+      dynamic? data,
+      Map<String, dynamic>? queryParams}) async {
     await _refreshServer();
     Options options = _toOptions(headers);
     try {
@@ -77,9 +77,9 @@ class _LCHttpClient {
   }
 
   Future put(String path,
-      {Map<String, dynamic> headers,
-      dynamic data,
-      Map<String, dynamic> queryParams}) async {
+      {Map<String, dynamic>? headers,
+      dynamic? data,
+      Map<String, dynamic>? queryParams}) async {
     await _refreshServer();
     Options options = _toOptions(headers);
     try {
@@ -92,9 +92,9 @@ class _LCHttpClient {
   }
 
   Future delete(String path,
-      {Map<String, dynamic> headers,
-      dynamic data,
-      Map<String, dynamic> queryParams}) async {
+      {Map<String, dynamic>? headers,
+      dynamic? data,
+      Map<String, dynamic>? queryParams}) async {
     await _refreshServer();
     Options options = _toOptions(headers);
     try {
@@ -108,7 +108,7 @@ class _LCHttpClient {
 
   Future<bool> clearAllCache() {
     if (_cacheManager != null) {
-      return _cacheManager.clearAll();
+      return _cacheManager!.clearAll();
     }
     return Future.value(true);
   }
@@ -119,20 +119,20 @@ class _LCHttpClient {
     _dio.options.baseUrl = '$apiServer/$apiVersion/';
   }
 
-  Options _toOptions(Map<String, dynamic> additionalHeaders) {
+  Options _toOptions(Map<String, dynamic>? additionalHeaders) {
     Map<String, dynamic> headers = _generateHeaders(additionalHeaders);
     return new Options(headers: headers);
   }
 
   Map<String, dynamic> _generateHeaders(
-      Map<String, dynamic> additionalHeaders) {
+      Map<String, dynamic>? additionalHeaders) {
     Map<String, dynamic> headers = new Map<String, dynamic>();
     int timestamp = DateTime.now().millisecondsSinceEpoch;
     Uint8List data = Utf8Encoder().convert('$timestamp$appKey');
     Digest digest = md5.convert(data);
     String sign = hex.encode(digest.bytes);
     headers['X-LC-Sign'] = '$sign,$timestamp';
-    LCUser currentUser = LCUser._currentUser;
+    LCUser? currentUser = LCUser._currentUser;
     if (currentUser != null) {
       headers['X-LC-Session'] = currentUser.sessionToken;
     }
@@ -145,11 +145,15 @@ class _LCHttpClient {
   }
 
   void _handleError(DioError e) {
-    if (e.type != DioErrorType.RESPONSE) {
+    if (e.type != DioErrorType.response) {
       throw e;
     }
-    Response response = e.response;
-    int code = response.statusCode ~/ 100;
+    Response? response = e.response;
+    if (response == null || response.statusCode == null) {
+      throw e;
+    }
+
+    int code = response.statusCode! ~/ 100;
     if (code == 4) {
       try {
         int code = response.data['code'];
@@ -158,9 +162,9 @@ class _LCHttpClient {
       } on LCException catch (ex) {
         throw ex;
       } on Exception {
-        throw new LCException(response.statusCode, response.statusMessage);
+        throw new LCException(response.statusCode!, response.statusMessage);
       }
     }
-    throw new LCException(response.statusCode, response.statusMessage);
+    throw new LCException(response.statusCode!, response.statusMessage);
   }
 }

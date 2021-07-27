@@ -10,19 +10,19 @@ class LCFile extends LCObject {
   /// Sets file name.
   set name(String value) => this['name'] = value;
 
-  String get mimeType => this['mime_type'];
+  String? get mimeType => this['mime_type'];
 
-  set mimeType(String value) => this['mime_type'] = value;
+  set mimeType(String? value) => this['mime_type'] = value!;
 
-  String get url => this['url'];
+  String? get url => this['url'];
 
-  set url(String value) => this['url'] = value;
+  set url(String? value) => this['url'] = value;
 
   Map<String, dynamic> get metaData => this['metaData'];
 
   set metaData(Map<String, dynamic> value) => this['metaData'] = value;
 
-  Uint8List data;
+  Uint8List? data;
 
   LCFile() : super(ClassName) {
     metaData = new Map<String, dynamic>();
@@ -62,8 +62,8 @@ class LCFile extends LCObject {
   @override
   Future<LCFile> save(
       {bool fetchWhenSave = false,
-      LCQuery<LCObject> query,
-      void Function(int count, int total) onProgress}) async {
+      LCQuery<LCObject>? query,
+      void Function(int count, int total)? onProgress}) async {
     if (url != null) {
       // 外链方式
       await super.save();
@@ -78,12 +78,12 @@ class LCFile extends LCObject {
         if (provider == 's3') {
           // AWS
           _LCAWSUploader uploader =
-              new _LCAWSUploader(uploadUrl, mimeType, data);
+              new _LCAWSUploader(uploadUrl, mimeType, data!);
           await uploader.upload(onProgress);
         } else if (provider == 'qiniu') {
           // Qiniu
           _LCQiniuUploader uploader =
-              new _LCQiniuUploader(uploadUrl, token, key, data);
+              new _LCQiniuUploader(uploadUrl, token, key, data!);
           await uploader.upload(onProgress);
         } else {
           throw ('$provider is not support.');
@@ -118,7 +118,7 @@ class LCFile extends LCObject {
     return '$url?imageView/$mode/w/$width/h/$height/q/$quality/format/$format';
   }
 
-  Future<Map> _getUploadToken() async {
+  Future<Map<String, dynamic>> _getUploadToken() async {
     Map<String, dynamic> data = {
       'name': name,
       '__type': 'File',
@@ -126,8 +126,12 @@ class LCFile extends LCObject {
       'metaData': metaData,
     };
     if (acl != null) {
-      data['ACL'] = _LCEncoder.encodeACL(acl);
+      data['ACL'] = _LCEncoder.encodeACL(acl!);
     }
     return await LeanCloud._httpClient.post('fileTokens', data: data);
+  }
+
+  static LCQuery<LCFile> getQuery() {
+    return new LCQuery<LCFile>('_File');
   }
 }

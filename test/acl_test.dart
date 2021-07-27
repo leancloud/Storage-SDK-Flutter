@@ -5,63 +5,76 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'utils.dart';
 
 void main() {
+  late Account account;
+
   SharedPreferences.setMockInitialValues({});
 
   group('acl', () {
     setUp(() => initNorthChina());
 
     test('private read and write', () async {
-      LCObject account = new LCObject('Account');
+      Account account = new Account();
       LCACL acl = new LCACL();
       acl.setPublicReadAccess(false);
       acl.setPublicWriteAccess(false);
       account.acl = acl;
-      account['balance'] = 1024;
+      account.balance = 1024;
       await account.save();
       assert(acl.getPublicWriteAccess() == false);
       assert(acl.getPublilcReadAccess() == false);
     });
 
     test('user read and write', () async {
-      await LCUser.login('hello', 'world');
-      LCObject account = new LCObject('Account');
-      LCUser currentUser = await LCUser.getCurrent();
+      await LCUser.login(TestPhone, TestPhone);
+      Account account = new Account();
+      LCUser currentUser = (await LCUser.getCurrent())!;
       LCACL acl = LCACL.createWithOwner(currentUser);
       account.acl = acl;
-      account['balance'] = 512;
+      account.balance = 512;
       await account.save();
 
       assert(acl.getUserReadAccess(currentUser) == true);
       assert(acl.getUserWriteAccess(currentUser) == true);
 
       LCQuery<LCObject> query = new LCQuery('Account');
-      LCObject result = await query.get(account.objectId);
-      print(result.objectId);
-      assert(result.objectId != null);
+      LCObject? result = await query.get(account.objectId!);
+      LCLogger.debug(result?.objectId);
+      assert(result?.objectId != null);
 
       await LCUser.logout();
-      result = await query.get(account.objectId);
-      assert(result == null);
+      try {
+        result = await query.get(account.objectId!);
+      } on LCException catch (e) {
+        assert(e.code == 403);
+      }
     });
 
     test('role read and write', () async {
-      LCQuery<LCRole> query = LCRole.getQuery();
-      LCRole owner = await query.get('5e1440cbfc36ed006add1b8d');
-      LCObject account = new LCObject('Account');
+      LCUser currentUser = await LCUser.login(TestPhone, TestPhone);
+      String name = 'role_${DateTime.now().millisecondsSinceEpoch}';
+      LCACL roleACL = new LCACL();
+      roleACL.setUserReadAccess(currentUser, true);
+      roleACL.setUserWriteAccess(currentUser, true);
+      LCRole role = LCRole.create(name, roleACL);
+      role.addRelation('users', currentUser);
+      await role.save();
+
+      account = new Account();
       LCACL acl = new LCACL();
-      acl.setRoleReadAccess(owner, true);
-      acl.setRoleWriteAccess(owner, true);
+      acl.setRoleReadAccess(role, true);
+      acl.setRoleWriteAccess(role, true);
       account.acl = acl;
       await account.save();
-      assert(acl.getRoleReadAccess(owner) == true);
-      assert(acl.getRoleWriteAccess(owner) == true);
+      assert(acl.getRoleReadAccess(role) == true);
+      assert(acl.getRoleWriteAccess(role) == true);
     });
 
     test('query', () async {
-      await LCUser.login('game', 'play');
+      await LCUser.login(TestPhone, TestPhone);
       LCQuery<LCObject> query = new LCQuery<LCObject>('Account');
-      LCObject account = await query.get('5e144525dd3c13006a8f8de2');
-      print(account.objectId);
+      LCObject? queryAccount = await query.get(account.objectId!);
+      LCLogger.debug(queryAccount!.objectId);
+      assert(queryAccount.objectId != null);
     });
 
     test('demo', () async {
@@ -85,10 +98,12 @@ void main() {
       await LCUser.login('hello', 'world');
       LCQuery<LCObject> query = new LCQuery('Account');
       query.includeACL(true).orderByDescending('createdAt');
-      List<LCObject> accounts = await query.find();
-      for (LCObject account in accounts) {
-        print('public read access: ${account.acl.getPublilcReadAccess()}');
-        print('public write access: ${account.acl.getPublicWriteAccess()}');
+      List<LCObject>? accounts = await query.find();
+      if (accounts != null) {
+        for (LCObject account in accounts) {
+          LCLogger.debug('public read access: ${account.acl!.getPublilcReadAccess()}');
+          LCLogger.debug('public write access: ${account.acl!.getPublicWriteAccess()}');
+        }
       }
     });
   });

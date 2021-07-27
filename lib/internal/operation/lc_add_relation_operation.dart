@@ -1,7 +1,7 @@
 part of leancloud_storage;
 
 class _LCAddRelationOperation extends _LCOperation {
-  List<LCObject> valueList;
+  late List<LCObject> valueList;
 
   _LCAddRelationOperation(dynamic value) {
     valueList = List.from([value]);
@@ -10,7 +10,7 @@ class _LCAddRelationOperation extends _LCOperation {
   @override
   apply(oldValue, String key) {
     LCRelation relation = new LCRelation();
-    relation.targetClass = valueList[0].className;
+    relation.targetClass = valueList[0].className!;
     return relation;
   }
 
@@ -32,7 +32,7 @@ class _LCAddRelationOperation extends _LCOperation {
   }
 
   @override
-  List getNewObjectList() {
+  List? getNewObjectList() {
     return valueList;
   }
 }

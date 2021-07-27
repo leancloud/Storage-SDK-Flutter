@@ -31,7 +31,7 @@ class _LCIncrementOperation extends _LCOperation {
   }
 
   @override
-  List getNewObjectList() {
+  List? getNewObjectList() {
     return null;
   }
 }

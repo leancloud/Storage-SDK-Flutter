@@ -1,7 +1,7 @@
 part of leancloud_storage;
 
 class _LCAddOperation extends _LCOperation {
-  List valueList;
+  late List valueList;
 
   _LCAddOperation(Iterable values) {
     valueList = List.from(values);
@@ -40,7 +40,7 @@ class _LCAddOperation extends _LCOperation {
   }
 
   @override
-  List getNewObjectList() {
+  List? getNewObjectList() {
     return valueList;
   }
 }

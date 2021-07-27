@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-// import 'package:leancloud_storage/leancloud.dart';
+import 'package:leancloud_storage/leancloud.dart';
 
 import 'utils.dart';
 
@@ -18,8 +18,8 @@ void main() {
     //   await LCSMSClient.requestVoiceCode('15101006007');
     // });
 
-    // test('verify', () async {
-    //   await LCSMSClient.verifyMobilePhone('15101006007', '338122');
-    // });
+    test('verify', () async {
+      await LCSMSClient.verifyMobilePhone(TestPhone, TestSMSCode);
+    });
   });
 }

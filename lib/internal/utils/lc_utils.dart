@@ -1,10 +1,10 @@
 part of leancloud_storage;
 
-bool isNullOrEmpty(String str) {
+bool isNullOrEmpty(String? str) {
   return str == null || str.length == 0;
 }
 
-String toLCDateTimeString(DateTime dateTime) {
+String? toLCDateTimeString(DateTime? dateTime) {
   if (dateTime == null) {
     return null;
   }

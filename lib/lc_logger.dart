@@ -20,7 +20,7 @@ class LCLogger {
   }
 
   /// Prints an error message.
-  static void error(String message) {
+  static void error(dynamic message) {
     if (level < ErrorLevel) {
       return;
     }
@@ -28,7 +28,7 @@ class LCLogger {
   }
 
   /// Prints a warning message.
-  static void warning(String message) {
+  static void warning(dynamic message) {
     if (level < WarningLevel) {
       return;
     }
@@ -36,7 +36,7 @@ class LCLogger {
   }
 
   /// Prints a debug message.
-  static void debug(String message) {
+  static void debug(dynamic message) {
     if (level < DebugLevel) {
       return;
     }

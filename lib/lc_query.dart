@@ -3,9 +3,9 @@ part of leancloud_storage;
 /// A query to fetch [LCObject].
 class LCQuery<T extends LCObject> {
   /// Which [className] to query.
-  String className;
+  String? className;
 
-  _LCCompositionalCondition condition;
+  late _LCCompositionalCondition condition;
 
   /// Creates a new query for [className].
   LCQuery(this.className) {
@@ -121,7 +121,7 @@ class LCQuery<T extends LCObject> {
     return this;
   }
 
-  LCQuery<T> whereMatches(String key, String regex, {String modifiers}) {
+  LCQuery<T> whereMatches(String key, String regex, {String? modifiers}) {
     condition.whereMatches(key, regex, modifiers);
     return this;
   }
@@ -211,24 +211,25 @@ class LCQuery<T extends LCObject> {
   }
 
   /// Constructs a [LCObject] whose [objectId] is already known.
-  Future<T> get(String objectId) async {
+  Future<T?> get(String objectId) async {
     if (isNullOrEmpty(objectId)) {
       throw new ArgumentError.notNull('objectId');
     }
-    whereEqualTo('objectId', objectId);
-    limit(1);
-    List<T> results = await find();
-    if (results != null) {
-      if (results.length == 0) {
-        return null;
-      }
-      return results[0];
+    String path = "classes/$className/$objectId";
+    Map<String, dynamic>? queryParams;
+    String? includes = condition._buildIncludes();
+    if (includes != null) {
+      queryParams = {
+        "include": includes
+      };
     }
-    return null;
+    Map<String, dynamic> response = await LeanCloud._httpClient
+        .get(path, queryParams: queryParams);
+    return _decodeLCObject(response);
   }
 
   /// Retrieves a list of [LCObject]s matching this query, respecting [cachePolicy].
-  Future<List<T>> find(
+  Future<List<T>?> find(
       {CachePolicy cachePolicy = CachePolicy.onlyNetwork}) async {
     if (cachePolicy == CachePolicy.onlyNetwork) {
       return _fetch(CachePolicy.onlyNetwork);
@@ -251,18 +252,16 @@ class LCQuery<T extends LCObject> {
     List results = response['results'];
     List<T> list = [];
     results.forEach((item) {
-      _LCObjectData objectData = _LCObjectData.decode(item);
-      LCObject object = LCObject._create(T, className: className);
-      object._merge(objectData);
+      T object = _decodeLCObject(item);
       list.add(object);
     });
     return list;
   }
 
   /// Retrieves at most one [LCObject] matching this query.
-  Future<T> first() async {
+  Future<T?> first() async {
     limit(1);
-    List<T> results = await find();
+    List<T>? results = await find();
     if (results != null && results.length > 0) {
       return results.first;
     }
@@ -271,11 +270,8 @@ class LCQuery<T extends LCObject> {
 
   /// Constructs a [LCQuery] that is the AND of the passed in [queries].
   static LCQuery<T> and<T extends LCObject>(Iterable<LCQuery<T>> queries) {
-    if (queries == null || queries.length < 1) {
-      throw new ArgumentError.notNull('queries');
-    }
     LCQuery<T> compositionQuery = new LCQuery<T>(null);
-    String className;
+    String? className;
     queries.forEach((item) {
       if (className != null && className != item.className) {
         throw ('All of the queries in an or query must be on the same class.');
@@ -289,13 +285,13 @@ class LCQuery<T extends LCObject> {
 
   /// Constructs a [LCQuery] that is the OR of the passed in [queries].
   static LCQuery<T> or<T extends LCObject>(Iterable<LCQuery<T>> queries) {
-    if (queries == null || queries.length < 1) {
+    if (queries.length < 1) {
       throw new ArgumentError.notNull('queries');
     }
     LCQuery<T> compositionQuery = new LCQuery<T>(null);
     compositionQuery.condition = new _LCCompositionalCondition(
         composition: _LCCompositionalCondition.Or);
-    String className;
+    String? className;
     queries.forEach((item) {
       if (className != null && className != item.className) {
         throw ('All of the queries in an or query must be on the same class.');
@@ -311,7 +307,14 @@ class LCQuery<T extends LCObject> {
     return condition._buildParams();
   }
 
-  String _buildWhere() {
+  String? _buildWhere() {
     return condition._buildWhere();
+  }
+
+  T _decodeLCObject(Map<String, dynamic> data) {
+    _LCObjectData objectData = _LCObjectData.decode(data);
+    T object = LCObject._create<T>(className!);
+    object._merge(objectData);
+    return object;
   }
 }

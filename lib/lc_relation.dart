@@ -5,11 +5,11 @@ part of leancloud_storage;
 /// This can be used to access all of the children of a many-to-many relationship.
 /// Each relation is associated with a particular parent object and key. 
 class LCRelation<T extends LCObject> {
-  String key;
+  late String key;
 
-  LCObject parent;
+  late LCObject parent;
 
-  String targetClass;
+  late String targetClass;
 
   LCRelation();
 

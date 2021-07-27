@@ -6,7 +6,7 @@ void main() {
     try {
       throw new LCException(123, 'hello, world');
     } on LCException catch (e) {
-      print('${e.code} : ${e.message}');
+      LCLogger.debug('${e.code} : ${e.message}');
       assert(e.code == 123);
     }
   });

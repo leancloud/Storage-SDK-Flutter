@@ -1,21 +1,21 @@
 part of leancloud_storage;
 
 class LCSearchSortBuilder {
-  List<dynamic> _fields;
+  late List<dynamic> _fields;
 
   LCSearchSortBuilder() {
     _fields = <dynamic>[];
   }
 
-  LCSearchSortBuilder orderByAscending(String key, { String mode, String missing }) {
-    return _addField(key, order: 'asc', mode: mode, missing: missing);
+  LCSearchSortBuilder orderByAscending(String key, { String? mode, String? missing }) {
+    return _addField(key, 'asc', mode, missing);
   }
 
-  LCSearchSortBuilder orderByDescending(String key, { String mode, String missing }) {
-    return _addField(key, order: 'desc', mode: mode, missing: missing);
+  LCSearchSortBuilder orderByDescending(String key, { String? mode, String? missing }) {
+    return _addField(key, 'desc', mode, missing);
   }
 
-  LCSearchSortBuilder whereNear(String key, LCGeoPoint point, { String order, String mode, String unit }) {
+  LCSearchSortBuilder whereNear(String key, LCGeoPoint point, { String? order, String? mode, String? unit }) {
     _fields.add({
       '_geo_distance': {
         key: {
@@ -30,7 +30,7 @@ class LCSearchSortBuilder {
     return this;
   }
 
-  LCSearchSortBuilder _addField(String key, { String order, String mode, String missing }) {
+  LCSearchSortBuilder _addField(String key, String? order, String? mode, String? missing) {
     _fields.add({
       key: {
         'order': order ?? 'asc',

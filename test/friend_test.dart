@@ -11,8 +11,8 @@ Future<LCUser> signUp() async {
   return await user1.signUp();
 }
 
-Future<LCFriendshipRequest> getRequest() async {
-  LCUser user = await LCUser.getCurrent();
+Future<LCFriendshipRequest?> getRequest() async {
+  LCUser? user = await LCUser.getCurrent();
   LCQuery<LCFriendshipRequest> query =
       new LCQuery<LCFriendshipRequest>('_FriendshipRequest')
           .whereEqualTo('friend', user)
@@ -20,8 +20,8 @@ Future<LCFriendshipRequest> getRequest() async {
   return await query.first();
 }
 
-Future<List<LCObject>> getFriends() async {
-  LCUser user = await LCUser.getCurrent();
+Future<List<LCObject>?> getFriends() async {
+  LCUser? user = await LCUser.getCurrent();
   LCQuery<LCObject> query = new LCQuery<LCObject>('_Followee')
       .whereEqualTo('user', user)
       .whereEqualTo('friendStatus', true);
@@ -31,8 +31,8 @@ Future<List<LCObject>> getFriends() async {
 void main() {
   SharedPreferences.setMockInitialValues({});
 
-  LCUser user1;
-  LCUser user2;
+  late LCUser user1;
+  late LCUser user2;
 
   group('friend', () {
     setUp(() => initNorthChina());
@@ -42,44 +42,44 @@ void main() {
 
       user2 = await signUp();
       Map<String, dynamic> attrs = {'group': 'sport'};
-      await LCFriendship.request(user1.objectId, attributes: attrs);
+      await LCFriendship.request(user1.objectId!, attributes: attrs);
 
       // user3
       await signUp();
-      await LCFriendship.request(user1.objectId);
+      await LCFriendship.request(user1.objectId!);
 
-      await LCUser.becomeWithSessionToken(user1.sessionToken);
+      await LCUser.becomeWithSessionToken(user1.sessionToken!);
     });
 
     test('accept', () async {
       // 查询
-      LCFriendshipRequest request = await getRequest();
+      LCFriendshipRequest? request = await getRequest();
 
       // 接受
-      await LCFriendship.acceptRequest(request);
+      await LCFriendship.acceptRequest(request!);
 
       // 查询好友
-      assert((await getFriends()).length > 0);
+      assert((await getFriends())!.length > 0);
     });
 
     test('decline', () async {
       // 查询
-      LCFriendshipRequest request = await getRequest();
+      LCFriendshipRequest? request = await getRequest();
 
       // 拒绝
-      await LCFriendship.declineRequest(request);
+      await LCFriendship.declineRequest(request!);
     });
 
     test('attributes', () async {
-      LCObject followee = (await getFriends()).first;
+      LCObject followee = (await getFriends())!.first;
       followee['group'] = 'friend';
       await followee.save();
     });
 
     test('delete', () async {
-      await user1.unfollow(user2.objectId);
+      await user1.unfollow(user2.objectId!);
       // 查询好友
-      assert((await getFriends()).length == 0);
+      assert((await getFriends())!.length == 0);
     });
   });
 }

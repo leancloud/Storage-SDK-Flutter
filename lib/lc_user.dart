@@ -4,13 +4,13 @@ const String CurrentUserKey = 'current_user';
 
 /// LeanCloud Status followers and followees.
 class LCFollowersAndFollowees {
-  List<LCObject> followers;
+  List<LCObject>? followers;
 
-  List<LCObject> followees;
+  List<LCObject>? followees;
 
-  int followersCount;
+  int? followersCount;
 
-  int followeesCount;
+  int? followeesCount;
 }
 
 /// LeanCloud User.
@@ -33,9 +33,9 @@ class LCUser extends LCObject {
 
   set mobile(String value) => this['mobilePhoneNumber'] = value;
 
-  String get sessionToken => this['sessionToken'];
+  String? get sessionToken => this['sessionToken'];
 
-  set sessionToken(String value) => this['sessionToken'] = value;
+  set sessionToken(String? value) => this['sessionToken'] = value!;
 
   bool get emailVerified => this['emailVerified'];
 
@@ -45,7 +45,7 @@ class LCUser extends LCObject {
 
   set authData(Map value) => this['authData'] = value;
 
-  static LCUser _currentUser;
+  static LCUser? _currentUser;
 
   LCUser() : super(LCUser.ClassName);
 
@@ -69,13 +69,13 @@ class LCUser extends LCObject {
     if (objectId != null) {
       throw ArgumentError('Cannot sign up a user that already exists.');
     }
-    _currentUser = await save();
+    await save();
     return this;
   }
 
   /// Requests a login sms code to be sent to the [mobile] number of an existing user.
   static Future requestLoginSMSCode(String mobile,
-      {String validateToken}) async {
+      {String? validateToken}) async {
     if (isNullOrEmpty(mobile)) {
       throw ArgumentError.notNull('mobile');
     }
@@ -95,12 +95,12 @@ class LCUser extends LCObject {
     if (isNullOrEmpty(code)) {
       throw ArgumentError.notNull('code');
     }
-    Map response = await LeanCloud._httpClient.post('usersByMobilePhone',
+    Map<String, dynamic> response = await LeanCloud._httpClient.post('usersByMobilePhone',
         data: {'mobilePhoneNumber': mobile, 'smsCode': code});
     _LCObjectData objectData = _LCObjectData.decode(response);
     _currentUser = LCUser._fromObjectData(objectData);
     await _saveToLocal();
-    return _currentUser;
+    return _currentUser!;
   }
 
   /// Signs in a user with their [username] and [password].
@@ -158,10 +158,7 @@ class LCUser extends LCObject {
   /// Signs up or signs in a user with third party [authData].
   static Future<LCUser> loginWithAuthData(
       Map<String, dynamic> authData, String platform,
-      {LCUserAuthDataLoginOption option}) {
-    if (authData == null) {
-      throw ArgumentError.notNull('authData');
-    }
+      {LCUserAuthDataLoginOption? option}) {
     if (isNullOrEmpty(platform)) {
       throw ArgumentError.notNull('platform');
     }
@@ -174,10 +171,7 @@ class LCUser extends LCObject {
   /// Signs up or signs in a user with third party [authData] and [unionId].
   static Future<LCUser> loginWithAuthDataAndUnionId(
       Map<String, dynamic> authData, String platform, String unionId,
-      {LCUserAuthDataLoginOption option}) {
-    if (authData == null) {
-      throw ArgumentError.notNull('authData');
-    }
+      {LCUserAuthDataLoginOption? option}) {
     if (isNullOrEmpty(platform)) {
       throw ArgumentError.notNull('platform');
     }
@@ -195,12 +189,12 @@ class LCUser extends LCObject {
       String authType, Map<String, dynamic> data, bool failOnNotExist) async {
     Map<String, dynamic> authData = {authType: data};
     String path = failOnNotExist ? 'users?failOnNotExist=true' : 'users';
-    Map response =
+    Map<String, dynamic> response =
         await LeanCloud._httpClient.post(path, data: {'authData': authData});
     _LCObjectData objectData = _LCObjectData.decode(response);
     _currentUser = LCUser._fromObjectData(objectData);
     await _saveToLocal();
-    return _currentUser;
+    return _currentUser!;
   }
 
   static void _mergeAuthData(Map<String, dynamic> authData, String unionId,
@@ -212,22 +206,13 @@ class LCUser extends LCObject {
 
   /// Associates this [LCUser] with a third party [authData].
   Future associateAuthData(Map<String, dynamic> authData, String platform) {
-    if (authData == null) {
-      throw ArgumentError.notNull('authData');
-    }
-    if (isNullOrEmpty(platform)) {
-      throw ArgumentError.notNull('platform');
-    }
     return _linkWithAuthData(platform, authData);
   }
 
   /// Associates this user with a third party [authData] and [unionId].
   Future associateAuthDataAndUnionId(
       Map<String, dynamic> authData, String platform, String unionId,
-      {LCUserAuthDataLoginOption option}) {
-    if (authData == null) {
-      throw ArgumentError.notNull('authData');
-    }
+      {LCUserAuthDataLoginOption? option}) {
     if (isNullOrEmpty(platform)) {
       throw ArgumentError.notNull('platform');
     }
@@ -326,12 +311,12 @@ class LCUser extends LCObject {
       throw ArgumentError.notNull('sessionToken');
     }
     Map<String, String> headers = {'X-LC-Session': sessionToken};
-    Map response =
+    Map<String, dynamic> response =
         await LeanCloud._httpClient.get('users/me', headers: headers);
     _LCObjectData objectData = _LCObjectData.decode(response);
     _currentUser = LCUser._fromObjectData(objectData);
     await _saveToLocal();
-    return _currentUser;
+    return _currentUser!;
   }
 
   /// Requests a password reset email to be sent to a user's [email] address.
@@ -376,7 +361,7 @@ class LCUser extends LCObject {
     if (isNullOrEmpty(newPassword)) {
       throw ArgumentError.notNull('newPassword');
     }
-    Map response = await LeanCloud._httpClient.put(
+    Map<String, dynamic> response = await LeanCloud._httpClient.put(
         'users/$objectId/updatePassword',
         data: {'old_password': oldPassword, 'new_password': newPassword});
     _LCObjectData objectData = _LCObjectData.decode(response);
@@ -408,20 +393,20 @@ class LCUser extends LCObject {
   }
 
   /// Checks whether this user is anonymous.
-  bool get isAnonymous => authData != null && authData['anonymous'] != null;
+  bool get isAnonymous => authData['anonymous'] != null;
 
   static Future<LCUser> _login(Map<String, dynamic> data) async {
-    Map response = await LeanCloud._httpClient.post('login', data: data);
+    Map<String, dynamic> response = await LeanCloud._httpClient.post('login', data: data);
     _LCObjectData objectData = _LCObjectData.decode(response);
     _currentUser = LCUser._fromObjectData(objectData);
     await _saveToLocal();
-    return _currentUser;
+    return _currentUser!;
   }
 
   static Future _saveToLocal() async {
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
-      String userData = jsonEncode(_LCObjectData.encode(_currentUser._data));
+      String userData = jsonEncode(_LCObjectData.encode(_currentUser!._data));
       await prefs.setString(CurrentUserKey, userData);
     } on Error catch (e) {
       LCLogger.error(e.toString());
@@ -434,16 +419,18 @@ class LCUser extends LCObject {
   }
 
   /// Retrieves the currently logged in [LCUser] with a valid session.
-  static Future<LCUser> getCurrent() async {
+  static Future<LCUser?> getCurrent() async {
     if (_currentUser != null) {
       return _currentUser;
     }
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
-      String userData = prefs.getString(CurrentUserKey);
-      LCLogger.debug(userData);
-      _LCObjectData objectData = _LCObjectData.decode(jsonDecode(userData));
-      _currentUser = LCUser._fromObjectData(objectData);
+      String? userData = prefs.getString(CurrentUserKey);
+      if (userData != null) {
+        LCLogger.debug(userData);
+        _LCObjectData objectData = _LCObjectData.decode(jsonDecode(userData));
+        _currentUser = LCUser._fromObjectData(objectData);
+      }
     } on Error catch (e) {
       LCLogger.error(e.toString());
     }
@@ -451,7 +438,7 @@ class LCUser extends LCObject {
   }
 
   /// Follows a user whose objectId is [targetId].
-  Future follow(String targetId, {Map<String, dynamic> attrs}) async {
+  Future follow(String targetId, {Map<String, dynamic>? attrs}) async {
     if (isNullOrEmpty(targetId)) {
       throw ArgumentError.notNull('targetId');
     }
@@ -488,7 +475,7 @@ class LCUser extends LCObject {
   ///
   /// [returnCount] indicates whether to return followers/followees count.
   Future<LCFollowersAndFollowees> getFollowersAndFollowees(
-      {bool includeFollower, bool includeFollowee, bool returnCount}) async {
+      {bool includeFollower = false, bool includeFollowee = false, bool returnCount = false}) async {
     Map<String, dynamic> queryParams = {};
     if (returnCount) {
       queryParams['count'] = 1;
@@ -512,7 +499,7 @@ class LCUser extends LCObject {
         _LCObjectData objectData = _LCObjectData.decode(item);
         LCObject follower = new LCObject('_Follower');
         follower._merge(objectData);
-        result.followers.add(follower);
+        result.followers?.add(follower);
       }
     }
     if (response.containsKey('followees')) {
@@ -521,7 +508,7 @@ class LCUser extends LCObject {
         _LCObjectData objectData = _LCObjectData.decode(item);
         LCObject followee = new LCObject('_Followee');
         followee._merge(objectData);
-        result.followees.add(followee);
+        result.followees?.add(followee);
       }
     }
     if (response.containsKey('followers_count')) {
@@ -535,7 +522,7 @@ class LCUser extends LCObject {
 
   /// Requests an SMS code for updating phone number.
   static Future requestSMSCodeForUpdatingPhoneNumber(String mobile,
-      {int ttl = 360, String captchaToken}) async {
+      {int ttl = 360, String? captchaToken}) async {
     String path = 'requestChangePhoneNumber';
     Map<String, dynamic> data = {'mobilePhoneNumber': mobile, 'ttl': ttl};
     if (captchaToken != null) {
@@ -553,8 +540,9 @@ class LCUser extends LCObject {
   }
 
   @override
-  Future<LCObject> save({bool fetchWhenSave = false, LCQuery<LCObject> query}) async {
-    _currentUser = await super.save(fetchWhenSave: fetchWhenSave, query: query);
+  Future<LCUser> save({bool fetchWhenSave = false, LCQuery<LCObject>? query}) async {
+    await super.save(fetchWhenSave: fetchWhenSave, query: query);
+    _currentUser = this;
     await _saveToLocal();
     return this;
   }

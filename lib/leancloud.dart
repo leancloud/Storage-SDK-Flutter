@@ -89,11 +89,11 @@ class LeanCloud {
 
   // static String _appServer;
 
-  static _LCHttpClient _httpClient;
+  static late _LCHttpClient _httpClient;
 
   /// Initialization
   static void initialize(String appId, String appKey,
-      {String server, LCQueryCache queryCache}) {
+      {String? server, LCQueryCache? queryCache}) {
     if (isNullOrEmpty(appId)) {
       throw new ArgumentError.notNull('appId');
     }

@@ -18,9 +18,10 @@ void main() {
       query.limit(200);
       LCSearchResponse<Account> response = await query.find();
       assert(response.hits > 0);
-      for (int i = 0; i < response.results.length - 1; i++) {
-        int b1 = response.results[i].balance;
-        int b2 = response.results[i + 1].balance;
+      List<Account> results = response.results!;
+      for (int i = 0; i < results.length - 1; i++) {
+        int b1 = results[i].balance;
+        int b2 = results[i + 1].balance;
         assert(b1 >= b2);
       }
     });
@@ -34,9 +35,10 @@ void main() {
       query.sortBy(sortBuilder);
       LCSearchResponse<Account> response = await query.find();
       assert(response.hits > 0);
-      for (int i = 0; i < response.results.length - 1; i++) {
-        int b1 = response.results[i].balance;
-        int b2 = response.results[i + 1].balance;
+      List<Account> results = response.results!;
+      for (int i = 0; i < results.length - 1; i++) {
+        int b1 = results[i].balance;
+        int b2 = results[i + 1].balance;
         assert(b1 <= b2);
       }
     });

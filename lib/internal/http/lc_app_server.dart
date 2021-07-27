@@ -7,11 +7,11 @@ class _LCAppServer {
 
   String engineServer;
 
-  DateTime expiredAt;
+  late DateTime expiredAt;
 
   bool get isExpired => _ttl != -1 && expiredAt.compareTo(DateTime.now()) < 0;
 
-  int _ttl;
+  late int _ttl;
 
   _LCAppServer.fromJson(Map<String, dynamic> json)
       : apiServer = _getSchemeUrl(json['api_server']),

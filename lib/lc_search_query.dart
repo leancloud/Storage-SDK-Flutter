@@ -1,16 +1,16 @@
 part of leancloud_storage;
 
 class LCSearchQuery<T extends LCObject> {
-  String className;
+  late String className;
 
-  String _queryString;
-  List<String> _highlights;
-  List<String> _includeKeys;
-  int _limit;
-  int _skip;
-  String _sid;
-  List<String> _orders;
-  LCSearchSortBuilder _sortBuilder;
+  String? _queryString;
+  List<String>? _highlights;
+  List<String>? _includeKeys;
+  late int _limit;
+  late int _skip;
+  String? _sid;
+  List<String>? _orders;
+  LCSearchSortBuilder? _sortBuilder;
 
   LCSearchQuery(this.className) {
     _limit = 100;
@@ -60,7 +60,7 @@ class LCSearchQuery<T extends LCObject> {
     if (_orders == null) {
       _orders = <String>[];
     }
-    _orders.add(key);
+    _orders!.add(key);
     return this;
   }
 
@@ -83,20 +83,20 @@ class LCSearchQuery<T extends LCObject> {
     if (_queryString != null) {
       queryParams['q'] = _queryString;
     }
-    if (_highlights != null && _highlights.length > 0) {
-      queryParams['highlights'] = _highlights.join(',');
+    if (_highlights != null && _highlights!.length > 0) {
+      queryParams['highlights'] = _highlights!.join(',');
     }
-    if (_includeKeys != null && _includeKeys.length > 0) {
-      queryParams['include'] = _includeKeys.join(',');
+    if (_includeKeys != null && _includeKeys!.length > 0) {
+      queryParams['include'] = _includeKeys!.join(',');
     }
     if (_sid != null) {
       queryParams['sid'] = _sid;
     }
-    if (_orders != null && _orders.length > 0) {
-      queryParams['order'] = _orders.join(',');
+    if (_orders != null && _orders!.length > 0) {
+      queryParams['order'] = _orders!.join(',');
     }
     if (_sortBuilder != null) {
-      queryParams['sort'] = _sortBuilder._build();
+      queryParams['sort'] = _sortBuilder!._build();
     }
 
     Map response = await LeanCloud._httpClient
@@ -108,9 +108,9 @@ class LCSearchQuery<T extends LCObject> {
     List results = response['results'];
     results.forEach((item) {
       _LCObjectData objectData = _LCObjectData.decode(item);
-      T object = LCObject._create(T, className: className);
+      T object = LCObject._create<T>(className);
       object._merge(objectData);
-      ret.results.add(object);
+      ret.results!.add(object);
     });
     return ret;
   }

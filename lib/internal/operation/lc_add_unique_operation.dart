@@ -1,7 +1,7 @@
 part of leancloud_storage;
 
 class _LCAddUniqueOperation extends _LCOperation {
-  Set values;
+  late Set values;
 
   _LCAddUniqueOperation(Iterable values) {
     this.values = Set.from(values);
@@ -35,7 +35,7 @@ class _LCAddUniqueOperation extends _LCOperation {
   }
 
   @override
-  List getNewObjectList() {
+  List? getNewObjectList() {
     return values.toList();
   }
 }

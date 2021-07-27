@@ -2,9 +2,9 @@ part of leancloud_storage;
 
 /// LeanCloud GeoPoint
 class LCGeoPoint {
-  double latitude;
+  late double latitude;
 
-  double longitude;
+  late double longitude;
 
   LCGeoPoint(this.latitude, this.longitude);
 
@@ -14,9 +14,6 @@ class LCGeoPoint {
   }
 
   double kilometersTo(LCGeoPoint point) {
-    if (point == null) {
-      throw new ArgumentError.notNull('point');
-    }
     return radiansTo(point) * 6371.0;
   }
 
@@ -25,9 +22,6 @@ class LCGeoPoint {
   }
 
   double radiansTo(LCGeoPoint point) {
-    if (point == null) {
-      throw new ArgumentError.notNull('point');
-    }
     double d2r = pi / 180.0;
     double lat1rad = latitude * d2r;
     double long1rad = longitude * d2r;
