@@ -13,7 +13,7 @@ Adding dependency in `pubspec.yaml`:
 ```dart
 dependencies:
   ...
-  leancloud_storage: ^0.6.7
+  leancloud_storage: ^0.7.0
 ```
 
 Then run the following command:
