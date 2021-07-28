@@ -1,6 +1,6 @@
 # leancloud_storage
 
-![build](https://img.shields.io/travis/leancloud/Storage-SDK-Flutter)
+![build](https://img.shields.io/github/workflow/status/leancloud/Storage-SDK-Flutter/Publish%20plugin)
 ![the latest version](https://img.shields.io/pub/v/leancloud_storage)
 ![platform](https://img.shields.io/badge/platform-flutter%7Cdart%20vm-ff69b4.svg)
 
