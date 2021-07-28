@@ -8,32 +8,33 @@ import 'utils.dart';
 
 void main() {
   group("file in China", () {
-    late LCFile avatar;
+    late LCFile logo;
 
     setUp(() => initNorthChina());
 
     test('save from path', () async {
-      avatar = await LCFile.fromPath('avatar', './avatar.jpg');
-      await avatar.save(onProgress: (int count, int total) {
+      logo = await LCFile.fromPath('logo', './logo.jpg');
+      await logo.save(onProgress: (int count, int total) {
         LCLogger.debug('$count/$total');
         if (count == total) {
           LCLogger.debug('done');
         }
       });
-      LCLogger.debug(avatar.objectId);
-      assert(avatar.objectId != null);
+      LCLogger.debug(logo.objectId);
+      assert(logo.objectId != null);
     });
 
     test('query file', () async {
       LCQuery<LCFile> query = LCFile.getQuery();
-      LCFile file = (await query.get(avatar.objectId!))!;
+      LCFile file = (await query.get(logo.objectId!))!;
       LCLogger.debug(file.url);
       LCLogger.debug(file.getThumbnailUrl(32, 32));
     });
 
     test('save from memory', () async {
       String text = 'hello, world';
-      LCFile file = LCFile.fromBytes('text', Uint8List.fromList(utf8.encode(text)));
+      LCFile file =
+          LCFile.fromBytes('text', Uint8List.fromList(utf8.encode(text)));
       await file.save();
       LCLogger.debug(file.objectId);
       assert(file.objectId != null);
@@ -52,7 +53,7 @@ void main() {
     });
 
     test('object with file', () async {
-      LCFile file = await LCFile.fromPath('avatar', './avatar.jpg');
+      LCFile file = await LCFile.fromPath('logo', './logo.jpg');
       LCObject obj = new LCObject('FileObject');
       obj['file'] = file;
       String text = 'hello, world';
@@ -79,22 +80,22 @@ void main() {
         });
       });
     });
-    
+
     test('file acl', () async {
       LCUser user = await LCUser.loginAnonymously();
 
-      LCFile file = await LCFile.fromPath('avatar', './avatar.jpg');
+      LCFile file = await LCFile.fromPath('logo', './logo.jpg');
       LCACL acl = new LCACL();
       acl.setUserReadAccess(user, true);
       file.acl = acl;
       await file.save();
 
       LCQuery<LCFile> query = new LCQuery(LCFile.ClassName);
-      LCFile? avatar = await query.get(file.objectId!);
-      assert(avatar!.objectId != null);
+      LCFile? logo = await query.get(file.objectId!);
+      assert(logo!.objectId != null);
 
       await LCUser.loginAnonymously();
-      
+
       try {
         await query.get(file.objectId!);
       } on LCException catch (e) {
@@ -107,7 +108,7 @@ void main() {
   //   setUp(() => initUS());
 
   //   test('aws', () async {
-  //     LCFile file = await LCFile.fromPath('avatar', './avatar.jpg');
+  //     LCFile file = await LCFile.fromPath('logo', './logo.jpg');
   //     await file.save();
   //     LCLogger.debug(file.objectId);
   //     assert(file.objectId != null);
