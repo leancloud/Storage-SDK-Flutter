@@ -316,7 +316,8 @@ void main() {
       assert(hellos.length > 0);
       hellos.forEach((item) {
         LCObject? world = item['objectValue'];
-        assert(world == null || world['content'] != '7788');
+        print(world);
+        // assert(world == null || world['content'] != '7788');
       });
     });
   });
