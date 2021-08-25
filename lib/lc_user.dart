@@ -17,33 +17,33 @@ class LCFollowersAndFollowees {
 class LCUser extends LCObject {
   static const String ClassName = '_User';
 
-  String get username => this['username'];
+  String? get username => this['username'];
 
-  set username(String value) => this['username'] = value;
+  set username(String? value) => this['username'] = value!;
 
-  String get password => this['password'];
+  String? get password => this['password'];
 
-  set password(String value) => this['password'] = value;
+  set password(String? value) => this['password'] = value!;
 
-  String get email => this['email'];
+  String? get email => this['email'];
 
-  set email(String value) => this["email"] = value;
+  set email(String? value) => this["email"] = value!;
 
-  String get mobile => this['mobilePhoneNumber'];
+  String? get mobile => this['mobilePhoneNumber'];
 
-  set mobile(String value) => this['mobilePhoneNumber'] = value;
+  set mobile(String? value) => this['mobilePhoneNumber'] = value!;
 
   String? get sessionToken => this['sessionToken'];
 
   set sessionToken(String? value) => this['sessionToken'] = value!;
 
-  bool get emailVerified => this['emailVerified'];
+  bool? get emailVerified => this['emailVerified'];
 
-  bool get mobileVerified => this['mobilePhoneVerified'];
+  bool? get mobileVerified => this['mobilePhoneVerified'];
 
-  Map get authData => this['authData'];
+  Map? get authData => this['authData'];
 
-  set authData(Map value) => this['authData'] = value;
+  set authData(Map? value) => this['authData'] = value!;
 
   static LCUser? _currentUser;
 
@@ -95,7 +95,8 @@ class LCUser extends LCObject {
     if (isNullOrEmpty(code)) {
       throw ArgumentError.notNull('code');
     }
-    Map<String, dynamic> response = await LeanCloud._httpClient.post('usersByMobilePhone',
+    Map<String, dynamic> response = await LeanCloud._httpClient.post(
+        'usersByMobilePhone',
         data: {'mobilePhoneNumber': mobile, 'smsCode': code});
     _LCObjectData objectData = _LCObjectData.decode(response);
     _currentUser = LCUser._fromObjectData(objectData);
@@ -235,11 +236,11 @@ class LCUser extends LCObject {
   }
 
   Future _linkWithAuthData(String authType, Map<String, dynamic> data) async {
-    Map oriAuthData = Map.from(this.authData);
+    Map oriAuthData = Map.from(this.authData ?? {});
     this.authData = {authType: data};
     try {
       await super.save();
-      oriAuthData.addAll(this.authData);
+      oriAuthData.addAll(this.authData!);
       _updateAuthData(oriAuthData);
       await _saveToLocal();
     } on Exception catch (e) {
@@ -249,7 +250,7 @@ class LCUser extends LCObject {
   }
 
   Future _unlinkWithAuthData(String authType) async {
-    Map oriAuthData = Map.from(this.authData);
+    Map oriAuthData = Map.from(this.authData ?? {});
     this.authData = {authType: null};
     try {
       await super.save();
@@ -393,10 +394,11 @@ class LCUser extends LCObject {
   }
 
   /// Checks whether this user is anonymous.
-  bool get isAnonymous => authData['anonymous'] != null;
+  bool get isAnonymous => authData?['anonymous'] != null;
 
   static Future<LCUser> _login(Map<String, dynamic> data) async {
-    Map<String, dynamic> response = await LeanCloud._httpClient.post('login', data: data);
+    Map<String, dynamic> response =
+        await LeanCloud._httpClient.post('login', data: data);
     _LCObjectData objectData = _LCObjectData.decode(response);
     _currentUser = LCUser._fromObjectData(objectData);
     await _saveToLocal();
@@ -475,7 +477,9 @@ class LCUser extends LCObject {
   ///
   /// [returnCount] indicates whether to return followers/followees count.
   Future<LCFollowersAndFollowees> getFollowersAndFollowees(
-      {bool includeFollower = false, bool includeFollowee = false, bool returnCount = false}) async {
+      {bool includeFollower = false,
+      bool includeFollowee = false,
+      bool returnCount = false}) async {
     Map<String, dynamic> queryParams = {};
     if (returnCount) {
       queryParams['count'] = 1;
@@ -540,7 +544,8 @@ class LCUser extends LCObject {
   }
 
   @override
-  Future<LCUser> save({bool fetchWhenSave = false, LCQuery<LCObject>? query}) async {
+  Future<LCUser> save(
+      {bool fetchWhenSave = false, LCQuery<LCObject>? query}) async {
     await super.save(fetchWhenSave: fetchWhenSave, query: query);
     _currentUser = this;
     await _saveToLocal();

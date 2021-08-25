@@ -16,17 +16,15 @@ class LCFile extends LCObject {
 
   String? get url => this['url'];
 
-  set url(String? value) => this['url'] = value;
+  set url(String? value) => this['url'] = value!;
 
-  Map<String, dynamic> get metaData => this['metaData'];
+  Map<String, dynamic>? get metaData => this['metaData'];
 
-  set metaData(Map<String, dynamic> value) => this['metaData'] = value;
+  set metaData(Map<String, dynamic>? value) => this['metaData'] = value;
 
   Uint8List? data;
 
-  LCFile() : super(ClassName) {
-    metaData = new Map<String, dynamic>();
-  }
+  LCFile() : super(ClassName);
 
   static LCFile fromBytes(String name, Uint8List data) {
     LCFile file = new LCFile();
@@ -52,7 +50,10 @@ class LCFile extends LCObject {
   }
 
   void addMetaData(String key, dynamic value) {
-    metaData[key] = value;
+    if (metaData == null) {
+      metaData = new Map<String, dynamic>();
+    }
+    metaData![key] = value;
   }
 
   /// Saves the file to LeanCloud.

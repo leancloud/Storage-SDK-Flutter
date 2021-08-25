@@ -1,7 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:leancloud_storage/leancloud.dart';
 
-import 'subclass_test.dart';
 import 'utils.dart';
 
 void main() {

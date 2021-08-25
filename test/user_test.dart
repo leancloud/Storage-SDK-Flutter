@@ -54,8 +54,8 @@ void main() {
       await LCUser.login(TestPhone, TestPhone);
       LCUser current = (await LCUser.getCurrent())!;
       assert(current.objectId != null);
-      assert(!current.emailVerified);
-      assert(current.mobileVerified);
+      assert(current.emailVerified!);
+      assert(current.mobileVerified!);
       assert(!current.isAnonymous);
     });
 
@@ -119,7 +119,7 @@ void main() {
       };
       await currentUser.associateAuthData(authData, 'weixin');
       LCLogger.debug(currentUser.authData);
-      LCLogger.debug(currentUser.authData['weixin']);
+      LCLogger.debug(currentUser.authData!['weixin']);
     });
 
     test('disassociate auth data', () async {
@@ -184,7 +184,8 @@ void main() {
     });
 
     test('login by mobile', () async {
-      LCUser current = await LCUser.loginByMobilePhoneNumber(TestPhone, TestPhone);
+      LCUser current =
+          await LCUser.loginByMobilePhoneNumber(TestPhone, TestPhone);
       assert(current.objectId != null);
     });
 
