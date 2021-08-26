@@ -1,3 +1,7 @@
+## [0.7.3] - 版本更新
+
+- 修复 LCObject#toString() 缺失嵌套 LCObject 的自定义字段的 bug
+
 ## [0.7.2] - 版本更新
 
 - 修复 Null safety 错误
