@@ -377,7 +377,7 @@ class LCObject {
   Future<LCObject> save(
       {bool fetchWhenSave = false, LCQuery<LCObject>? query}) async {
     // 检测循环依赖
-    if (_LCBatch.hasCircleReference(this, new HashSet<LCObject>())) {
+    if (_LCBatch.hasCircleReference(this)) {
       throw new ArgumentError('Found a circle dependency when save.');
     }
 
@@ -412,7 +412,7 @@ class LCObject {
   static Future<List<LCObject>> saveAll(List<LCObject> objectList) async {
     // 断言没有循环依赖
     objectList.forEach((item) {
-      if (_LCBatch.hasCircleReference(item, new HashSet<LCObject>())) {
+      if (_LCBatch.hasCircleReference(item)) {
         throw new ArgumentError('Found a circle dependency when save.');
       }
     });
@@ -433,7 +433,10 @@ class LCObject {
 
   /// Serializes this [LCObject] to a JSON string.
   String toString() {
-    return jsonEncode(_LCObjectData.encode(_data));
+    if (_LCBatch.hasCircleReference(this)) {
+      throw new ArgumentError('Found a circle dependency when serialize.');
+    }
+    return jsonEncode(_LCEncoder.encode(this, full: true));
   }
 
   /// The inverse function of [toString].

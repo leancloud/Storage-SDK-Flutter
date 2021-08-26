@@ -13,7 +13,10 @@ class _LCBatch {
     }
   }
 
-  static bool hasCircleReference(Object? object, HashSet<LCObject> parents) {
+  static bool hasCircleReference(Object? object, {HashSet<LCObject>? parents}) {
+    if (parents == null) {
+      parents = new HashSet();
+    }
     if (parents.contains(object)) {
       return true;
     }
@@ -32,7 +35,7 @@ class _LCBatch {
     if (deps != null) {
       for (Object? dep in deps) {
         HashSet<LCObject> ps = HashSet<LCObject>.from(depParents);
-        if (hasCircleReference(dep, ps)) {
+        if (hasCircleReference(dep, parents: ps)) {
           return true;
         }
       }

@@ -2,7 +2,7 @@ part of leancloud_storage;
 
 /// Encoding
 class _LCEncoder {
-  static dynamic encode(dynamic object) {
+  static dynamic encode(dynamic object, {bool full = false}) {
     if (object is DateTime) {
       return encodeDateTime(object);
     }
@@ -10,13 +10,13 @@ class _LCEncoder {
       return encodeBytes(object);
     }
     if (object is List) {
-      return encodeList(object);
+      return encodeList(object, full: full);
     }
     if (object is Map) {
-      return encodeMap(object);
+      return encodeMap(object, full: full);
     }
     if (object is LCObject) {
-      return encodeLCObject(object);
+      return encodeLCObject(object, full: full);
     }
     if (object is _LCOperation) {
       return encodeOperation(object);
@@ -45,28 +45,40 @@ class _LCEncoder {
     return {'__type': 'Bytes', 'base64': base64Encode(bytes)};
   }
 
-  static dynamic encodeList(List list) {
+  static dynamic encodeList(List list, {bool full: false}) {
     List l = [];
     list.forEach((item) {
-      l.add(encode(item));
+      l.add(encode(item, full: full));
     });
     return l;
   }
 
-  static dynamic encodeMap(Map map) {
+  static dynamic encodeMap(Map map, {bool full: false}) {
     Map m = new Map();
     map.forEach((key, value) {
-      m[key] = encode(value);
+      m[key] = encode(value, full: full);
     });
     return m;
   }
 
-  static dynamic encodeLCObject(LCObject object) {
-    return {
+  static dynamic encodeLCObject(LCObject object, {bool full: false}) {
+    Map<String, dynamic> data = {
       '__type': 'Pointer',
       'className': object.className,
       'objectId': object.objectId
     };
+    if (full) {
+      if (object.createdAt != null) {
+        data['createdAt'] = object.createdAt.toString();
+      }
+      if (object.updatedAt != null) {
+        data['updatedAt'] = object.updatedAt.toString();
+      }
+      object._estimatedData.forEach((k, v) {
+        data[k] = _LCEncoder.encode(v, full: full);
+      });
+    }
+    return data;
   }
 
   static dynamic encodeOperation(_LCOperation operation) {

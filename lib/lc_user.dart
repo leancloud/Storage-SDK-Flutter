@@ -408,7 +408,7 @@ class LCUser extends LCObject {
   static Future _saveToLocal() async {
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
-      String userData = jsonEncode(_LCObjectData.encode(_currentUser!._data));
+      String userData = jsonEncode(_LCEncoder.encode(_currentUser, full: true));
       await prefs.setString(CurrentUserKey, userData);
     } on Error catch (e) {
       LCLogger.error(e.toString());
