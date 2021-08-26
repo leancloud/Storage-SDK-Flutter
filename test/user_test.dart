@@ -21,7 +21,7 @@ void main() {
       String email = '${DateTime.now().millisecondsSinceEpoch}@qq.com';
       user.email = email;
       String mobile =
-          '151${(DateTime.now().millisecondsSinceEpoch / 100000).round()}';
+          '13${(DateTime.now().millisecondsSinceEpoch % 1000000000).round()}';
       user.mobile = mobile;
       await user.signUp();
 
@@ -54,7 +54,7 @@ void main() {
       await LCUser.login(TestPhone, TestPhone);
       LCUser current = (await LCUser.getCurrent())!;
       assert(current.objectId != null);
-      assert(current.emailVerified!);
+      assert(!current.emailVerified!);
       assert(current.mobileVerified!);
       assert(!current.isAnonymous);
     });

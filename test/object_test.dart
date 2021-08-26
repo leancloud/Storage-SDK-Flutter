@@ -171,7 +171,10 @@ void main() {
       LCObject nestedObj = new LCObject('World');
       nestedObj['content'] = '7788';
       object['objectValue'] = nestedObj;
-      object['pointerList'] = [new LCObject('World'), nestedObj];
+
+      World world = new World();
+      world.content = 'hello, world';
+      object['pointerList'] = [world, new LCObject('World')];
       await object.save();
 
       String json = object.toString();
@@ -184,6 +187,11 @@ void main() {
       assert(newObj['intValue'] == 123);
       assert(newObj['boolValue'] == true);
       assert(newObj['stringValue'] == 'hello, world');
+      assert(newObj['objectValue']['content'] == '7788');
+
+      assert(newObj['pointerList'][0] is World);
+      World newWorld = newObj['pointerList'][0] as World;
+      assert(newWorld.content == 'hello, world');
     });
   });
 }
