@@ -51,7 +51,7 @@ class _LCHttpClient {
       options.extra![DIO_CACHE_KEY_TRY_CACHE] = false;
       options.extra![DIO_CACHE_KEY_FORCE_REFRESH] = true;
     }
-    options.headers = _generateHeaders(headers);
+    options.headers = await _generateHeaders(headers);
     try {
       Response response =
           await _dio.get(path, options: options, queryParameters: queryParams);
@@ -66,7 +66,7 @@ class _LCHttpClient {
       dynamic? data,
       Map<String, dynamic>? queryParams}) async {
     await _refreshServer();
-    Options options = _toOptions(headers);
+    Options options = await _toOptions(headers);
     try {
       Response response = await _dio.post(path,
           options: options, data: data, queryParameters: queryParams);
@@ -81,7 +81,7 @@ class _LCHttpClient {
       dynamic? data,
       Map<String, dynamic>? queryParams}) async {
     await _refreshServer();
-    Options options = _toOptions(headers);
+    Options options = await _toOptions(headers);
     try {
       Response response = await _dio.put(path,
           options: options, data: data, queryParameters: queryParams);
@@ -96,7 +96,7 @@ class _LCHttpClient {
       dynamic? data,
       Map<String, dynamic>? queryParams}) async {
     await _refreshServer();
-    Options options = _toOptions(headers);
+    Options options = await _toOptions(headers);
     try {
       Response response = await _dio.delete(path,
           options: options, data: data, queryParameters: queryParams);
@@ -119,20 +119,20 @@ class _LCHttpClient {
     _dio.options.baseUrl = '$apiServer/$apiVersion/';
   }
 
-  Options _toOptions(Map<String, dynamic>? additionalHeaders) {
-    Map<String, dynamic> headers = _generateHeaders(additionalHeaders);
+  Future<Options> _toOptions(Map<String, dynamic>? additionalHeaders) async {
+    Map<String, dynamic> headers = await _generateHeaders(additionalHeaders);
     return new Options(headers: headers);
   }
 
-  Map<String, dynamic> _generateHeaders(
-      Map<String, dynamic>? additionalHeaders) {
+  Future<Map<String, dynamic>> _generateHeaders(
+      Map<String, dynamic>? additionalHeaders) async {
     Map<String, dynamic> headers = new Map<String, dynamic>();
     int timestamp = DateTime.now().millisecondsSinceEpoch;
     Uint8List data = Utf8Encoder().convert('$timestamp$appKey');
     Digest digest = md5.convert(data);
     String sign = hex.encode(digest.bytes);
     headers['X-LC-Sign'] = '$sign,$timestamp';
-    LCUser? currentUser = LCUser._currentUser;
+    LCUser? currentUser = await LCUser.getCurrent();
     if (currentUser != null) {
       headers['X-LC-Session'] = currentUser.sessionToken;
     }
