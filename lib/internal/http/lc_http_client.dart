@@ -157,7 +157,13 @@ class _LCHttpClient {
     if (code == 4) {
       try {
         int code = response.data['code'];
-        String message = response.data['error'];
+        dynamic error = response.data['error'];
+        String message;
+        if (error is String) {
+          message = error;
+        } else {
+          message = response.data["message"];
+        }
         throw new LCException(code, message);
       } on LCException catch (ex) {
         throw ex;
