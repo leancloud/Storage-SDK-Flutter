@@ -154,7 +154,7 @@ class _LCHttpClient {
     }
 
     int code = response.statusCode! ~/ 100;
-    if (code == 4) {
+    if (code == 4 || code == 5) {
       try {
         int code = response.data['code'];
         dynamic error = response.data['error'];
