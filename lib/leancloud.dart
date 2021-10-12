@@ -77,7 +77,7 @@ part 'lc_search_query.dart';
 part 'lc_search_response.dart';
 part 'lc_search_sort_builder.dart';
 
-const String SDKVersion = '0.7.4';
+const String SDKVersion = '0.7.5';
 
 const String APIVersion = '1.1';
 
