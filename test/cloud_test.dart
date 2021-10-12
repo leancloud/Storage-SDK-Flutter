@@ -22,10 +22,8 @@ void main() {
     test('getObject', () async {
       LCObject hello = new LCObject("Hello");
       await hello.save();
-      Map result = await LCCloud.rpc('getObject', params: {
-        "className": "Hello",
-        "id": hello.objectId
-      });
+      Map result = await LCCloud.rpc('getObject',
+          params: {"className": "Hello", "id": hello.objectId});
       LCObject obj = result['result'];
       assert(obj.objectId == hello.objectId);
     });
@@ -42,11 +40,28 @@ void main() {
 
     test('getObjectMap', () async {
       Map response = await LCCloud.rpc('getObjectMap');
-      Map<String, LCObject> map = Map<String, LCObject>.from(response['result']);
+      Map<String, LCObject> map =
+          Map<String, LCObject>.from(response['result']);
       LCLogger.debug(map.length);
       map.forEach((key, value) {
         assert(key == value.objectId);
       });
+    });
+
+    test('lcexception', () async {
+      try {
+        await LCCloud.run('lcexception');
+      } on LCException catch (e) {
+        print('${e.code} - ${e.message}');
+      }
+    });
+
+    test('exception', () async {
+      try {
+        await LCCloud.run('exception');
+      } on LCException catch (e) {
+        print('${e.code} - ${e.message}');
+      }
     });
   });
 }
