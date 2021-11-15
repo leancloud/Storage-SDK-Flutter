@@ -5,6 +5,8 @@ class LCQuery<T extends LCObject> {
   /// Which [className] to query.
   String? className;
 
+  Duration? maxCacheAge;
+
   late _LCCompositionalCondition condition;
 
   /// Creates a new query for [className].
@@ -88,16 +90,19 @@ class LCQuery<T extends LCObject> {
     return this;
   }
 
-  LCQuery<T> whereWithinRadians(String key, LCGeoPoint point, double maxDistance) {
+  LCQuery<T> whereWithinRadians(
+      String key, LCGeoPoint point, double maxDistance) {
     condition.whereWithinRadians(key, point, maxDistance);
     return this;
   }
 
-  LCQuery<T> whereWithinMiles(String key, LCGeoPoint point, double maxDistance) {
+  LCQuery<T> whereWithinMiles(
+      String key, LCGeoPoint point, double maxDistance) {
     return whereWithinRadians(key, point, maxDistance / 3958.8);
   }
 
-  LCQuery<T> whereWithinKilometers(String key, LCGeoPoint point, double maxDistance) {
+  LCQuery<T> whereWithinKilometers(
+      String key, LCGeoPoint point, double maxDistance) {
     return whereWithinRadians(key, point, maxDistance / 6371.0);
   }
 
@@ -219,36 +224,26 @@ class LCQuery<T extends LCObject> {
     Map<String, dynamic>? queryParams;
     String? includes = condition._buildIncludes();
     if (includes != null) {
-      queryParams = {
-        "include": includes
-      };
+      queryParams = {"include": includes};
     }
-    Map<String, dynamic> response = await LeanCloud._httpClient
-        .get(path, queryParams: queryParams);
+    Map<String, dynamic> response =
+        await LeanCloud._httpClient.get(path, queryParams: queryParams);
     return _decodeLCObject(response);
   }
 
   /// Retrieves a list of [LCObject]s matching this query, respecting [cachePolicy].
   Future<List<T>?> find(
       {CachePolicy cachePolicy = CachePolicy.onlyNetwork}) async {
-    if (cachePolicy == CachePolicy.onlyNetwork) {
-      return _fetch(CachePolicy.onlyNetwork);
-    } else {
-      try {
-        List<T> results = await _fetch(CachePolicy.onlyNetwork);
-        return results;
-      } on DioError catch (e) {
-        LCLogger.error(e.message);
-        return _fetch(CachePolicy.networkElseCache);
-      }
-    }
+    return _fetch(cachePolicy);
   }
 
   Future<List<T>> _fetch(CachePolicy cachePolicy) async {
     String path = 'classes/$className';
     Map<String, dynamic> params = _buildParams();
-    Map response = await LeanCloud._httpClient
-        .get(path, queryParams: params, cachePolicy: cachePolicy);
+    Map response = await LeanCloud._httpClient.get(path,
+        queryParams: params,
+        maxCacheAge: maxCacheAge,
+        cachePolicy: cachePolicy);
     List results = response['results'];
     List<T> list = [];
     results.forEach((item) {

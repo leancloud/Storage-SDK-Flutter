@@ -44,14 +44,20 @@ class _LCHttpClient {
   Future get(String path,
       {Map<String, dynamic>? headers,
       Map<String, dynamic>? queryParams,
+      Duration? maxCacheAge,
       CachePolicy? cachePolicy}) async {
     await _refreshServer();
-    Options options = buildCacheOptions(Duration(days: 7));
-    if (cachePolicy == CachePolicy.onlyNetwork) {
-      options.extra![DIO_CACHE_KEY_TRY_CACHE] = false;
-      options.extra![DIO_CACHE_KEY_FORCE_REFRESH] = true;
+    Options options = await _toOptions(headers);
+    if (cachePolicy == CachePolicy.networkElseCache) {
+      String primaryKey = path;
+      String subKey = queryParams.toString();
+      options = buildConfigurableCacheOptions(
+          options: options,
+          maxAge: maxCacheAge ?? new Duration(days: 7),
+          primaryKey: primaryKey,
+          subKey: subKey,
+          forceRefresh: true);
     }
-    options.headers = await _generateHeaders(headers);
     try {
       Response response =
           await _dio.get(path, options: options, queryParameters: queryParams);
