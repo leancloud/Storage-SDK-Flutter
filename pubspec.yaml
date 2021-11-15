@@ -1,6 +1,6 @@
 name: leancloud_storage
 description: A new Flutter package project.
-version: 0.7.5
+version: 0.7.6
 homepage: https://www.leancloud.cn/
 
 environment:
