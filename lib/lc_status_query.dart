@@ -35,6 +35,10 @@ class LCStatusQuery extends LCQuery<LCStatus> {
       'maxId': maxId,
       'limit': condition.limit
     };
+    String? includes = condition._buildIncludes();
+    if (includes != null) {
+      params['include'] = includes;
+    }
     Map response = await LeanCloud._httpClient
         .get('subscribe/statuses', queryParams: params);
     List results = response['results'];
