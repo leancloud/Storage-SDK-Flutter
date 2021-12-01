@@ -1,6 +1,8 @@
 part of leancloud_storage;
 
 class _LCDecrementOperation extends _LCOperation {
+  static const String OP = 'Decrement';
+
   num value;
 
   _LCDecrementOperation(this.value);
@@ -15,7 +17,7 @@ class _LCDecrementOperation extends _LCOperation {
 
   @override
   encode() {
-    return {'__op': 'Decrement', 'amount': value};
+    return {'__op': OP, 'amount': value};
   }
 
   @override

@@ -2,6 +2,8 @@ part of leancloud_storage;
 
 /// Deletion
 class _LCDeleteOperation extends _LCOperation {
+  static const String OP = 'Delete';
+
   @override
   _LCOperation mergeWithPrevious(_LCOperation previousOp) {
     return this;
@@ -9,7 +11,7 @@ class _LCDeleteOperation extends _LCOperation {
 
   @override
   encode() {
-    return {'__op': 'Delete'};
+    return {'__op': OP};
   }
 
   @override

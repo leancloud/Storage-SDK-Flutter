@@ -1,6 +1,8 @@
 part of leancloud_storage;
 
 class _LCAddRelationOperation extends _LCOperation {
+  static const String OP = 'AddRelation';
+
   late List<LCObject> valueList;
 
   _LCAddRelationOperation(dynamic value) {
@@ -16,7 +18,7 @@ class _LCAddRelationOperation extends _LCOperation {
 
   @override
   encode() {
-    return {'__op': 'AddRelation', 'objects': _LCEncoder.encodeList(valueList)};
+    return {'__op': OP, 'objects': _LCEncoder.encodeList(valueList)};
   }
 
   @override

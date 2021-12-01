@@ -1,9 +1,12 @@
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:leancloud_storage/leancloud.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'utils.dart';
 
 void main() {
+  SharedPreferences.setMockInitialValues({});
+
   group('object', () {
     setUp(() => initNorthChina());
 
@@ -162,11 +165,11 @@ void main() {
 
     test('serialization', () async {
       LCObject object = new LCObject('Hello');
-      object['intValue'] = 123;
+      object.increment('intValue', 12);
       object['boolValue'] = true;
       object['stringValue'] = 'hello, world';
       object['time'] = DateTime.now();
-      object['intList'] = [1, 1, 2, 3, 5, 8];
+      object.addAll('intList', [1, 1, 2, 3, 5, 8]);
       object['stringMap'] = {'k1': 111, 'k2': true, 'k3': 'haha'};
       LCObject nestedObj = new LCObject('World');
       nestedObj['content'] = '7788';
@@ -175,16 +178,19 @@ void main() {
       World world = new World();
       world.content = 'hello, world';
       object['pointerList'] = [world, new LCObject('World')];
-      await object.save();
+      //
 
       String json = object.toString();
       LCLogger.debug(json);
       LCObject newObj = LCObject.parseObject(json);
+
+      newObj = await object.save();
+
       assert(newObj.objectId != null);
       assert(newObj.className != null);
       assert(newObj.createdAt != null);
       assert(newObj.updatedAt != null);
-      assert(newObj['intValue'] == 123);
+      assert(newObj['intValue'] == 12);
       assert(newObj['boolValue'] == true);
       assert(newObj['stringValue'] == 'hello, world');
       assert(newObj['objectValue']['content'] == '7788');
