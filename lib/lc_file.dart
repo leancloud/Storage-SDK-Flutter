@@ -22,6 +22,8 @@ class LCFile extends LCObject {
 
   set metaData(Map<String, dynamic>? value) => this['metaData'] = value;
 
+  File? file;
+
   Uint8List? data;
 
   LCFile() : super(ClassName);
@@ -37,8 +39,7 @@ class LCFile extends LCObject {
     LCFile file = new LCFile();
     file.name = name;
     file.mimeType = _LCMimeTypeMap.getMimeType(path);
-    File f = new File(path);
-    file.data = await f.readAsBytes();
+    file.file = new File(path);
     return file;
   }
 
@@ -78,14 +79,13 @@ class LCFile extends LCObject {
       try {
         if (provider == 's3') {
           // AWS
-          _LCAWSUploader uploader =
-              new _LCAWSUploader(uploadUrl, mimeType, data!);
-          await uploader.upload(onProgress);
+          String mimeType = uploadToken['mime_type'];
+          await _LCAWSUploader.upload(
+              uploadUrl, mimeType, file != null ? file : data, onProgress);
         } else if (provider == 'qiniu') {
           // Qiniu
-          _LCQiniuUploader uploader =
-              new _LCQiniuUploader(uploadUrl, token, key, data!);
-          await uploader.upload(onProgress);
+          await _LCQiniuUploader.upload(
+              uploadUrl, token, key, file != null ? file : data, onProgress);
         } else {
           throw ('$provider is not support.');
         }

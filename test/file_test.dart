@@ -3,17 +3,37 @@ import 'dart:typed_data';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:leancloud_storage/leancloud.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import 'package:path_provider_platform_interface/path_provider_platform_interface.dart';
+import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 
 import 'utils.dart';
 
+const String kTemporaryPath = './temporaryPath';
+
+class FakePathProviderPlatform extends Fake
+    with MockPlatformInterfaceMixin
+    implements PathProviderPlatform {
+  @override
+  Future<String?> getTemporaryPath() async {
+    return kTemporaryPath;
+  }
+}
+
 void main() {
+  SharedPreferences.setMockInitialValues({});
+
   group("file in China", () {
     late LCFile logo;
 
-    setUp(() => initNorthChina());
+    setUp(() {
+      initNorthChina();
+      PathProviderPlatform.instance = FakePathProviderPlatform();
+    });
 
     test('save from path', () async {
-      logo = await LCFile.fromPath('logo', './logo.jpg');
+      logo = await LCFile.fromPath('video', './video.mp4');
       await logo.save(onProgress: (int count, int total) {
         LCLogger.debug('$count/$total');
         if (count == total) {
@@ -22,7 +42,7 @@ void main() {
       });
       LCLogger.debug(logo.objectId);
       assert(logo.objectId != null);
-    });
+    }, timeout: Timeout(Duration(seconds: 100)));
 
     test('query file', () async {
       LCQuery<LCFile> query = LCFile.getQuery();
@@ -38,7 +58,7 @@ void main() {
       await file.save();
       LCLogger.debug(file.objectId);
       assert(file.objectId != null);
-    });
+    }, timeout: Timeout(Duration(seconds: 100)));
 
     test('save from url', () async {
       LCFile file = LCFile.fromUrl(
@@ -104,14 +124,23 @@ void main() {
     });
   });
 
-  // group('file in US', () {
-  //   setUp(() => initUS());
+  group('file in US', () {
+    setUp(() => initUS());
 
-  //   test('aws', () async {
-  //     LCFile file = await LCFile.fromPath('logo', './logo.jpg');
-  //     await file.save();
-  //     LCLogger.debug(file.objectId);
-  //     assert(file.objectId != null);
-  //   });
-  // });
+    test('aws file', () async {
+      LCFile file = await LCFile.fromPath('logo', './logo.jpg');
+      await file.save();
+      LCLogger.debug(file.objectId);
+      assert(file.objectId != null);
+    });
+
+    test('awa bytes', () async {
+      String text = 'hello, world';
+      LCFile file =
+          LCFile.fromBytes('text.txt', Uint8List.fromList(utf8.encode(text)));
+      await file.save();
+      LCLogger.debug(file.objectId);
+      assert(file.objectId != null);
+    });
+  });
 }

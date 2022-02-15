@@ -1,15 +1,18 @@
 part of leancloud_storage;
 
 class _LCAWSUploader {
-  String uploadUrl;
+  static Future upload(String uploadUrl, String? mimeType, dynamic data,
+      void Function(int count, int total)? onProgress) async {
+    if (data is Uint8List) {
+      return uploadData(uploadUrl, mimeType, data, onProgress);
+    } else if (data is File) {
+      Uint8List bytes = await data.readAsBytes();
+      return uploadData(uploadUrl, mimeType, bytes, onProgress);
+    }
+  }
 
-  String? mimeType;
-
-  Uint8List data;
-
-  _LCAWSUploader(this.uploadUrl, this.mimeType, this.data);
-
-  Future upload(void Function(int count, int total)? onProgress) async {
+  static Future uploadData(String uploadUrl, String? mimeType, Uint8List data,
+      void Function(int count, int total)? onProgress) async {
     Dio dio = new Dio();
     Uri uri = Uri.parse(uploadUrl);
     var stream = Stream.fromIterable(data.map((item) => [item]));
