@@ -39,6 +39,10 @@ class LCStatusQuery extends LCQuery<LCStatus> {
     if (includes != null) {
       params['include'] = includes;
     }
+    String? keys = condition._buildSelectedKeys();
+    if (keys != null) {
+      params['keys'] = keys;
+    }
     Map response = await LeanCloud._httpClient
         .get('subscribe/statuses', queryParams: params);
     List results = response['results'];

@@ -94,6 +94,7 @@ void main() {
 
       LCStatusQuery query =
           new LCStatusQuery(inboxType: LCStatus.InboxTypeDefault);
+      query.select('content');
       // query.sinceId = 0;
       // query.maxId = 2;
       // query.limit(2);
