@@ -1,6 +1,6 @@
 name: leancloud_storage
-description: A new Flutter package project.
-version: 0.7.9
+description: An official flutter plugin for LeanCloud storage service base on dart.
+version: 0.7.10
 homepage: https://www.leancloud.cn/
 
 environment:
