@@ -55,7 +55,7 @@ void initNorthChina() {
 
 void initUS() {
   LeanCloud.initialize(
-      'HudJvWWmAuGMifwxByDVLmQi-MdYXbMMI', 'YjoQr1X8wHoFIfsSGXzeJaAM');
+      'EgjCUfNdGw3Tu0TPdKkuG7yy-MdYXbMMI', 'Gc2YoMOt0kKEYrAL8ECTujbH');
   LCLogger.setLevel(LCLogger.DebugLevel);
 }
 
