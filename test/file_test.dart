@@ -33,7 +33,7 @@ void main() {
     });
 
     test('save from path', () async {
-      logo = await LCFile.fromPath('video', './video.mp4');
+      logo = await LCFile.fromPath('video.mp4', './video.mp4');
       await logo.save(onProgress: (int count, int total) {
         LCLogger.debug('$count/$total');
         if (count == total) {
@@ -42,6 +42,7 @@ void main() {
       });
       LCLogger.debug(logo.objectId);
       assert(logo.objectId != null);
+      assert(logo.mimeType == 'video/mp4');
     }, timeout: Timeout(Duration(seconds: 100)));
 
     test('query file', () async {

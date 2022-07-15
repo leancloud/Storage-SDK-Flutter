@@ -38,7 +38,6 @@ class LCFile extends LCObject {
   static Future<LCFile> fromPath(String name, String path) async {
     LCFile file = new LCFile();
     file.name = name;
-    file.mimeType = _LCMimeTypeMap.getMimeType(path);
     file.file = new File(path);
     return file;
   }
@@ -76,12 +75,12 @@ class LCFile extends LCObject {
       String key = uploadToken['key'];
       String token = uploadToken['token'];
       String provider = uploadToken['provider'];
+      this.mimeType = uploadToken['mime_type'];
       try {
         if (provider == 's3') {
           // AWS
-          String mimeType = uploadToken['mime_type'];
           await _LCAWSUploader.upload(
-              uploadUrl, mimeType, file != null ? file : data, onProgress);
+              uploadUrl, this.mimeType, file != null ? file : data, onProgress);
         } else if (provider == 'qiniu') {
           // Qiniu
           await _LCQiniuUploader.upload(
