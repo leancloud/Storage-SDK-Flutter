@@ -8,7 +8,6 @@ import 'dart:math';
 import 'package:dio/dio.dart';
 import 'package:convert/convert.dart';
 import 'package:crypto/crypto.dart';
-import 'package:path/path.dart' as path;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:dio_http_cache/dio_http_cache.dart';
 import 'package:qiniu_flutter_sdk/qiniu_flutter_sdk.dart';
@@ -50,7 +49,6 @@ part 'internal/query/lc_compositional_condition.dart';
 /// File
 part 'internal/file/lc_aws_uploader.dart';
 part 'internal/file/lc_qiniu_uploader.dart';
-part 'internal/file/lc_mime_type_map.dart';
 
 /// Utilities
 part 'internal/utils/lc_uuid.dart';
