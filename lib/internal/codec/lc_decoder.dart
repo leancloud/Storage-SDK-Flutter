@@ -80,4 +80,8 @@ class _LCDecoder {
     });
     return acl;
   }
+
+  static _LCOperation decodeOperation(dynamic data) {
+    return _LCOperation.decode(data);
+  }
 }

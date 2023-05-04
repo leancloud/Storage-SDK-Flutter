@@ -74,9 +74,18 @@ class _LCEncoder {
       if (object.updatedAt != null) {
         data['updatedAt'] = object.updatedAt.toString();
       }
-      object._estimatedData.forEach((k, v) {
-        data[k] = _LCEncoder.encode(v, full: full);
-      });
+      if (object._data.customPropertyMap.length > 0) {
+        object._data.customPropertyMap.forEach((k, v) {
+          data[k] = _LCEncoder.encode(v, full: full);
+        });
+      }
+      if (object._operationMap.length > 0) {
+        Map opMap = new Map();
+        object._operationMap.forEach((k, v) {
+          opMap[k] = encodeOperation(v);
+        });
+        data['__operationMap'] = opMap;
+      }
     }
     return data;
   }

@@ -1,6 +1,8 @@
 part of leancloud_storage;
 
 class _LCRemoveRelationOperation extends _LCOperation {
+  static const String OP = 'RemoveRelation';
+
   late List<LCObject> valueList;
 
   _LCRemoveRelationOperation(dynamic value) {
@@ -16,10 +18,7 @@ class _LCRemoveRelationOperation extends _LCOperation {
 
   @override
   encode() {
-    return {
-      '__op': 'RemoveRelation',
-      'objects': _LCEncoder.encodeList(valueList.toList())
-    };
+    return {'__op': OP, 'objects': _LCEncoder.encodeList(valueList.toList())};
   }
 
   @override

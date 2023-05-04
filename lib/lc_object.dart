@@ -247,21 +247,33 @@ class LCObject {
     if (data == null) {
       return;
     }
+
     _data.className = data.className ?? _data.className;
     _data.objectId = data.objectId ?? _data.objectId;
     _data.createdAt = data.createdAt ?? _data.createdAt;
     _data.updatedAt = data.updatedAt ?? _data.updatedAt;
+
     // 先将本地的预估数据直接替换
     _data.customPropertyMap = _estimatedData;
+
     // 再将服务端的数据覆盖
     data.customPropertyMap.forEach((String key, dynamic value) {
       _data.customPropertyMap[key] = value;
     });
-    // 最后重新生成预估数据，用于后续访问和操作
-    _rebuildEstimatedData();
-    // 清空操作
-    _operationMap.clear();
-    _isDirty = false;
+
+    // 最后根据 data 情况确定如何合并
+    if (data.operationMap != null && data.operationMap!.length > 0) {
+      // 如果有保存操作
+      data.operationMap!.forEach((k, v) {
+        _applyOperation(k, v);
+      });
+    } else {
+      // 清空操作
+      _operationMap.clear();
+      // 最后重新生成预估数据，用于后续访问和操作
+      _rebuildEstimatedData();
+      _isDirty = false;
+    }
   }
 
   /// Fetches the object from the cloud.

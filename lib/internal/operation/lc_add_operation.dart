@@ -1,6 +1,8 @@
 part of leancloud_storage;
 
 class _LCAddOperation extends _LCOperation {
+  static const String OP = 'Add';
+
   late List valueList;
 
   _LCAddOperation(Iterable values) {
@@ -16,7 +18,7 @@ class _LCAddOperation extends _LCOperation {
 
   @override
   encode() {
-    return {'__op': 'Add', 'objects': _LCEncoder.encodeList(valueList)};
+    return {'__op': OP, 'objects': _LCEncoder.encodeList(valueList)};
   }
 
   @override

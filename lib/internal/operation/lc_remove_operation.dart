@@ -1,6 +1,8 @@
 part of leancloud_storage;
 
 class _LCRemoveOperation extends _LCOperation {
+  static const String OP = 'Remove';
+
   late List valueList;
 
   _LCRemoveOperation(Iterable values) {
@@ -18,7 +20,7 @@ class _LCRemoveOperation extends _LCOperation {
 
   @override
   encode() {
-    return {'__op': 'Remove', 'objects': _LCEncoder.encodeList(valueList)};
+    return {'__op': OP, 'objects': _LCEncoder.encodeList(valueList)};
   }
 
   @override

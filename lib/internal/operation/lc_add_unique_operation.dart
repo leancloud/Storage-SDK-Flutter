@@ -1,6 +1,8 @@
 part of leancloud_storage;
 
 class _LCAddUniqueOperation extends _LCOperation {
+  static const String OP = 'AddUnique';
+
   late Set values;
 
   _LCAddUniqueOperation(Iterable values) {
@@ -16,10 +18,7 @@ class _LCAddUniqueOperation extends _LCOperation {
 
   @override
   encode() {
-    return {
-      '__op': 'AddUnique',
-      'objects': _LCEncoder.encodeList(values.toList())
-    };
+    return {'__op': OP, 'objects': _LCEncoder.encodeList(values.toList())};
   }
 
   @override
