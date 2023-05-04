@@ -3,13 +3,15 @@ part of leancloud_storage;
 class _LCHttpClient {
   String appId;
 
-  String appKey;
+  String key;
 
   String? server;
 
   String sdkVersion;
 
   String apiVersion;
+
+  bool useMasterKey = false;
 
   late _LCAppRouter _appRouter;
 
@@ -19,8 +21,8 @@ class _LCHttpClient {
 
   DioCacheManager? _cacheManager;
 
-  _LCHttpClient(this.appId, this.appKey, this.server, this.sdkVersion,
-      this.apiVersion, LCQueryCache? queryCache) {
+  _LCHttpClient(this.appId, this.key, this.server, this.sdkVersion,
+      this.apiVersion, this.useMasterKey, LCQueryCache? queryCache) {
     _appRouter = new _LCAppRouter(appId, server);
     BaseOptions options = new BaseOptions(headers: {
       'X-LC-Id': appId,
@@ -134,10 +136,14 @@ class _LCHttpClient {
       Map<String, dynamic>? additionalHeaders) async {
     Map<String, dynamic> headers = new Map<String, dynamic>();
     int timestamp = DateTime.now().millisecondsSinceEpoch;
-    Uint8List data = Utf8Encoder().convert('$timestamp$appKey');
+    Uint8List data = Utf8Encoder().convert('$timestamp$key');
     Digest digest = md5.convert(data);
     String sign = hex.encode(digest.bytes);
-    headers['X-LC-Sign'] = '$sign,$timestamp';
+    if (useMasterKey) {
+      headers['X-LC-Sign'] = '$sign,$timestamp,master';
+    } else {
+      headers['X-LC-Sign'] = '$sign,$timestamp';
+    }
     LCUser? currentUser = await LCUser.getCurrent();
     if (currentUser != null) {
       headers['X-LC-Session'] = currentUser.sessionToken;

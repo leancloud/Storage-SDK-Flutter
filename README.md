@@ -30,10 +30,23 @@ import 'package:leancloud_storage/leancloud.dart';
 
 ## Initialize
 
+Initialize with appKey:
+
 ```dart
 LeanCloud.initialize(
   APP_ID, APP_KEY,
   server: APP_SERVER, // to use your own custom domain
+  queryCache: new LCQueryCache() // optinoal, enable cache
+);
+```
+
+Initialize with masterKey:
+
+```dart
+LeanCloud.initialize(
+  APP_ID, APP_KEY,
+  server: APP_SERVER, // to use your own custom domain
+  masterKey: MASTER_KEY, // use masterKey
   queryCache: new LCQueryCache() // optinoal, enable cache
 );
 ```
