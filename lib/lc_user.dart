@@ -551,4 +551,13 @@ class LCUser extends LCObject {
     await _saveToLocal();
     return this;
   }
+  
+  @override
+  Future<LCUser> fetch(
+      {Iterable<String>? keys, Iterable<String>? includes}) async {
+    await super.fetch(keys: keys, includes: includes);
+    _currentUser = this;
+    await _saveToLocal();
+    return this;
+  }
 }
